@@ -1,3 +1,3 @@
 language: minimal
 script:
-  - docker build -t avrae-service
+  - docker build -t avrae-service .
