@@ -1,3 +1,11 @@
 language: minimal
 script:
   - docker build -t avrae-service .
+before_deploy:
+  - pip install --user awscli
+  - export PATH=$PATH:$HOME/.local/bin
+deploy:
+  provider: script
+  script: bash scripts/ecr_push.sh
+  on:
+    branch: master
