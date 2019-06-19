@@ -1,8 +1,4 @@
-# avrae
-[![Build Status](https://travis-ci.org/avrae/avrae.svg?branch=master)](https://travis-ci.org/avrae/avrae)
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/678413361db643d9af25d9e8e2cdeaeb)](https://www.codacy.com/app/mommothazaz123/avrae?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=avrae/avrae&amp;utm_campaign=Badge_Grade)
-
-^ FIXME
+# avrae [![Build Status](https://travis-ci.org/avrae/avrae-service.svg?branch=master)](https://travis-ci.org/avrae/avrae-service)
 
 Avrae is a bot to facilitate running Dungeons & Dragons 5e online over Discord. This project is the web api... thing FIXME
 
