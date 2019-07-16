@@ -1,9 +1,11 @@
 import json
 import os
 
+import sentry_sdk
 from flask import Flask, request
 from flask_cors import CORS
 from flask_pymongo import PyMongo
+from sentry_sdk.integrations.flask import FlaskIntegration
 
 import config
 from lib import dice
@@ -11,7 +13,15 @@ from lib.discord import get_user_info
 from lib.redisIO import RedisIO
 from lib.utils import jsonify
 
+SENTRY_DSN = os.getenv('SENTRY_DSN') or None
 TESTING = True if os.environ.get("TESTING") else False
+
+if SENTRY_DSN is not None:
+    sentry_sdk.init(
+        dsn=SENTRY_DSN,
+        environment='Development' if TESTING else 'Production',
+        integrations=[FlaskIntegration()]
+    )
 
 app = Flask(__name__)
 rdb = RedisIO(config.redis_url if not TESTING else config.test_redis_url)
