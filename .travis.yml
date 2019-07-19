@@ -8,4 +8,4 @@ deploy:
   provider: script
   script: bash scripts/ecr_push.sh
   on:
-    branch: master
+    tags: true
