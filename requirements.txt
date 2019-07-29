@@ -10,6 +10,7 @@ idna==2.7
 itsdangerous==0.24
 Jinja2==2.10
 MarkupSafe==1.0
+newrelic==4.20.1.121
 numexpr==2.6.8
 numpy==1.15.1
 pymongo==3.7.1

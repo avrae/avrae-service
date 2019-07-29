@@ -31,7 +31,7 @@ The service should now be accessible at http://localhost:5000.
 ### Running locally with Docker
 
 1. Build the Docker image: `docker build -t avrae-service:latest --build-arg ENVIRONMENT=development .`.
-2. Run the Docker image: `docker run avrae-service:latest`.
+2. Run the Docker image: `docker run -p 58000:8000 avrae-service:latest`.
 
 The service should now be accessible at http://localhost:58000.
 
