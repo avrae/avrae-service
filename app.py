@@ -82,10 +82,12 @@ from blueprints.characters import characters
 from blueprints.customizations import customizations
 from blueprints.bot import bot
 from blueprints.cheatsheets import cheatsheets
+from blueprints.health_checks import health_checks
 app.register_blueprint(characters, url_prefix="/characters")
 app.register_blueprint(customizations, url_prefix="/customizations")
 app.register_blueprint(bot, url_prefix="/bot")
 app.register_blueprint(cheatsheets, url_prefix="/cheatsheets")
+app.register_blueprint(health_checks, url_prefix="/health-check")
 
 from blueprints.homebrew.items import items
 from blueprints.homebrew.spells import spells
