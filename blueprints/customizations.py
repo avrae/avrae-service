@@ -171,6 +171,16 @@ def gvar_new():
     return f"Gvar {key} created."
 
 
+@customizations.route("/gvars/<key>", methods=["GET"])
+def get_specific_gvar(key):
+    get_user_info()  # endpoint requires auth
+    gvar = mdb.gvars.find_one({"key": key})
+    if gvar is None:
+        return "Gvar not found", 404
+
+    return jsonify(gvar)
+
+
 @customizations.route("/gvars/<key>", methods=["POST"])
 def gvar_update(key):
     user = get_user_info()
