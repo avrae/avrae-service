@@ -2,7 +2,7 @@ REQUIRED_SPELL_PROPS = ('name', 'level', 'school', 'automation')
 SPELL_SCHOOLS = ('A', 'V', 'E', 'I', 'D', 'N', 'T', 'C')
 
 
-def ensure_keys(spell):
+def ensure_spell_keys(spell):
     assert all(p in spell for p in REQUIRED_SPELL_PROPS), "Spell missing properties"
     assert isinstance(spell['name'], str), "Spell name must be string"
     assert isinstance(spell['automation'], list) or spell['automation'] is None, "Invalid spell automation"
@@ -11,7 +11,7 @@ def ensure_keys(spell):
 def is_valid_automation(automation):
     try:
         check_automation(automation)
-    except AssertionError as e:
+    except AssertionError:
         return False
     return True
 

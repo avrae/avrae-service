@@ -61,4 +61,4 @@ def put_attacks(_id):
     # respond
     if not response.modified_count:
         return "Character not found", 404
-    return "Options updated."
+    return "Attacks updated."

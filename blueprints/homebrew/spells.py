@@ -4,7 +4,7 @@ from bson import ObjectId
 from flask import Blueprint, request
 
 from app import mdb
-from lib.validation import ensure_keys, check_automation, ValidationError
+from lib.validation import ensure_spell_keys, check_automation, ValidationError
 from lib.discord import get_user_info
 from lib.utils import jsonify
 
@@ -128,7 +128,7 @@ def validate_import():
 
 def validate(spell):
     try:
-        ensure_keys(spell)
+        ensure_spell_keys(spell)
         if spell['automation'] is not None:
             check_automation(spell['automation'])
     except AssertionError as e:
