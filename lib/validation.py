@@ -8,6 +8,14 @@ def ensure_keys(spell):
     assert isinstance(spell['automation'], list) or spell['automation'] is None, "Invalid spell automation"
 
 
+def is_valid_automation(automation):
+    try:
+        check_automation(automation)
+    except AssertionError as e:
+        return False
+    return True
+
+
 def check_automation(automation):
     for effect in automation:
         check_effect(effect)

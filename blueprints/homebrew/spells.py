@@ -4,7 +4,7 @@ from bson import ObjectId
 from flask import Blueprint, request
 
 from app import mdb
-from lib.spellvalidation import ensure_keys, check_automation, ValidationError
+from lib.validation import ensure_keys, check_automation, ValidationError
 from lib.discord import get_user_info
 from lib.utils import jsonify
 
