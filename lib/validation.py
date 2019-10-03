@@ -11,7 +11,7 @@ def ensure_spell_keys(spell):
 def is_valid_automation(automation):
     try:
         check_automation(automation)
-    except AssertionError:
+    except:
         return False
     return True
 
@@ -69,7 +69,8 @@ def check_damage(effect):
     if 'higher' in effect:
         check_higher(effect['higher'])
     if 'cantripScale' in effect:
-        assert isinstance(effect['cantripScale'], bool), "CantripScale must be boolean"
+        assert isinstance(effect['cantripScale'], bool) or effect['cantripScale'] is None, \
+            "CantripScale must be boolean"
 
 
 def check_temphp(effect):
@@ -77,7 +78,8 @@ def check_temphp(effect):
     if 'higher' in effect:
         check_higher(effect['higher'])
     if 'cantripScale' in effect:
-        assert isinstance(effect['cantripScale'], bool), "CantripScale must be boolean"
+        assert isinstance(effect['cantripScale'], bool) or effect['cantripScale'] is None, \
+            "CantripScale must be boolean"
 
 
 def check_ieffect(effect):
@@ -99,7 +101,8 @@ def check_roll(effect):
     if 'higher' in effect:
         check_higher(effect['higher'])
     if 'cantripScale' in effect:
-        assert isinstance(effect['cantripScale'], bool), "CantripScale must be boolean"
+        assert isinstance(effect['cantripScale'], bool) or effect['cantripScale'] is None, \
+            "CantripScale must be boolean"
     if 'hidden' in effect:
         assert isinstance(effect['hidden'], bool), "Hidden must be boolean"
 
@@ -122,6 +125,8 @@ EFFECT_TYPES = {
 
 
 def check_higher(higher):
+    if higher is None:
+        return
     for k, v in higher.items():
         assert isinstance(k, (str, int)), "Higher level key must be int or string"
         assert isinstance(v, str), "Higher level value must be string"

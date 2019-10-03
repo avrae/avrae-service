@@ -4,7 +4,7 @@ from flask import Blueprint, request
 from app import mdb
 from lib.discord import get_user_info
 from lib.utils import jsonify
-from lib.validation import is_valid_automation
+from lib.validation import is_valid_automation, check_automation
 
 characters = Blueprint('characters', __name__)
 
@@ -20,26 +20,23 @@ def character_list():
 def meta():
     user = get_user_info()
     data = list(mdb.characters.find({"owner": user.id},
-                                    ["upstream", "active", "name", "description", "image", "levels"]))
+                                    ["upstream", "active", "name", "description", "image", "levels", "import_version"]))
     return jsonify(data)
 
 
-@characters.route('/<_id>/attacks', methods=["GET"])
-def attacks(_id):
+@characters.route('/<upstream>/attacks', methods=["GET"])
+def attacks(upstream):
     """Returns a character's overriden attacks."""
     user = get_user_info()
-    char_id = ObjectId(_id)
-    data = mdb.characters.find_one({"owner": user.id, "_id": char_id},
+    data = mdb.characters.find_one({"owner": user.id, "upstream": upstream},
                                    ["overrides"])
-    return jsonify(data['attacks'])
+    return jsonify(data['overrides']['attacks'])
 
 
-@characters.route('/<_id>/attacks', methods=["POST"])
-def put_attacks(_id):
-    """Sets a character's attack overrides. Must POST a list of attacks."""
+@characters.route('/<upstream>/attacks', methods=["PUT"])
+def put_attacks(upstream):
+    """Sets a character's attack overrides. Must PUT a list of attacks."""
     user = get_user_info()
-    char_id = ObjectId(_id)
-
     the_attacks = request.json
 
     # validation
@@ -48,17 +45,17 @@ def put_attacks(_id):
 
     for attack in the_attacks:
         if not all((isinstance(attack, dict),
-                    set(attack.keys()) == {"name", "automation"},
+                    set(attack.keys()) == {"name", "automation", "_v"},
                     is_valid_automation(attack['automation']))):
             return "Invalid attack", 400
 
     # write
     response = mdb.characters.update_one(
-        {"owner": user.id, "_id": char_id},
+        {"owner": user.id, "upstream": upstream},
         {"$set": {"overrides.attacks": the_attacks}}
     )
 
     # respond
-    if not response.modified_count:
+    if not response.matched_count:
         return "Character not found", 404
     return "Attacks updated."
