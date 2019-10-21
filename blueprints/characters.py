@@ -40,14 +40,10 @@ def put_attacks(upstream):
     the_attacks = request.json
 
     # validation
-    if not isinstance(the_attacks, list):
-        return "Attacks must be a list", 400
-
-    for attack in the_attacks:
-        if not all((isinstance(attack, dict),
-                    set(attack.keys()) == {"name", "automation", "_v"},
-                    is_valid_automation(attack['automation']))):
-            return "Invalid attack", 400
+    try:
+        _validate_attacks(the_attacks)
+    except ValidationError as e:
+        return str(e), 400
 
     # write
     response = mdb.characters.update_one(
@@ -59,3 +55,38 @@ def put_attacks(upstream):
     if not response.matched_count:
         return "Character not found", 404
     return "Attacks updated."
+
+
+@characters.route('/attacks/validate', methods=["POST"])
+def validate_attacks():
+    reqdata = request.json
+    if not isinstance(reqdata, list):
+        reqdata = [reqdata]
+
+    try:
+        _validate_attacks(reqdata)
+    except ValidationError as e:
+        return str(e), 400
+
+    return jsonify({'success': True, 'result': "OK"})
+
+
+class ValidationError(Exception):
+    pass
+
+
+def _validate_attacks(the_attacks):
+    if not isinstance(the_attacks, list):
+        raise ValidationError("Attacks must be a list")
+
+    template = "Invalid attack ({0}): {1}"
+
+    for i, attack in enumerate(the_attacks):
+        if not isinstance(attack, dict):
+            raise ValidationError(template.format(i, "attack is not an object"))
+
+        if not set(attack.keys()) == {"name", "automation", "_v"}:
+            raise ValidationError(template.format(i, "attack object missing keys"))
+
+        if not is_valid_automation(attack['automation']):
+            raise ValidationError(template.format(i, "invalid automation"))
