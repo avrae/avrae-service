@@ -66,6 +66,9 @@ def check_save(effect):
 
 def check_damage(effect):
     assert 'damage' in effect, "Damage effect must have damage"
+    if 'overheal' in effect:
+        assert isinstance(effect['overheal'], bool) or effect['overheal'] is None, \
+            "Overheal must be boolean"
     if 'higher' in effect:
         check_higher(effect['higher'])
     if 'cantripScale' in effect:

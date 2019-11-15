@@ -75,6 +75,10 @@ class ValidationError(Exception):
     pass
 
 
+REQUIRED_ATTACK_KEYS = {"name", "automation", "_v"}
+OPTIONAL_ATTACK_KEYS = {"proper", "verb"}
+
+
 def _validate_attacks(the_attacks):
     if not isinstance(the_attacks, list):
         raise ValidationError("Attacks must be a list")
@@ -85,7 +89,8 @@ def _validate_attacks(the_attacks):
         if not isinstance(attack, dict):
             raise ValidationError(template.format(i, "attack is not an object"))
 
-        if not set(attack.keys()) == {"name", "automation", "_v"}:
+        keys = set(attack.keys())
+        if not (keys.issuperset(REQUIRED_ATTACK_KEYS) and keys.issubset(REQUIRED_ATTACK_KEYS | OPTIONAL_ATTACK_KEYS)):
             raise ValidationError(template.format(i, "attack object missing keys"))
 
         if not is_valid_automation(attack['automation']):
