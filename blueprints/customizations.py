@@ -1,8 +1,7 @@
 import uuid
 
-from flask import Blueprint, request
+from flask import Blueprint, current_app, request
 
-from app import mdb, rdb
 from lib.discord import get_user_info
 from lib.utils import jsonify
 
@@ -13,9 +12,9 @@ customizations = Blueprint('customizations', __name__)
 def customization_list():
     user = get_user_info()
     data = {
-        "aliases": list(mdb.aliases.find({"owner": user.id})),
-        "snippets": list(mdb.snippets.find({"owner": user.id})),
-        "uvars": list(mdb.uvars.find({"owner": user.id}))
+        "aliases": list(current_app.mdb.aliases.find({"owner": user.id})),
+        "snippets": list(current_app.mdb.snippets.find({"owner": user.id})),
+        "uvars": list(current_app.mdb.uvars.find({"owner": user.id}))
     }
     return jsonify(data)
 
@@ -23,7 +22,7 @@ def customization_list():
 @customizations.route("/aliases", methods=["GET"])
 def alias_list():
     user = get_user_info()
-    data = list(mdb.aliases.find({"owner": user.id}))
+    data = list(current_app.mdb.aliases.find({"owner": user.id}))
     return jsonify(data)
 
 
@@ -39,19 +38,20 @@ def alias_update(name):
         return "Commands cannot be blank", 400
     if " " in name:
         return "Name cannot contain whitespace", 400
-    if name in rdb.jget("default_commands", []):
+    if name in current_app.rdb.jget("default_commands", []):
         return "Alias is already built-in", 409
     if len(data['commands']) > 4000:
         return "Alias commands must be less than 4KB", 400
 
-    mdb.aliases.update_one({"owner": user.id, "name": name}, {"$set": {"commands": data['commands']}}, upsert=True)
+    current_app.mdb.aliases.update_one({"owner": user.id, "name": name}, {"$set": {"commands": data['commands']}},
+                                       upsert=True)
     return "Alias updated."
 
 
 @customizations.route("/aliases/<name>", methods=["DELETE"])
 def alias_delete(name):
     user = get_user_info()
-    result = mdb.aliases.delete_one({"owner": user.id, "name": name})
+    result = current_app.mdb.aliases.delete_one({"owner": user.id, "name": name})
     if not result.deleted_count:
         return "Alias not found.", 404
     return "Alias deleted."
@@ -60,7 +60,7 @@ def alias_delete(name):
 @customizations.route("/snippets", methods=["GET"])
 def snippet_list():
     user = get_user_info()
-    data = list(mdb.snippets.find({"owner": user.id}))
+    data = list(current_app.mdb.snippets.find({"owner": user.id}))
     return jsonify(data)
 
 
@@ -81,14 +81,15 @@ def snippet_update(name):
     if len(name) < 2:
         return "Name must be at least 2 characters", 400
 
-    mdb.snippets.update_one({"owner": user.id, "name": name}, {"$set": {"snippet": data['snippet']}}, upsert=True)
+    current_app.mdb.snippets.update_one({"owner": user.id, "name": name}, {"$set": {"snippet": data['snippet']}},
+                                        upsert=True)
     return "Snippet updated."
 
 
 @customizations.route("/snippets/<name>", methods=["DELETE"])
 def snippet_delete(name):
     user = get_user_info()
-    result = mdb.snippets.delete_one({"owner": user.id, "name": name})
+    result = current_app.mdb.snippets.delete_one({"owner": user.id, "name": name})
     if not result.deleted_count:
         return "Snippet not found.", 404
     return "Snippet deleted."
@@ -97,7 +98,7 @@ def snippet_delete(name):
 @customizations.route("/uvars", methods=["GET"])
 def uvar_list():
     user = get_user_info()
-    data = list(mdb.uvars.find({"owner": user.id}))
+    data = list(current_app.mdb.uvars.find({"owner": user.id}))
     return jsonify(data)
 
 
@@ -114,14 +115,14 @@ def uvar_update(name):
     if len(data['value']) > 4000:
         return "Value must be less than 4KB", 400
 
-    mdb.uvars.update_one({"owner": user.id, "name": name}, {"$set": {"value": data['value']}}, upsert=True)
+    current_app.mdb.uvars.update_one({"owner": user.id, "name": name}, {"$set": {"value": data['value']}}, upsert=True)
     return "Uvar updated."
 
 
 @customizations.route("/uvars/<name>", methods=["DELETE"])
 def uvar_delete(name):
     user = get_user_info()
-    result = mdb.uvars.delete_one({"owner": user.id, "name": name})
+    result = current_app.mdb.uvars.delete_one({"owner": user.id, "name": name})
     if not result.deleted_count:
         return "Uvar not found.", 404
     return "Uvar deleted."
@@ -130,22 +131,22 @@ def uvar_delete(name):
 @customizations.route("/gvars", methods=["GET"])
 def gvar_list():
     user = get_user_info()
-    data = {"owned": list(mdb.gvars.find({"owner": user.id})),
-            "editable": list(mdb.gvars.find({"editors": user.id}))}
+    data = {"owned": list(current_app.mdb.gvars.find({"owner": user.id})),
+            "editable": list(current_app.mdb.gvars.find({"editors": user.id}))}
     return jsonify(data)
 
 
 @customizations.route("/gvars/owned", methods=["GET"])
 def gvar_list_owned():
     user = get_user_info()
-    data = list(mdb.gvars.find({"owner": user.id}))
+    data = list(current_app.mdb.gvars.find({"owner": user.id}))
     return jsonify(data)
 
 
 @customizations.route("/gvars/editable", methods=["GET"])
 def gvar_list_editable():
     user = get_user_info()
-    data = list(mdb.gvars.find({"editors": user.id}))
+    data = list(current_app.mdb.gvars.find({"editors": user.id}))
     return jsonify(data)
 
 
@@ -167,14 +168,14 @@ def gvar_new():
         "value": data['value'],
         "editors": []
     }
-    mdb.gvars.insert_one(gvar)
+    current_app.mdb.gvars.insert_one(gvar)
     return f"Gvar {key} created."
 
 
 @customizations.route("/gvars/<key>", methods=["GET"])
 def get_specific_gvar(key):
     get_user_info()  # endpoint requires auth
-    gvar = mdb.gvars.find_one({"key": key})
+    gvar = current_app.mdb.gvars.find_one({"key": key})
     if gvar is None:
         return "Gvar not found", 404
 
@@ -185,7 +186,7 @@ def get_specific_gvar(key):
 def gvar_update(key):
     user = get_user_info()
     data = request.json
-    gvar = mdb.gvars.find_one({"key": key}, ['owner', 'editors'])
+    gvar = current_app.mdb.gvars.find_one({"key": key}, ['owner', 'editors'])
     if data is None:
         return "No data found", 400
     if 'value' not in data:
@@ -196,17 +197,17 @@ def gvar_update(key):
         return "You do not have permission to edit this gvar", 403
     if len(data['value']) > 100000:
         return "Gvars must be less than 100KB", 400
-    mdb.gvars.update_one({"key": key}, {"$set": {"value": data['value']}})
+    current_app.mdb.gvars.update_one({"key": key}, {"$set": {"value": data['value']}})
     return "Gvar updated."
 
 
 @customizations.route("/gvars/<key>", methods=["DELETE"])
 def gvar_delete(key):
     user = get_user_info()
-    gvar = mdb.gvars.find_one({"key": key}, ['owner'])
+    gvar = current_app.mdb.gvars.find_one({"key": key}, ['owner'])
     if gvar is None:
         return "Gvar not found", 404
     if gvar['owner'] != user.id:
         return "You do not have permission to delete this gvar", 403
-    mdb.gvars.delete_one({"key": key})
+    current_app.mdb.gvars.delete_one({"key": key})
     return "Gvar deleted."

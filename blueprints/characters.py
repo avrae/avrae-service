@@ -1,10 +1,8 @@
-from bson import ObjectId
-from flask import Blueprint, request
+from flask import Blueprint, current_app, request
 
-from app import mdb
 from lib.discord import get_user_info
 from lib.utils import jsonify
-from lib.validation import is_valid_automation, check_automation
+from lib.validation import is_valid_automation
 
 characters = Blueprint('characters', __name__)
 
@@ -12,14 +10,14 @@ characters = Blueprint('characters', __name__)
 @characters.route('', methods=["GET"])
 def character_list():
     user = get_user_info()
-    data = list(mdb.characters.find({"owner": user.id}))
+    data = list(current_app.mdb.characters.find({"owner": user.id}))
     return jsonify(data)
 
 
 @characters.route('/meta', methods=["GET"])
 def meta():
     user = get_user_info()
-    data = list(mdb.characters.find({"owner": user.id},
+    data = list(current_app.mdb.characters.find({"owner": user.id},
                                     ["upstream", "active", "name", "description", "image", "levels", "import_version"]))
     return jsonify(data)
 
@@ -28,7 +26,7 @@ def meta():
 def attacks(upstream):
     """Returns a character's overriden attacks."""
     user = get_user_info()
-    data = mdb.characters.find_one({"owner": user.id, "upstream": upstream},
+    data = current_app.mdb.characters.find_one({"owner": user.id, "upstream": upstream},
                                    ["overrides"])
     return jsonify(data['overrides']['attacks'])
 
@@ -46,7 +44,7 @@ def put_attacks(upstream):
         return str(e), 400
 
     # write
-    response = mdb.characters.update_one(
+    response = current_app.mdb.characters.update_one(
         {"owner": user.id, "upstream": upstream},
         {"$set": {"overrides.attacks": the_attacks}}
     )

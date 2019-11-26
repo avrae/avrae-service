@@ -8,6 +8,13 @@ from flask_pymongo import PyMongo
 from sentry_sdk.integrations.flask import FlaskIntegration
 
 import config
+from blueprints.bot import bot
+from blueprints.characters import characters
+from blueprints.cheatsheets import cheatsheets
+from blueprints.customizations import customizations
+from blueprints.discord import discord
+from blueprints.homebrew.items import items
+from blueprints.homebrew.spells import spells
 from lib import dice
 from lib.discord import get_user_info
 from lib.redisIO import RedisIO
@@ -79,21 +86,11 @@ def roll():
     return jsonify(result)
 
 
-from blueprints.characters import characters
-from blueprints.customizations import customizations
-from blueprints.bot import bot
-from blueprints.cheatsheets import cheatsheets
-from blueprints.discord import discord
-
 app.register_blueprint(characters, url_prefix="/characters")
 app.register_blueprint(customizations, url_prefix="/customizations")
 app.register_blueprint(bot, url_prefix="/bot")
 app.register_blueprint(cheatsheets, url_prefix="/cheatsheets")
 app.register_blueprint(discord, url_prefix="/discord")
-
-from blueprints.homebrew.items import items
-from blueprints.homebrew.spells import spells
-
 app.register_blueprint(items, url_prefix="/homebrew/items")
 app.register_blueprint(spells, url_prefix="/homebrew/spells")
 

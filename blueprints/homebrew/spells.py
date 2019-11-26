@@ -1,9 +1,8 @@
 import json
 
 from bson import ObjectId
-from flask import Blueprint, request
+from flask import Blueprint, current_app, request, app
 
-from app import mdb
 from lib.discord import get_user_info
 from lib.utils import jsonify
 from lib.validation import ValidationError, check_automation, ensure_spell_keys
@@ -15,24 +14,24 @@ TOME_FIELDS = ("name", "owner", "public", "desc", "image", "spells", "numSpells"
 SPELL_FIELDS = ("name", "level", "school", "classes", "subclasses", "casttime", "range", "components", "duration",
                 "ritual", "description", "higherlevels", "concentration", "automation", "image")
 IGNORED_FIELDS = {"_id", "active", "server_active", "subscribers"}
-SUB_COLL = mdb.tome_subscriptions
-DATA_COLL = mdb.tomes
 
 
 def _is_owner(user, obj_id):
-    return user_is_owner(data_coll=DATA_COLL, user=user, obj_id=obj_id)
+    return user_is_owner(data_coll=current_app.mdb.tomes, user=user, obj_id=obj_id)
 
 
 def _can_view(user, obj_id):
-    return user_can_view(data_coll=DATA_COLL, sub_coll=SUB_COLL, user=user, obj_id=obj_id)
+    return user_can_view(data_coll=current_app.mdb.tomes, sub_coll=current_app.mdb.tome_subscriptions, user=user,
+                         obj_id=obj_id)
 
 
 def _can_edit(user, obj_id):
-    return user_can_edit(data_coll=DATA_COLL, sub_coll=SUB_COLL, user=user, obj_id=obj_id)
+    return user_can_edit(data_coll=current_app.mdb.tomes, sub_coll=current_app.mdb.tome_subscriptions, user=user,
+                         obj_id=obj_id)
 
 
 def _editable(user):
-    return user_editable(data_coll=DATA_COLL, sub_coll=SUB_COLL, user=user)
+    return user_editable(data_coll=current_app.mdb.tomes, sub_coll=current_app.mdb.tome_subscriptions, user=user)
 
 
 @spells.route('/me', methods=['GET'])
@@ -61,7 +60,7 @@ def new_tome():
         'owner': user.to_dict(),
         'spells': []
     }
-    result = mdb.tomes.insert_one(tome)
+    result = current_app.mdb.tomes.insert_one(tome)
     data = {"success": True, "tomeId": str(result.inserted_id)}
     return jsonify(data)
 
@@ -71,7 +70,7 @@ def get_tome(tome):
     user = None
     if 'Authorization' in request.headers:
         user = get_user_info()
-    data = mdb.tomes.find_one({"_id": ObjectId(tome)})
+    data = current_app.mdb.tomes.find_one({"_id": ObjectId(tome)})
     if data is None:
         return "Tome not found", 404
     if not _can_view(user, ObjectId(tome)):
@@ -101,7 +100,7 @@ def put_tome(tome):
             except ValidationError as e:
                 return str(e), 400
 
-    mdb.tomes.update_one({"_id": ObjectId(tome)}, {"$set": reqdata})
+    current_app.mdb.tomes.update_one({"_id": ObjectId(tome)}, {"$set": reqdata})
     return "Tome updated."
 
 
@@ -110,7 +109,7 @@ def delete_tome(tome):
     user = get_user_info()
     if not _is_owner(user, ObjectId(tome)):
         return "You do not have permission to delete this tome", 403
-    mdb.tomes.delete_one({"_id": ObjectId(tome)})
+    current_app.mdb.tomes.delete_one({"_id": ObjectId(tome)})
     return "Tome deleted."
 
 

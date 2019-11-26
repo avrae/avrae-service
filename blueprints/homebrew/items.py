@@ -1,9 +1,8 @@
 import json
 
 from bson import ObjectId
-from flask import Blueprint, request
+from flask import Blueprint, current_app, request
 
-from app import mdb
 from lib.discord import get_user_info
 from lib.utils import jsonify
 from .helpers import user_can_edit, user_can_view, user_editable, user_is_owner
@@ -13,24 +12,24 @@ items = Blueprint('homebrew/items', __name__)
 PACK_FIELDS = {"name", "owner", "public", "desc", "image", "items", "numItems"}
 ITEM_FIELDS = ("name", "meta", "desc", "image")
 IGNORED_FIELDS = {"_id", "active", "server_active", "subscribers"}
-SUB_COLL = mdb.pack_subscriptions
-DATA_COLL = mdb.packs
 
 
 def _is_owner(user, obj_id):
-    return user_is_owner(data_coll=DATA_COLL, user=user, obj_id=obj_id)
+    return user_is_owner(data_coll=current_app.mdb.packs, user=user, obj_id=obj_id)
 
 
 def _can_view(user, obj_id):
-    return user_can_view(data_coll=DATA_COLL, sub_coll=SUB_COLL, user=user, obj_id=obj_id)
+    return user_can_view(data_coll=current_app.mdb.packs, sub_coll=current_app.mdb.pack_subscriptions, user=user,
+                         obj_id=obj_id)
 
 
 def _can_edit(user, obj_id):
-    return user_can_edit(data_coll=DATA_COLL, sub_coll=SUB_COLL, user=user, obj_id=obj_id)
+    return user_can_edit(data_coll=current_app.mdb.packs, sub_coll=current_app.mdb.pack_subscriptions, user=user,
+                         obj_id=obj_id)
 
 
 def _editable(user):
-    return user_editable(data_coll=DATA_COLL, sub_coll=SUB_COLL, user=user)
+    return user_editable(data_coll=current_app.mdb.packs, sub_coll=current_app.mdb.pack_subscriptions, user=user)
 
 
 @items.route('/me', methods=['GET'])
@@ -59,7 +58,7 @@ def new_pack():
         'owner': int(user.id),
         'items': []
     }
-    result = mdb.packs.insert_one(pack)
+    result = current_app.mdb.packs.insert_one(pack)
     data = {"success": True, "packId": str(result.inserted_id)}
     return jsonify(data)
 
@@ -69,7 +68,7 @@ def get_pack(pack):
     user = None
     if 'Authorization' in request.headers:
         user = get_user_info()
-    data = mdb.packs.find_one({"_id": ObjectId(pack)})
+    data = current_app.mdb.packs.find_one({"_id": ObjectId(pack)})
     if data is None:
         return "Pack not found", 404
     if not _can_view(user, ObjectId(pack)):
@@ -95,7 +94,7 @@ def put_pack(pack):
             if not all(k in ITEM_FIELDS for k in item):
                 return f"Invalid item field in {item}", 400
 
-    mdb.packs.update_one({"_id": ObjectId(pack)}, {"$set": reqdata})
+    current_app.mdb.packs.update_one({"_id": ObjectId(pack)}, {"$set": reqdata})
     return "Pack updated."
 
 
@@ -104,7 +103,7 @@ def delete_pack(pack):
     user = get_user_info()
     if not _is_owner(user, ObjectId(pack)):
         return "You do not have permission to delete this pack", 403
-    mdb.packs.delete_one({"_id": ObjectId(pack)})
+    current_app.mdb.packs.delete_one({"_id": ObjectId(pack)})
     return "Pack deleted."
 
 
