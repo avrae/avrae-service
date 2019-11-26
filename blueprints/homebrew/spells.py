@@ -4,23 +4,41 @@ from bson import ObjectId
 from flask import Blueprint, request
 
 from app import mdb
-from lib.validation import ensure_spell_keys, check_automation, ValidationError
 from lib.discord import get_user_info
 from lib.utils import jsonify
+from lib.validation import ValidationError, check_automation, ensure_spell_keys
+from .helpers import user_can_edit, user_can_view, user_editable, user_is_owner
 
 spells = Blueprint('homebrew/spells', __name__)
 
-TOME_FIELDS = ("name", "owner", "editors", "subscribers", "public", "active", "server_active", "desc", "image",
-               "spells", "numSpells")
+TOME_FIELDS = ("name", "owner", "public", "desc", "image", "spells", "numSpells")
 SPELL_FIELDS = ("name", "level", "school", "classes", "subclasses", "casttime", "range", "components", "duration",
                 "ritual", "description", "higherlevels", "concentration", "automation", "image")
-IGNORED_FIELDS = ("_id", "active", "server_active", "subscribers")
+IGNORED_FIELDS = {"_id", "active", "server_active", "subscribers"}
+SUB_COLL = mdb.tome_subscriptions
+DATA_COLL = mdb.tomes
+
+
+def _is_owner(user, obj_id):
+    return user_is_owner(data_coll=DATA_COLL, user=user, obj_id=obj_id)
+
+
+def _can_view(user, obj_id):
+    return user_can_view(data_coll=DATA_COLL, sub_coll=SUB_COLL, user=user, obj_id=obj_id)
+
+
+def _can_edit(user, obj_id):
+    return user_can_edit(data_coll=DATA_COLL, sub_coll=SUB_COLL, user=user, obj_id=obj_id)
+
+
+def _editable(user):
+    return user_editable(data_coll=DATA_COLL, sub_coll=SUB_COLL, user=user)
 
 
 @spells.route('/me', methods=['GET'])
 def user_tomes():
     user = get_user_info()
-    data = list(mdb.tomes.find({"$or": [{"owner.id": user.id}, {"editors.id": user.id}]}))
+    data = list(_editable(user))
     for tome in data:
         tome['numSpells'] = len(tome['spells'])
         del tome['spells']
@@ -41,10 +59,6 @@ def new_tome():
         'desc': reqdata.get('desc', ''),
         'image': reqdata.get('image', ''),
         'owner': user.to_dict(),
-        'editors': [],
-        'subscribers': [],
-        'active': [],
-        'server_active': [],
         'spells': []
     }
     result = mdb.tomes.insert_one(tome)
@@ -54,13 +68,13 @@ def new_tome():
 
 @spells.route('/<tome>', methods=['GET'])
 def get_tome(tome):
-    user_id = None
+    user = None
     if 'Authorization' in request.headers:
-        user_id = get_user_info().id
+        user = get_user_info()
     data = mdb.tomes.find_one({"_id": ObjectId(tome)})
     if data is None:
         return "Tome not found", 404
-    if not data['public'] and data['owner']['id'] != user_id and user_id not in [e['id'] for e in data['editors']]:
+    if not _can_view(user, ObjectId(tome)):
         return "You do not have permission to view this tome", 403
     return jsonify(data)
 
@@ -69,10 +83,7 @@ def get_tome(tome):
 def put_tome(tome):
     user = get_user_info()
     reqdata = request.json
-    data = mdb.tomes.find_one({"_id": ObjectId(tome)}, ['owner', 'editors'])
-    if data is None:
-        return "Tome not found", 404
-    if user.id != data['owner']['id'] and user.id not in [e['id'] for e in data['editors']]:
+    if not _can_edit(user, ObjectId(tome)):
         return "You do not have permission to edit this tome", 403
 
     for field in IGNORED_FIELDS:
@@ -97,10 +108,7 @@ def put_tome(tome):
 @spells.route('/<tome>', methods=['DELETE'])
 def delete_tome(tome):
     user = get_user_info()
-    data = mdb.tomes.find_one({"_id": ObjectId(tome)}, ['owner', 'editors'])
-    if data is None:
-        return "Tome not found", 404
-    if user.id != data['owner']['id']:
+    if not _is_owner(user, ObjectId(tome)):
         return "You do not have permission to delete this tome", 403
     mdb.tomes.delete_one({"_id": ObjectId(tome)})
     return "Tome deleted."

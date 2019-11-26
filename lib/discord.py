@@ -1,5 +1,5 @@
 import requests
-from flask import request, abort
+from flask import abort, current_app, request
 
 DISCORD_API = "https://discordapp.com/api/v6"
 DISCORD_CDN = "https://cdn.discordapp.com"
@@ -39,6 +39,19 @@ def get_user_info():
         abort(403)
     r = get("/users/@me", token)
     try:
-        return UserInfo(r.json())
+        data = r.json()
+        # cache us
+        current_app.mdb.users.insert_one(data)
+        return UserInfo(data)
     except KeyError:
         abort(403)
+
+
+def fetch_user_info(user_id):
+    # is user in our list of known users?
+    user = current_app.mdb.users.find_one({"id": str(user_id)})
+    if user is not None:
+        del user['_id']  # mongo ID
+        return UserInfo(user)
+    else:
+        return UserInfo({"username": str(user_id), "id": str(user_id), "discriminator": "0000", "avatar": None})
