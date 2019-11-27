@@ -10,10 +10,10 @@ from .helpers import user_can_edit, user_can_view, user_editable, user_is_owner
 
 spells = Blueprint('homebrew/spells', __name__)
 
-TOME_FIELDS = ("name", "owner", "public", "desc", "image", "spells", "numSpells")
+TOME_FIELDS = {"name", "public", "desc", "image", "spells"}
 SPELL_FIELDS = ("name", "level", "school", "classes", "subclasses", "casttime", "range", "components", "duration",
                 "ritual", "description", "higherlevels", "concentration", "automation", "image")
-IGNORED_FIELDS = {"_id", "active", "server_active", "subscribers"}
+IGNORED_FIELDS = {"_id", "active", "server_active", "subscribers", "editors", "owner", "numSpells"}
 
 
 def _is_owner(user, obj_id):
@@ -40,6 +40,7 @@ def user_tomes():
     data = list(_editable(user))
     for tome in data:
         tome['numSpells'] = len(tome['spells'])
+        tome['owner'] = str(tome['owner'])
         del tome['spells']
     return jsonify(data)
 
@@ -57,7 +58,7 @@ def new_tome():
         'public': bool(reqdata.get('public', False)),
         'desc': reqdata.get('desc', ''),
         'image': reqdata.get('image', ''),
-        'owner': user.to_dict(),
+        'owner': int(user.id),
         'spells': []
     }
     result = current_app.mdb.tomes.insert_one(tome)
@@ -75,6 +76,7 @@ def get_tome(tome):
         return "Tome not found", 404
     if not _can_view(user, ObjectId(tome)):
         return "You do not have permission to view this tome", 403
+    data['owner'] = str(data['owner'])
     return jsonify(data)
 
 
@@ -90,7 +92,7 @@ def put_tome(tome):
             reqdata.pop(field)
 
     if not all(k in TOME_FIELDS for k in reqdata):
-        return "Invalid field", 400
+        return f"Invalid fields: {set(reqdata).difference(TOME_FIELDS)}", 400
     if "spells" in reqdata:
         for spell in reqdata['spells']:
             if not all(k in SPELL_FIELDS for k in spell):
@@ -111,6 +113,18 @@ def delete_tome(tome):
         return "You do not have permission to delete this tome", 403
     current_app.mdb.tomes.delete_one({"_id": ObjectId(tome)})
     return "Tome deleted."
+
+
+@spells.route('/<tome>/editors', methods=['GET'])
+def get_tome_editors(tome):
+    user = get_user_info()
+    if not _can_view(user, ObjectId(tome)):
+        return "You do not have permission to view this tome", 403
+
+    data = [str(sd['subscriber_id']) for sd in
+            current_app.mdb.tome_subscriptions.find({"type": "editor", "object_id": ObjectId(tome)})]
+
+    return jsonify(data)
 
 
 @spells.route('/srd', methods=['GET'])
