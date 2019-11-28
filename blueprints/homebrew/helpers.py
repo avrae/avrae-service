@@ -30,7 +30,7 @@ def user_editable(data_coll, sub_coll, user):
     for obj in user_owned(data_coll, user):
         yield obj
     for sub_obj in sub_coll.find({"type": "editor", "subscriber_id": int(user.id)}):
-        obj = data_coll.find({"_id": sub_obj['object_id']})
+        obj = data_coll.find_one({"_id": sub_obj['object_id']})
         if obj is not None:
             yield obj
 
@@ -39,6 +39,6 @@ def user_subscribed(data_coll, sub_coll, user):
     for obj in user_editable(data_coll, sub_coll, user):
         yield obj
     for sub_obj in sub_coll.find({"type": "subscribe", "subscriber_id": int(user.id)}):
-        obj = data_coll.find({"_id": sub_obj['object_id']})
+        obj = data_coll.find_one({"_id": sub_obj['object_id']})
         if obj is not None:
             yield obj

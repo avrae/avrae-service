@@ -9,9 +9,9 @@ from .helpers import user_can_edit, user_can_view, user_editable, user_is_owner
 
 items = Blueprint('homebrew/items', __name__)
 
-PACK_FIELDS = {"name", "owner", "public", "desc", "image", "items", "numItems"}
+PACK_FIELDS = {"name", "public", "desc", "image", "items"}
 ITEM_FIELDS = ("name", "meta", "desc", "image")
-IGNORED_FIELDS = {"_id", "active", "server_active", "subscribers"}
+IGNORED_FIELDS = {"_id", "active", "server_active", "subscribers", "editors", "owner", "numItems"}
 
 
 def _is_owner(user, obj_id):
@@ -38,6 +38,7 @@ def user_packs():
     data = list(_editable(user))
     for pack in data:
         pack['numItems'] = len(pack['items'])
+        pack['owner'] = str(pack['owner'])
         del pack['items']
     return jsonify(data)
 
@@ -73,6 +74,7 @@ def get_pack(pack):
         return "Pack not found", 404
     if not _can_view(user, ObjectId(pack)):
         return "You do not have permission to view this pack", 403
+    data['owner'] = str(data['owner'])
     return jsonify(data)
 
 
@@ -105,6 +107,18 @@ def delete_pack(pack):
         return "You do not have permission to delete this pack", 403
     current_app.mdb.packs.delete_one({"_id": ObjectId(pack)})
     return "Pack deleted."
+
+
+@items.route('/<pack>/editors', methods=['GET'])
+def get_pack_editors(pack):
+    user = get_user_info()
+    if not _can_view(user, ObjectId(pack)):
+        return "You do not have permission to view this pack", 403
+
+    data = [str(sd['subscriber_id']) for sd in
+            current_app.mdb.pack_subscriptions.find({"type": "editor", "object_id": ObjectId(pack)})]
+
+    return jsonify(data)
 
 
 @items.route('/srd', methods=['GET'])
