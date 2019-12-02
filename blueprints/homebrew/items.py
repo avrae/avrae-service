@@ -1,26 +1,44 @@
 import json
 
 from bson import ObjectId
-from flask import Blueprint, request
+from flask import Blueprint, current_app, request
 
-from app import mdb
 from lib.discord import get_user_info
 from lib.utils import jsonify
+from .helpers import user_can_edit, user_can_view, user_editable, user_is_owner
 
 items = Blueprint('homebrew/items', __name__)
 
-PACK_FIELDS = ("name", "owner", "editors", "subscribers", "public", "active", "server_active", "desc", "image", "items",
-               "numItems")
+PACK_FIELDS = {"name", "public", "desc", "image", "items"}
 ITEM_FIELDS = ("name", "meta", "desc", "image")
-IGNORED_FIELDS = ("_id", "active", "server_active", "subscribers")
+IGNORED_FIELDS = {"_id", "active", "server_active", "subscribers", "editors", "owner", "numItems"}
+
+
+def _is_owner(user, obj_id):
+    return user_is_owner(data_coll=current_app.mdb.packs, user=user, obj_id=obj_id)
+
+
+def _can_view(user, obj_id):
+    return user_can_view(data_coll=current_app.mdb.packs, sub_coll=current_app.mdb.pack_subscriptions, user=user,
+                         obj_id=obj_id)
+
+
+def _can_edit(user, obj_id):
+    return user_can_edit(data_coll=current_app.mdb.packs, sub_coll=current_app.mdb.pack_subscriptions, user=user,
+                         obj_id=obj_id)
+
+
+def _editable(user):
+    return user_editable(data_coll=current_app.mdb.packs, sub_coll=current_app.mdb.pack_subscriptions, user=user)
 
 
 @items.route('/me', methods=['GET'])
 def user_packs():
     user = get_user_info()
-    data = list(mdb.packs.find({"$or": [{"owner.id": user.id}, {"editors.id": user.id}]}))
+    data = list(_editable(user))
     for pack in data:
         pack['numItems'] = len(pack['items'])
+        pack['owner'] = str(pack['owner'])
         del pack['items']
     return jsonify(data)
 
@@ -38,28 +56,25 @@ def new_pack():
         'public': bool(reqdata.get('public', False)),
         'desc': reqdata.get('desc', ''),
         'image': reqdata.get('image', ''),
-        'owner': user.to_dict(),
-        'editors': [],
-        'subscribers': [],
-        'active': [],
-        'server_active': [],
+        'owner': int(user.id),
         'items': []
     }
-    result = mdb.packs.insert_one(pack)
+    result = current_app.mdb.packs.insert_one(pack)
     data = {"success": True, "packId": str(result.inserted_id)}
     return jsonify(data)
 
 
 @items.route('/<pack>', methods=['GET'])
 def get_pack(pack):
-    user_id = None
+    user = None
     if 'Authorization' in request.headers:
-        user_id = get_user_info().id
-    data = mdb.packs.find_one({"_id": ObjectId(pack)})
+        user = get_user_info()
+    data = current_app.mdb.packs.find_one({"_id": ObjectId(pack)})
     if data is None:
         return "Pack not found", 404
-    if not data['public'] and data['owner']['id'] != user_id and user_id not in [e['id'] for e in data['editors']]:
+    if not _can_view(user, ObjectId(pack)):
         return "You do not have permission to view this pack", 403
+    data['owner'] = str(data['owner'])
     return jsonify(data)
 
 
@@ -67,13 +82,8 @@ def get_pack(pack):
 def put_pack(pack):
     user = get_user_info()
     reqdata = request.json
-    data = mdb.packs.find_one({"_id": ObjectId(pack)}, ['owner', 'editors'])
-    if data is None:
-        return "Pack not found", 404
-    if user.id != data['owner']['id'] and user.id not in [e['id'] for e in data['editors']]:
+    if not _can_edit(user=user, obj_id=ObjectId(pack)):
         return "You do not have permission to edit this pack", 403
-
-    print(reqdata)
 
     for field in IGNORED_FIELDS:
         if field in reqdata:
@@ -86,20 +96,29 @@ def put_pack(pack):
             if not all(k in ITEM_FIELDS for k in item):
                 return f"Invalid item field in {item}", 400
 
-    mdb.packs.update_one({"_id": ObjectId(pack)}, {"$set": reqdata})
+    current_app.mdb.packs.update_one({"_id": ObjectId(pack)}, {"$set": reqdata})
     return "Pack updated."
 
 
 @items.route('/<pack>', methods=['DELETE'])
 def delete_pack(pack):
     user = get_user_info()
-    data = mdb.packs.find_one({"_id": ObjectId(pack)}, ['owner', 'editors'])
-    if data is None:
-        return "Pack not found", 404
-    if user.id != data['owner']['id']:
+    if not _is_owner(user, ObjectId(pack)):
         return "You do not have permission to delete this pack", 403
-    mdb.packs.delete_one({"_id": ObjectId(pack)})
+    current_app.mdb.packs.delete_one({"_id": ObjectId(pack)})
     return "Pack deleted."
+
+
+@items.route('/<pack>/editors', methods=['GET'])
+def get_pack_editors(pack):
+    user = get_user_info()
+    if not _can_view(user, ObjectId(pack)):
+        return "You do not have permission to view this pack", 403
+
+    data = [str(sd['subscriber_id']) for sd in
+            current_app.mdb.pack_subscriptions.find({"type": "editor", "object_id": ObjectId(pack)})]
+
+    return jsonify(data)
 
 
 @items.route('/srd', methods=['GET'])

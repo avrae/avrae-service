@@ -1,28 +1,46 @@
 import json
 
 from bson import ObjectId
-from flask import Blueprint, request
+from flask import Blueprint, current_app, request, app
 
-from app import mdb
-from lib.validation import ensure_spell_keys, check_automation, ValidationError
 from lib.discord import get_user_info
 from lib.utils import jsonify
+from lib.validation import ValidationError, check_automation, ensure_spell_keys
+from .helpers import user_can_edit, user_can_view, user_editable, user_is_owner
 
 spells = Blueprint('homebrew/spells', __name__)
 
-TOME_FIELDS = ("name", "owner", "editors", "subscribers", "public", "active", "server_active", "desc", "image",
-               "spells", "numSpells")
+TOME_FIELDS = {"name", "public", "desc", "image", "spells"}
 SPELL_FIELDS = ("name", "level", "school", "classes", "subclasses", "casttime", "range", "components", "duration",
                 "ritual", "description", "higherlevels", "concentration", "automation", "image")
-IGNORED_FIELDS = ("_id", "active", "server_active", "subscribers")
+IGNORED_FIELDS = {"_id", "active", "server_active", "subscribers", "editors", "owner", "numSpells"}
+
+
+def _is_owner(user, obj_id):
+    return user_is_owner(data_coll=current_app.mdb.tomes, user=user, obj_id=obj_id)
+
+
+def _can_view(user, obj_id):
+    return user_can_view(data_coll=current_app.mdb.tomes, sub_coll=current_app.mdb.tome_subscriptions, user=user,
+                         obj_id=obj_id)
+
+
+def _can_edit(user, obj_id):
+    return user_can_edit(data_coll=current_app.mdb.tomes, sub_coll=current_app.mdb.tome_subscriptions, user=user,
+                         obj_id=obj_id)
+
+
+def _editable(user):
+    return user_editable(data_coll=current_app.mdb.tomes, sub_coll=current_app.mdb.tome_subscriptions, user=user)
 
 
 @spells.route('/me', methods=['GET'])
 def user_tomes():
     user = get_user_info()
-    data = list(mdb.tomes.find({"$or": [{"owner.id": user.id}, {"editors.id": user.id}]}))
+    data = list(_editable(user))
     for tome in data:
         tome['numSpells'] = len(tome['spells'])
+        tome['owner'] = str(tome['owner'])
         del tome['spells']
     return jsonify(data)
 
@@ -40,28 +58,25 @@ def new_tome():
         'public': bool(reqdata.get('public', False)),
         'desc': reqdata.get('desc', ''),
         'image': reqdata.get('image', ''),
-        'owner': user.to_dict(),
-        'editors': [],
-        'subscribers': [],
-        'active': [],
-        'server_active': [],
+        'owner': int(user.id),
         'spells': []
     }
-    result = mdb.tomes.insert_one(tome)
+    result = current_app.mdb.tomes.insert_one(tome)
     data = {"success": True, "tomeId": str(result.inserted_id)}
     return jsonify(data)
 
 
 @spells.route('/<tome>', methods=['GET'])
 def get_tome(tome):
-    user_id = None
+    user = None
     if 'Authorization' in request.headers:
-        user_id = get_user_info().id
-    data = mdb.tomes.find_one({"_id": ObjectId(tome)})
+        user = get_user_info()
+    data = current_app.mdb.tomes.find_one({"_id": ObjectId(tome)})
     if data is None:
         return "Tome not found", 404
-    if not data['public'] and data['owner']['id'] != user_id and user_id not in [e['id'] for e in data['editors']]:
+    if not _can_view(user, ObjectId(tome)):
         return "You do not have permission to view this tome", 403
+    data['owner'] = str(data['owner'])
     return jsonify(data)
 
 
@@ -69,10 +84,7 @@ def get_tome(tome):
 def put_tome(tome):
     user = get_user_info()
     reqdata = request.json
-    data = mdb.tomes.find_one({"_id": ObjectId(tome)}, ['owner', 'editors'])
-    if data is None:
-        return "Tome not found", 404
-    if user.id != data['owner']['id'] and user.id not in [e['id'] for e in data['editors']]:
+    if not _can_edit(user, ObjectId(tome)):
         return "You do not have permission to edit this tome", 403
 
     for field in IGNORED_FIELDS:
@@ -80,7 +92,7 @@ def put_tome(tome):
             reqdata.pop(field)
 
     if not all(k in TOME_FIELDS for k in reqdata):
-        return "Invalid field", 400
+        return f"Invalid fields: {set(reqdata).difference(TOME_FIELDS)}", 400
     if "spells" in reqdata:
         for spell in reqdata['spells']:
             if not all(k in SPELL_FIELDS for k in spell):
@@ -90,20 +102,29 @@ def put_tome(tome):
             except ValidationError as e:
                 return str(e), 400
 
-    mdb.tomes.update_one({"_id": ObjectId(tome)}, {"$set": reqdata})
+    current_app.mdb.tomes.update_one({"_id": ObjectId(tome)}, {"$set": reqdata})
     return "Tome updated."
 
 
 @spells.route('/<tome>', methods=['DELETE'])
 def delete_tome(tome):
     user = get_user_info()
-    data = mdb.tomes.find_one({"_id": ObjectId(tome)}, ['owner', 'editors'])
-    if data is None:
-        return "Tome not found", 404
-    if user.id != data['owner']['id']:
+    if not _is_owner(user, ObjectId(tome)):
         return "You do not have permission to delete this tome", 403
-    mdb.tomes.delete_one({"_id": ObjectId(tome)})
+    current_app.mdb.tomes.delete_one({"_id": ObjectId(tome)})
     return "Tome deleted."
+
+
+@spells.route('/<tome>/editors', methods=['GET'])
+def get_tome_editors(tome):
+    user = get_user_info()
+    if not _can_view(user, ObjectId(tome)):
+        return "You do not have permission to view this tome", 403
+
+    data = [str(sd['subscriber_id']) for sd in
+            current_app.mdb.tome_subscriptions.find({"type": "editor", "object_id": ObjectId(tome)})]
+
+    return jsonify(data)
 
 
 @spells.route('/srd', methods=['GET'])

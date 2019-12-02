@@ -8,6 +8,13 @@ from flask_pymongo import PyMongo
 from sentry_sdk.integrations.flask import FlaskIntegration
 
 import config
+from blueprints.bot import bot
+from blueprints.characters import characters
+from blueprints.cheatsheets import cheatsheets
+from blueprints.customizations import customizations
+from blueprints.discord import discord
+from blueprints.homebrew.items import items
+from blueprints.homebrew.spells import spells
 from lib import dice
 from lib.discord import get_user_info
 from lib.redisIO import RedisIO
@@ -24,12 +31,13 @@ if SENTRY_DSN is not None:
     )
 
 app = Flask(__name__)
-rdb = RedisIO(config.redis_url if not TESTING else config.test_redis_url)
-mdb = PyMongo(app, config.mongo_url if not TESTING else config.test_mongo_url).db
+app.rdb = rdb = RedisIO(config.redis_url if not TESTING else config.test_redis_url)
+app.mdb = mdb = PyMongo(app, config.mongo_url if not TESTING else config.test_mongo_url).db
 
 CORS(app)
 
 
+# routes
 @app.route('/', methods=["GET"])
 def hello_world():
     return 'Hello World!'
@@ -51,9 +59,9 @@ def user():
 def user_stats():
     info = get_user_info()
     data = {
-        "numCharacters": mdb.characters.count_documents({"owner": info.id}),
-        "numCustomizations": sum((mdb.aliases.count_documents({"owner": info.id}),
-                                  mdb.snippets.count_documents({"owner": info.id})))
+        "numCharacters": app.mdb.characters.count_documents({"owner": info.id}),
+        "numCustomizations": sum((app.mdb.aliases.count_documents({"owner": info.id}),
+                                  app.mdb.snippets.count_documents({"owner": info.id})))
     }
     return jsonify(data)
 
@@ -78,17 +86,11 @@ def roll():
     return jsonify(result)
 
 
-from blueprints.characters import characters
-from blueprints.customizations import customizations
-from blueprints.bot import bot
-from blueprints.cheatsheets import cheatsheets
 app.register_blueprint(characters, url_prefix="/characters")
 app.register_blueprint(customizations, url_prefix="/customizations")
 app.register_blueprint(bot, url_prefix="/bot")
 app.register_blueprint(cheatsheets, url_prefix="/cheatsheets")
-
-from blueprints.homebrew.items import items
-from blueprints.homebrew.spells import spells
+app.register_blueprint(discord, url_prefix="/discord")
 app.register_blueprint(items, url_prefix="/homebrew/items")
 app.register_blueprint(spells, url_prefix="/homebrew/spells")
 
