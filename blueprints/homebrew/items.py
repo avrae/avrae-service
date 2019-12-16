@@ -106,6 +106,7 @@ def delete_pack(pack):
     if not _is_owner(user, ObjectId(pack)):
         return "You do not have permission to delete this pack", 403
     current_app.mdb.packs.delete_one({"_id": ObjectId(pack)})
+    current_app.mdb.pack_subscriptions.delete_many({"object_id": ObjectId(pack)})
     return "Pack deleted."
 
 
