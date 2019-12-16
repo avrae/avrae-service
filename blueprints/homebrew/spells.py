@@ -112,6 +112,7 @@ def delete_tome(tome):
     if not _is_owner(user, ObjectId(tome)):
         return "You do not have permission to delete this tome", 403
     current_app.mdb.tomes.delete_one({"_id": ObjectId(tome)})
+    current_app.mdb.tome_subscriptions.delete_many({"object_id": ObjectId(tome)})
     return "Tome deleted."
 
 
