@@ -91,5 +91,6 @@ def _validate_attacks(the_attacks):
         if not (keys.issuperset(REQUIRED_ATTACK_KEYS) and keys.issubset(REQUIRED_ATTACK_KEYS | OPTIONAL_ATTACK_KEYS)):
             raise ValidationError(template.format(i, "attack object missing keys"))
 
-        if not is_valid_automation(attack['automation']):
-            raise ValidationError(template.format(i, "invalid automation"))
+        valid, why = is_valid_automation(attack['automation'])
+        if not valid:
+            raise ValidationError(template.format(i, f"invalid automation: {why}"))

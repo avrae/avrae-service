@@ -11,9 +11,9 @@ def ensure_spell_keys(spell):
 def is_valid_automation(automation):
     try:
         check_automation(automation)
-    except:
-        return False
-    return True
+    except AssertionError as e:
+        return False, str(e)
+    return True, None
 
 
 def check_automation(automation):
