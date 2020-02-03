@@ -120,7 +120,7 @@
     "ritual": true,
     "higherlevels": null,
     "concentration": false,
-    "automation": null,
+    "automation": [],
     "components": {
       "verbal": true,
       "somatic": true,
@@ -140,7 +140,7 @@
     "ritual": false,
     "higherlevels": null,
     "concentration": true,
-    "automation": null,
+    "automation": [],
     "components": {
       "verbal": true,
       "somatic": true,
@@ -204,7 +204,7 @@
     "ritual": true,
     "higherlevels": "If you cast this spell using a spell slot of 3rd level or higher, the duration of the spell increases by 48 hours for each slot level above 2nd.",
     "concentration": false,
-    "automation": null,
+    "automation": [],
     "components": {
       "verbal": true,
       "somatic": true,
@@ -257,7 +257,7 @@
     "ritual": false,
     "higherlevels": "When you cast this spell using a spell slot of 4th level or higher, you animate or reassert control over two additional undead creatures for each slot level above 3rd. Each of the creatures must come from a different corpse or pile of bones.",
     "concentration": false,
-    "automation": null,
+    "automation": [],
     "components": {
       "verbal": true,
       "somatic": true,
@@ -277,7 +277,7 @@
     "ritual": false,
     "higherlevels": "If you cast this spell using a spell slot of 6th level or higher, you can animate two additional objects for each slot level above 5th.",
     "concentration": true,
-    "automation": null,
+    "automation": [],
     "components": {
       "verbal": true,
       "somatic": true,
@@ -297,7 +297,7 @@
     "ritual": false,
     "higherlevels": null,
     "concentration": true,
-    "automation": null,
+    "automation": [],
     "components": {
       "verbal": true,
       "somatic": true,
@@ -317,7 +317,7 @@
     "ritual": false,
     "higherlevels": null,
     "concentration": true,
-    "automation": null,
+    "automation": [],
     "components": {
       "verbal": true,
       "somatic": true,
@@ -379,7 +379,7 @@
     "ritual": false,
     "higherlevels": null,
     "concentration": true,
-    "automation": null,
+    "automation": [],
     "components": {
       "verbal": true,
       "somatic": true,
@@ -399,7 +399,7 @@
     "ritual": false,
     "higherlevels": null,
     "concentration": false,
-    "automation": null,
+    "automation": [],
     "components": {
       "verbal": true,
       "somatic": true,
@@ -419,7 +419,7 @@
     "ritual": false,
     "higherlevels": null,
     "concentration": false,
-    "automation": null,
+    "automation": [],
     "components": {
       "verbal": true,
       "somatic": true,
@@ -439,7 +439,7 @@
     "ritual": true,
     "higherlevels": null,
     "concentration": false,
-    "automation": null,
+    "automation": [],
     "components": {
       "verbal": true,
       "somatic": true,
@@ -459,7 +459,7 @@
     "ritual": false,
     "higherlevels": null,
     "concentration": false,
-    "automation": null,
+    "automation": [],
     "components": {
       "verbal": true,
       "somatic": true,
@@ -911,7 +911,7 @@
     "ritual": false,
     "higherlevels": null,
     "concentration": true,
-    "automation": null,
+    "automation": [],
     "components": {
       "verbal": true,
       "somatic": false,
@@ -1306,7 +1306,7 @@
     "ritual": false,
     "higherlevels": null,
     "concentration": true,
-    "automation": null,
+    "automation": [],
     "components": {
       "verbal": true,
       "somatic": true,
@@ -1326,7 +1326,7 @@
     "ritual": false,
     "higherlevels": null,
     "concentration": false,
-    "automation": null,
+    "automation": [],
     "components": {
       "verbal": true,
       "somatic": true,
@@ -1406,7 +1406,7 @@
     "ritual": false,
     "higherlevels": "When you cast this spell using a spell slot of 2nd level or higher, roll an additional 2d10 for each slot level above 1st.",
     "concentration": false,
-    "automation": null,
+    "automation": [],
     "components": {
       "verbal": true,
       "somatic": true,
@@ -1470,7 +1470,7 @@
     "ritual": true,
     "higherlevels": null,
     "concentration": false,
-    "automation": null,
+    "automation": [],
     "components": {
       "verbal": true,
       "somatic": true,
@@ -1490,7 +1490,7 @@
     "ritual": true,
     "higherlevels": null,
     "concentration": false,
-    "automation": null,
+    "automation": [],
     "components": {
       "verbal": true,
       "somatic": true,
@@ -1510,7 +1510,7 @@
     "ritual": true,
     "higherlevels": null,
     "concentration": false,
-    "automation": null,
+    "automation": [],
     "components": {
       "verbal": true,
       "somatic": true,
@@ -1678,7 +1678,7 @@
     "ritual": false,
     "higherlevels": "When you cast this spell using certain higher-level spell slots, you choose one of the summoning options above, and more creatures appear: twice as many with a 5th-level slot, three times as many with a 7th-level slot, and four times as many with a 9th-level slot.",
     "concentration": true,
-    "automation": null,
+    "automation": [],
     "components": {
       "verbal": true,
       "somatic": true,
@@ -1698,7 +1698,7 @@
     "ritual": false,
     "higherlevels": "When you cast this spell using a 9th-level spell slot, you summon a celestial of challenge rating 5 or lower.",
     "concentration": true,
-    "automation": null,
+    "automation": [],
     "components": {
       "verbal": true,
       "somatic": true,
@@ -1718,7 +1718,7 @@
     "ritual": false,
     "higherlevels": "When you cast this spell using a spell slot of 6th level or higher, the challenge rating increases by 1 for each slot level above 5th.",
     "concentration": true,
-    "automation": null,
+    "automation": [],
     "components": {
       "verbal": true,
       "somatic": true,
@@ -1738,7 +1738,7 @@
     "ritual": false,
     "higherlevels": "When you cast this spell using a spell slot of 7th level or higher, the challenge rating increases by 1 for each slot level above 6th.",
     "concentration": true,
-    "automation": null,
+    "automation": [],
     "components": {
       "verbal": true,
       "somatic": true,
@@ -1758,7 +1758,7 @@
     "ritual": false,
     "higherlevels": "When you cast this spell using certain higher-level spell slots, you choose one of the summoning options above, and more creatures appear: twice as many with a 6th-level slot and three times as many with an 8th-level slot.",
     "concentration": true,
-    "automation": null,
+    "automation": [],
     "components": {
       "verbal": true,
       "somatic": true,
@@ -1778,7 +1778,7 @@
     "ritual": false,
     "higherlevels": "When you cast this spell using certain higher-level spell slots, you choose one of the summoning options above, and more creatures appear: twice as many with a 6th-level slot and three times as many with an 8th-level slot.",
     "concentration": true,
-    "automation": null,
+    "automation": [],
     "components": {
       "verbal": true,
       "somatic": true,
@@ -1899,7 +1899,7 @@
     "ritual": false,
     "higherlevels": null,
     "concentration": false,
-    "automation": null,
+    "automation": [],
     "components": {
       "verbal": true,
       "somatic": true,
@@ -1919,7 +1919,7 @@
     "ritual": false,
     "higherlevels": null,
     "concentration": false,
-    "automation": null,
+    "automation": [],
     "components": {
       "verbal": true,
       "somatic": true,
@@ -1939,7 +1939,7 @@
     "ritual": false,
     "higherlevels": null,
     "concentration": true,
-    "automation": null,
+    "automation": [],
     "components": {
       "verbal": true,
       "somatic": true,
@@ -1959,7 +1959,7 @@
     "ritual": false,
     "higherlevels": null,
     "concentration": true,
-    "automation": null,
+    "automation": [],
     "components": {
       "verbal": true,
       "somatic": true,
@@ -1979,7 +1979,7 @@
     "ritual": false,
     "higherlevels": "When you cast this spell using a spell slot of 4th level or higher, the interrupted spell has no effect if its level is less than or equal to the level of the spell slot you used.",
     "concentration": false,
-    "automation": null,
+    "automation": [],
     "components": {
       "verbal": false,
       "somatic": true,
@@ -1999,7 +1999,7 @@
     "ritual": false,
     "higherlevels": null,
     "concentration": false,
-    "automation": null,
+    "automation": [],
     "components": {
       "verbal": true,
       "somatic": true,
@@ -2019,7 +2019,7 @@
     "ritual": false,
     "higherlevels": "When you cast this spell using a 7th-level spell slot, you can animate or reassert control over four ghouls. When you cast this spell using an 8th-level spell slot, you can animate or reassert control over five ghouls or two ghasts or wights. When you cast this spell using a 9th-level spell slot, you can animate or reassert control over six ghouls, three ghasts or wights, or two mummies.",
     "concentration": false,
-    "automation": null,
+    "automation": [],
     "components": {
       "verbal": true,
       "somatic": true,
@@ -2039,7 +2039,7 @@
     "ritual": false,
     "higherlevels": "When you cast this spell using a spell slot of 2nd level or higher, you create or destroy 10 additional gallons of water, or the size of the cube increases by 5 feet, for each slot level above 1st.",
     "concentration": false,
-    "automation": null,
+    "automation": [],
     "components": {
       "verbal": true,
       "somatic": true,
@@ -2059,7 +2059,7 @@
     "ritual": false,
     "higherlevels": "When you cast this spell using a spell slot of 6th level or higher, the cube increases by 5 feet for each slot level above 5th.",
     "concentration": false,
-    "automation": null,
+    "automation": [],
     "components": {
       "verbal": true,
       "somatic": true,
@@ -2124,7 +2124,7 @@
     "ritual": false,
     "higherlevels": null,
     "concentration": true,
-    "automation": null,
+    "automation": [],
     "components": {
       "verbal": true,
       "somatic": true,
@@ -2144,7 +2144,7 @@
     "ritual": false,
     "higherlevels": null,
     "concentration": true,
-    "automation": null,
+    "automation": [],
     "components": {
       "verbal": true,
       "somatic": false,
@@ -2201,7 +2201,7 @@
     "ritual": false,
     "higherlevels": null,
     "concentration": false,
-    "automation": null,
+    "automation": [],
     "components": {
       "verbal": true,
       "somatic": true,
@@ -2258,7 +2258,7 @@
     "ritual": false,
     "higherlevels": "When you cast this spell using a spell slot of 8th level or higher, the base damage increases by 1d6 for each slot level above 7th.",
     "concentration": true,
-    "automation": null,
+    "automation": [],
     "components": {
       "verbal": true,
       "somatic": true,
@@ -2278,7 +2278,7 @@
     "ritual": false,
     "higherlevels": null,
     "concentration": false,
-    "automation": null,
+    "automation": [],
     "components": {
       "verbal": false,
       "somatic": true,
@@ -2298,7 +2298,7 @@
     "ritual": false,
     "higherlevels": null,
     "concentration": true,
-    "automation": null,
+    "automation": [],
     "components": {
       "verbal": true,
       "somatic": true,
@@ -2318,7 +2318,7 @@
     "ritual": true,
     "higherlevels": null,
     "concentration": true,
-    "automation": null,
+    "automation": [],
     "components": {
       "verbal": true,
       "somatic": true,
@@ -2338,7 +2338,7 @@
     "ritual": true,
     "higherlevels": null,
     "concentration": true,
-    "automation": null,
+    "automation": [],
     "components": {
       "verbal": true,
       "somatic": true,
@@ -2401,7 +2401,7 @@
     "ritual": false,
     "higherlevels": null,
     "concentration": false,
-    "automation": null,
+    "automation": [],
     "components": {
       "verbal": true,
       "somatic": false,
@@ -2421,7 +2421,7 @@
     "ritual": false,
     "higherlevels": null,
     "concentration": false,
-    "automation": null,
+    "automation": [],
     "components": {
       "verbal": true,
       "somatic": true,
@@ -2495,7 +2495,7 @@
     "ritual": false,
     "higherlevels": null,
     "concentration": true,
-    "automation": null,
+    "automation": [],
     "components": {
       "verbal": true,
       "somatic": true,
@@ -2515,7 +2515,7 @@
     "ritual": false,
     "higherlevels": "When you cast this spell using a spell slot of 4th level or higher, you automatically end the effects of a spell on the target if the spell's level is equal to or less than the level of the spell slot you used.",
     "concentration": false,
-    "automation": null,
+    "automation": [],
     "components": {
       "verbal": true,
       "somatic": true,
@@ -2535,7 +2535,7 @@
     "ritual": true,
     "higherlevels": null,
     "concentration": false,
-    "automation": null,
+    "automation": [],
     "components": {
       "verbal": true,
       "somatic": true,
@@ -2796,7 +2796,7 @@
     "ritual": false,
     "higherlevels": null,
     "concentration": false,
-    "automation": null,
+    "automation": [],
     "components": {
       "verbal": true,
       "somatic": true,
@@ -2816,7 +2816,7 @@
     "ritual": false,
     "higherlevels": null,
     "concentration": false,
-    "automation": null,
+    "automation": [],
     "components": {
       "verbal": true,
       "somatic": true,
@@ -3139,7 +3139,7 @@
     "ritual": false,
     "higherlevels": null,
     "concentration": true,
-    "automation": null,
+    "automation": [],
     "components": {
       "verbal": true,
       "somatic": true,
@@ -3210,7 +3210,7 @@
     "ritual": false,
     "higherlevels": null,
     "concentration": false,
-    "automation": null,
+    "automation": [],
     "components": {
       "verbal": true,
       "somatic": true,
@@ -3363,7 +3363,7 @@
     "ritual": false,
     "higherlevels": null,
     "concentration": false,
-    "automation": null,
+    "automation": [],
     "components": {
       "verbal": true,
       "somatic": false,
@@ -3431,7 +3431,7 @@
     "ritual": true,
     "higherlevels": null,
     "concentration": false,
-    "automation": null,
+    "automation": [],
     "components": {
       "verbal": true,
       "somatic": true,
@@ -3451,7 +3451,7 @@
     "ritual": false,
     "higherlevels": null,
     "concentration": false,
-    "automation": null,
+    "automation": [],
     "components": {
       "verbal": true,
       "somatic": true,
@@ -3471,7 +3471,7 @@
     "ritual": false,
     "higherlevels": null,
     "concentration": false,
-    "automation": null,
+    "automation": [],
     "components": {
       "verbal": true,
       "somatic": true,
@@ -3491,7 +3491,7 @@
     "ritual": false,
     "higherlevels": null,
     "concentration": true,
-    "automation": null,
+    "automation": [],
     "components": {
       "verbal": true,
       "somatic": true,
@@ -4018,7 +4018,7 @@
     "ritual": false,
     "higherlevels": "When you cast this spell using a spell slot of 2nd level or higher, the radius of the fog increases by 20 feet for each slot level above 1st.",
     "concentration": true,
-    "automation": null,
+    "automation": [],
     "components": {
       "verbal": true,
       "somatic": true,
@@ -4038,7 +4038,7 @@
     "ritual": true,
     "higherlevels": null,
     "concentration": false,
-    "automation": null,
+    "automation": [],
     "components": {
       "verbal": true,
       "somatic": true,
@@ -4091,7 +4091,7 @@
     "ritual": false,
     "higherlevels": null,
     "concentration": false,
-    "automation": null,
+    "automation": [],
     "components": {
       "verbal": true,
       "somatic": true,
@@ -4185,7 +4185,7 @@
     "ritual": false,
     "higherlevels": null,
     "concentration": true,
-    "automation": null,
+    "automation": [],
     "components": {
       "verbal": true,
       "somatic": true,
@@ -4279,7 +4279,7 @@
     "ritual": false,
     "higherlevels": null,
     "concentration": true,
-    "automation": null,
+    "automation": [],
     "components": {
       "verbal": true,
       "somatic": true,
@@ -4336,7 +4336,7 @@
     "ritual": false,
     "higherlevels": "When you cast this spell using a spell slot of 7th level or higher, the barrier blocks spells of one level higher for each slot level above 6th.",
     "concentration": true,
-    "automation": null,
+    "automation": [],
     "components": {
       "verbal": true,
       "somatic": true,
@@ -4356,7 +4356,7 @@
     "ritual": false,
     "higherlevels": "When you cast this spell using a spell slot of 4th level or higher, the damage of an explosive runes glyph increases by 1d8 for each slot level above 3rd. If you create a spell glyph, you can store any spell of up to the same level as the slot you use for the glyph of warding.",
     "concentration": false,
-    "automation": null,
+    "automation": [],
     "components": {
       "verbal": true,
       "somatic": true,
@@ -4493,7 +4493,7 @@
     "ritual": false,
     "higherlevels": null,
     "concentration": false,
-    "automation": null,
+    "automation": [],
     "components": {
       "verbal": true,
       "somatic": true,
@@ -4580,7 +4580,7 @@
     "ritual": false,
     "higherlevels": null,
     "concentration": false,
-    "automation": null,
+    "automation": [],
     "components": {
       "verbal": true,
       "somatic": true,
@@ -4600,7 +4600,7 @@
     "ritual": false,
     "higherlevels": null,
     "concentration": true,
-    "automation": null,
+    "automation": [],
     "components": {
       "verbal": true,
       "somatic": true,
@@ -4714,7 +4714,7 @@
     "ritual": false,
     "higherlevels": null,
     "concentration": false,
-    "automation": null,
+    "automation": [],
     "components": {
       "verbal": true,
       "somatic": true,
@@ -4734,7 +4734,7 @@
     "ritual": false,
     "higherlevels": null,
     "concentration": false,
-    "automation": null,
+    "automation": [],
     "components": {
       "verbal": true,
       "somatic": true,
@@ -5358,7 +5358,7 @@
     "ritual": true,
     "higherlevels": null,
     "concentration": false,
-    "automation": null,
+    "automation": [],
     "components": {
       "verbal": true,
       "somatic": true,
@@ -5378,7 +5378,7 @@
     "ritual": true,
     "higherlevels": null,
     "concentration": false,
-    "automation": null,
+    "automation": [],
     "components": {
       "verbal": false,
       "somatic": true,
@@ -5675,7 +5675,7 @@
     "ritual": false,
     "higherlevels": null,
     "concentration": false,
-    "automation": null,
+    "automation": [],
     "components": {
       "verbal": true,
       "somatic": false,
@@ -5695,7 +5695,7 @@
     "ritual": false,
     "higherlevels": null,
     "concentration": false,
-    "automation": null,
+    "automation": [],
     "components": {
       "verbal": true,
       "somatic": true,
@@ -5715,7 +5715,7 @@
     "ritual": false,
     "higherlevels": null,
     "concentration": false,
-    "automation": null,
+    "automation": [],
     "components": {
       "verbal": true,
       "somatic": true,
@@ -5885,7 +5885,7 @@
     "ritual": true,
     "higherlevels": null,
     "concentration": false,
-    "automation": null,
+    "automation": [],
     "components": {
       "verbal": true,
       "somatic": true,
@@ -5905,7 +5905,7 @@
     "ritual": false,
     "higherlevels": null,
     "concentration": true,
-    "automation": null,
+    "automation": [],
     "components": {
       "verbal": true,
       "somatic": true,
@@ -5925,7 +5925,7 @@
     "ritual": false,
     "higherlevels": null,
     "concentration": true,
-    "automation": null,
+    "automation": [],
     "components": {
       "verbal": true,
       "somatic": true,
@@ -6019,7 +6019,7 @@
     "ritual": false,
     "higherlevels": null,
     "concentration": false,
-    "automation": null,
+    "automation": [],
     "components": {
       "verbal": true,
       "somatic": true,
@@ -6155,7 +6155,7 @@
     "ritual": true,
     "higherlevels": null,
     "concentration": false,
-    "automation": null,
+    "automation": [],
     "components": {
       "verbal": true,
       "somatic": true,
@@ -6175,7 +6175,7 @@
     "ritual": false,
     "higherlevels": "When you cast this spell using a spell slot of 4th level or higher, the bonus increases to +2. When you use a spell slot of 6th level or higher, the bonus increases to +3.",
     "concentration": true,
-    "automation": null,
+    "automation": [],
     "components": {
       "verbal": true,
       "somatic": true,
@@ -6195,7 +6195,7 @@
     "ritual": false,
     "higherlevels": "When you cast this spell using a spell slot of 6th level or higher, the spell lasts until dispelled, without requiring your concentration.",
     "concentration": true,
-    "automation": null,
+    "automation": [],
     "components": {
       "verbal": true,
       "somatic": true,
@@ -6256,7 +6256,7 @@
     "ritual": false,
     "higherlevels": null,
     "concentration": false,
-    "automation": null,
+    "automation": [],
     "components": {
       "verbal": true,
       "somatic": true,
@@ -6400,7 +6400,7 @@
     "ritual": true,
     "higherlevels": null,
     "concentration": false,
-    "automation": null,
+    "automation": [],
     "components": {
       "verbal": true,
       "somatic": true,
@@ -6420,7 +6420,7 @@
     "ritual": false,
     "higherlevels": null,
     "concentration": false,
-    "automation": null,
+    "automation": [],
     "components": {
       "verbal": true,
       "somatic": true,
@@ -6440,7 +6440,7 @@
     "ritual": false,
     "higherlevels": null,
     "concentration": false,
-    "automation": null,
+    "automation": [],
     "components": {
       "verbal": true,
       "somatic": true,
@@ -6551,7 +6551,7 @@
     "ritual": false,
     "higherlevels": null,
     "concentration": false,
-    "automation": null,
+    "automation": [],
     "components": {
       "verbal": false,
       "somatic": true,
@@ -6571,7 +6571,7 @@
     "ritual": false,
     "higherlevels": null,
     "concentration": false,
-    "automation": null,
+    "automation": [],
     "components": {
       "verbal": true,
       "somatic": true,
@@ -6665,7 +6665,7 @@
     "ritual": false,
     "higherlevels": null,
     "concentration": false,
-    "automation": null,
+    "automation": [],
     "components": {
       "verbal": true,
       "somatic": false,
@@ -6792,7 +6792,7 @@
     "ritual": false,
     "higherlevels": null,
     "concentration": true,
-    "automation": null,
+    "automation": [],
     "components": {
       "verbal": true,
       "somatic": true,
@@ -6886,7 +6886,7 @@
     "ritual": false,
     "higherlevels": null,
     "concentration": false,
-    "automation": null,
+    "automation": [],
     "components": {
       "verbal": true,
       "somatic": true,
@@ -6950,7 +6950,7 @@
     "ritual": true,
     "higherlevels": null,
     "concentration": false,
-    "automation": null,
+    "automation": [],
     "components": {
       "verbal": true,
       "somatic": true,
@@ -6970,7 +6970,7 @@
     "ritual": false,
     "higherlevels": null,
     "concentration": false,
-    "automation": null,
+    "automation": [],
     "components": {
       "verbal": true,
       "somatic": true,
@@ -7077,7 +7077,7 @@
     "ritual": false,
     "higherlevels": null,
     "concentration": false,
-    "automation": null,
+    "automation": [],
     "components": {
       "verbal": true,
       "somatic": true,
@@ -7191,7 +7191,7 @@
     "ritual": false,
     "higherlevels": null,
     "concentration": false,
-    "automation": null,
+    "automation": [],
     "components": {
       "verbal": true,
       "somatic": false,
@@ -7211,7 +7211,7 @@
     "ritual": false,
     "higherlevels": null,
     "concentration": false,
-    "automation": null,
+    "automation": [],
     "components": {
       "verbal": true,
       "somatic": false,
@@ -7275,7 +7275,7 @@
     "ritual": false,
     "higherlevels": null,
     "concentration": false,
-    "automation": null,
+    "automation": [],
     "components": {
       "verbal": true,
       "somatic": true,
@@ -7295,7 +7295,7 @@
     "ritual": false,
     "higherlevels": null,
     "concentration": false,
-    "automation": null,
+    "automation": [],
     "components": {
       "verbal": true,
       "somatic": true,
@@ -7401,7 +7401,7 @@
     "ritual": false,
     "higherlevels": null,
     "concentration": false,
-    "automation": null,
+    "automation": [],
     "components": {
       "verbal": true,
       "somatic": true,
@@ -7421,7 +7421,7 @@
     "ritual": false,
     "higherlevels": null,
     "concentration": true,
-    "automation": null,
+    "automation": [],
     "components": {
       "verbal": true,
       "somatic": true,
@@ -7552,7 +7552,7 @@
     "ritual": true,
     "higherlevels": null,
     "concentration": false,
-    "automation": null,
+    "automation": [],
     "components": {
       "verbal": true,
       "somatic": true,
@@ -7572,7 +7572,7 @@
     "ritual": false,
     "higherlevels": null,
     "concentration": false,
-    "automation": null,
+    "automation": [],
     "components": {
       "verbal": true,
       "somatic": true,
@@ -7718,7 +7718,7 @@
     "ritual": false,
     "higherlevels": null,
     "concentration": false,
-    "automation": null,
+    "automation": [],
     "components": {
       "verbal": true,
       "somatic": true,
@@ -7738,7 +7738,7 @@
     "ritual": false,
     "higherlevels": null,
     "concentration": false,
-    "automation": null,
+    "automation": [],
     "components": {
       "verbal": true,
       "somatic": true,
@@ -7795,7 +7795,7 @@
     "ritual": false,
     "higherlevels": null,
     "concentration": false,
-    "automation": null,
+    "automation": [],
     "components": {
       "verbal": true,
       "somatic": true,
@@ -7887,7 +7887,7 @@
     "ritual": false,
     "higherlevels": null,
     "concentration": false,
-    "automation": null,
+    "automation": [],
     "components": {
       "verbal": true,
       "somatic": true,
@@ -8153,7 +8153,7 @@
     "ritual": false,
     "higherlevels": null,
     "concentration": false,
-    "automation": null,
+    "automation": [],
     "components": {
       "verbal": true,
       "somatic": true,
@@ -8210,7 +8210,7 @@
     "ritual": false,
     "higherlevels": null,
     "concentration": true,
-    "automation": null,
+    "automation": [],
     "components": {
       "verbal": true,
       "somatic": true,
@@ -8456,7 +8456,7 @@
     "ritual": true,
     "higherlevels": null,
     "concentration": true,
-    "automation": null,
+    "automation": [],
     "components": {
       "verbal": true,
       "somatic": true,
@@ -8476,7 +8476,7 @@
     "ritual": false,
     "higherlevels": null,
     "concentration": true,
-    "automation": null,
+    "automation": [],
     "components": {
       "verbal": true,
       "somatic": true,
@@ -8496,7 +8496,7 @@
     "ritual": false,
     "higherlevels": null,
     "concentration": false,
-    "automation": null,
+    "automation": [],
     "components": {
       "verbal": true,
       "somatic": true,
@@ -8651,7 +8651,7 @@
     "ritual": true,
     "higherlevels": null,
     "concentration": false,
-    "automation": null,
+    "automation": [],
     "components": {
       "verbal": true,
       "somatic": true,
@@ -8671,7 +8671,7 @@
     "ritual": false,
     "higherlevels": null,
     "concentration": false,
-    "automation": null,
+    "automation": [],
     "components": {
       "verbal": true,
       "somatic": true,
@@ -8691,7 +8691,7 @@
     "ritual": false,
     "higherlevels": null,
     "concentration": false,
-    "automation": null,
+    "automation": [],
     "components": {
       "verbal": true,
       "somatic": true,
@@ -8963,7 +8963,7 @@
     "ritual": false,
     "higherlevels": null,
     "concentration": false,
-    "automation": null,
+    "automation": [],
     "components": {
       "verbal": true,
       "somatic": true,
@@ -9243,7 +9243,7 @@
     "ritual": false,
     "higherlevels": null,
     "concentration": false,
-    "automation": null,
+    "automation": [],
     "components": {
       "verbal": true,
       "somatic": true,
@@ -9263,7 +9263,7 @@
     "ritual": false,
     "higherlevels": null,
     "concentration": true,
-    "automation": null,
+    "automation": [],
     "components": {
       "verbal": true,
       "somatic": true,
@@ -9283,7 +9283,7 @@
     "ritual": false,
     "higherlevels": null,
     "concentration": false,
-    "automation": null,
+    "automation": [],
     "components": {
       "verbal": true,
       "somatic": false,
@@ -9303,7 +9303,7 @@
     "ritual": false,
     "higherlevels": null,
     "concentration": false,
-    "automation": null,
+    "automation": [],
     "components": {
       "verbal": true,
       "somatic": false,
@@ -9323,7 +9323,7 @@
     "ritual": false,
     "higherlevels": null,
     "concentration": false,
-    "automation": null,
+    "automation": [],
     "components": {
       "verbal": true,
       "somatic": false,
@@ -9488,7 +9488,7 @@
     "ritual": false,
     "higherlevels": null,
     "concentration": false,
-    "automation": null,
+    "automation": [],
     "components": {
       "verbal": true,
       "somatic": true,
@@ -9508,7 +9508,7 @@
     "ritual": false,
     "higherlevels": null,
     "concentration": true,
-    "automation": null,
+    "automation": [],
     "components": {
       "verbal": true,
       "somatic": true,
@@ -9572,7 +9572,7 @@
     "ritual": false,
     "higherlevels": null,
     "concentration": false,
-    "automation": null,
+    "automation": [],
     "components": {
       "verbal": true,
       "somatic": true,
@@ -9629,7 +9629,7 @@
     "ritual": false,
     "higherlevels": null,
     "concentration": true,
-    "automation": null,
+    "automation": [],
     "components": {
       "verbal": false,
       "somatic": true,
@@ -9649,7 +9649,7 @@
     "ritual": true,
     "higherlevels": null,
     "concentration": false,
-    "automation": null,
+    "automation": [],
     "components": {
       "verbal": true,
       "somatic": true,
@@ -9902,7 +9902,7 @@
     "ritual": false,
     "higherlevels": null,
     "concentration": true,
-    "automation": null,
+    "automation": [],
     "components": {
       "verbal": true,
       "somatic": true,
@@ -10276,7 +10276,7 @@
     "ritual": false,
     "higherlevels": null,
     "concentration": false,
-    "automation": null,
+    "automation": [],
     "components": {
       "verbal": true,
       "somatic": true,
@@ -10350,7 +10350,7 @@
     "ritual": false,
     "higherlevels": null,
     "concentration": false,
-    "automation": null,
+    "automation": [],
     "components": {
       "verbal": true,
       "somatic": false,
@@ -10370,7 +10370,7 @@
     "ritual": false,
     "higherlevels": null,
     "concentration": false,
-    "automation": null,
+    "automation": [],
     "components": {
       "verbal": true,
       "somatic": false,
@@ -10607,7 +10607,7 @@
     "ritual": false,
     "higherlevels": null,
     "concentration": false,
-    "automation": null,
+    "automation": [],
     "components": {
       "verbal": true,
       "somatic": true,
@@ -10776,7 +10776,7 @@
     "ritual": true,
     "higherlevels": null,
     "concentration": false,
-    "automation": null,
+    "automation": [],
     "components": {
       "verbal": true,
       "somatic": true,
@@ -10981,7 +10981,7 @@
     "ritual": true,
     "higherlevels": null,
     "concentration": false,
-    "automation": null,
+    "automation": [],
     "components": {
       "verbal": true,
       "somatic": true,
@@ -11038,7 +11038,7 @@
     "ritual": false,
     "higherlevels": null,
     "concentration": false,
-    "automation": null,
+    "automation": [],
     "components": {
       "verbal": true,
       "somatic": true,
@@ -11058,7 +11058,7 @@
     "ritual": false,
     "higherlevels": "When you cast this spell using a spell slot of 5th level or higher, you can increase the size of the cube by 100 feet for each slot level beyond 4th. Thus you could protect a cube that can be up to 200 feet on one side by using a spell slot of 5th level.",
     "concentration": false,
-    "automation": null,
+    "automation": [],
     "components": {
       "verbal": true,
       "somatic": true,
@@ -11122,7 +11122,7 @@
     "ritual": false,
     "higherlevels": null,
     "concentration": false,
-    "automation": null,
+    "automation": [],
     "components": {
       "verbal": true,
       "somatic": true,
@@ -11142,7 +11142,7 @@
     "ritual": false,
     "higherlevels": null,
     "concentration": false,
-    "automation": null,
+    "automation": [],
     "components": {
       "verbal": true,
       "somatic": true,
@@ -11199,7 +11199,7 @@
     "ritual": true,
     "higherlevels": null,
     "concentration": false,
-    "automation": null,
+    "automation": [],
     "components": {
       "verbal": true,
       "somatic": true,
