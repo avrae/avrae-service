@@ -2,5 +2,6 @@
 venv
 *.pyc
 temp
+.DS_Store
 
 config.py

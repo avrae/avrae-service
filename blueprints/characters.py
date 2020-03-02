@@ -1,3 +1,5 @@
+import json
+
 from flask import Blueprint, current_app, request
 
 from lib.discord import get_user_info
@@ -18,7 +20,8 @@ def character_list():
 def meta():
     user = get_user_info()
     data = list(current_app.mdb.characters.find({"owner": user.id},
-                                    ["upstream", "active", "name", "description", "image", "levels", "import_version"]))
+                                                ["upstream", "active", "name", "description", "image", "levels",
+                                                 "import_version"]))
     return jsonify(data)
 
 
@@ -27,7 +30,7 @@ def attacks(upstream):
     """Returns a character's overriden attacks."""
     user = get_user_info()
     data = current_app.mdb.characters.find_one({"owner": user.id, "upstream": upstream},
-                                   ["overrides"])
+                                               ["overrides"])
     return jsonify(data['overrides']['attacks'])
 
 
@@ -67,6 +70,13 @@ def validate_attacks():
         return str(e), 400
 
     return jsonify({'success': True, 'result': "OK"})
+
+
+@characters.route('/attacks/srd', methods=['GET'])
+def srd_attacks():
+    with open('static/template-attacks.json') as f:
+        _items = json.load(f)
+    return jsonify(_items)
 
 
 class ValidationError(Exception):
