@@ -15,7 +15,7 @@ from blueprints.customizations import customizations
 from blueprints.discord import discord
 from blueprints.homebrew.items import items
 from blueprints.homebrew.spells import spells
-from lib import dice
+from lib import dice, errors
 from lib.discord import get_user_info
 from lib.redisIO import RedisIO
 from lib.utils import jsonify
@@ -93,6 +93,8 @@ app.register_blueprint(cheatsheets, url_prefix="/cheatsheets")
 app.register_blueprint(discord, url_prefix="/discord")
 app.register_blueprint(items, url_prefix="/homebrew/items")
 app.register_blueprint(spells, url_prefix="/homebrew/spells")
+
+errors.register_error_handlers(app)
 
 if __name__ == '__main__':
     app.run()
