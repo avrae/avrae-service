@@ -21,7 +21,7 @@ def meta():
     user = get_user_info()
     data = list(current_app.mdb.characters.find({"owner": user.id},
                                                 ["upstream", "active", "name", "description", "image", "levels",
-                                                 "import_version"]))
+                                                 "import_version", "overrides"]))
     return jsonify(data)
 
 
