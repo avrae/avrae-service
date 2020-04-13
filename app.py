@@ -1,6 +1,7 @@
 import json
 import os
 
+import d20
 import sentry_sdk
 from flask import Flask, request
 from flask_cors import CORS
@@ -15,7 +16,7 @@ from blueprints.customizations import customizations
 from blueprints.discord import discord
 from blueprints.homebrew.items import items
 from blueprints.homebrew.spells import spells
-from lib import dice, errors
+from lib import errors
 from lib.discord import get_user_info
 from lib.redisIO import RedisIO
 from lib.utils import jsonify
@@ -77,11 +78,15 @@ def commands():
 def roll():
     to_roll = request.args.get('dice') or '1d20'
     adv = request.args.get('adv', 0)
-    rolled = dice.roll(to_roll, adv)
-
-    result = {'total': rolled.total, 'result': rolled.result,
-              'is_crit': rolled.crit,
-              'dice': [part.to_dict() for part in rolled.raw_dice.parts]}
+    try:
+        rolled = d20.roll(to_roll, advantage=adv)
+    except Exception as e:
+        result = {'success': False, 'error': str(e)}
+    else:
+        result = {
+            'success': True, 'total': rolled.total, 'result': rolled.result, 'is_crit': rolled.crit,
+            'repr': repr(rolled)
+        }
 
     return jsonify(result)
 
