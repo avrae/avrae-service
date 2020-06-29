@@ -41,7 +41,11 @@ def get_user_info():
     try:
         data = r.json()
         # cache us
-        current_app.mdb.users.insert_one(data)
+        current_app.mdb.users.update_one(
+            {"id": str(data['id'])},
+            {"$set": data},
+            upsert=True
+        )
         return UserInfo(data)
     except KeyError:
         abort(403)
