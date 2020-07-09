@@ -21,19 +21,16 @@ from lib.discord import get_user_info
 from lib.redisIO import RedisIO
 from lib.utils import jsonify
 
-SENTRY_DSN = os.getenv('SENTRY_DSN') or None
-TESTING = True if os.environ.get("TESTING") else False
-
-if SENTRY_DSN is not None:
+if config.SENTRY_DSN is not None:
     sentry_sdk.init(
-        dsn=SENTRY_DSN,
-        environment='Development' if TESTING else 'Production',
+        dsn=config.SENTRY_DSN,
+        environment='Development' if config.TESTING else 'Production',
         integrations=[FlaskIntegration()]
     )
 
 app = Flask(__name__)
-app.rdb = rdb = RedisIO(config.redis_url if not TESTING else config.test_redis_url)
-app.mdb = mdb = PyMongo(app, config.mongo_url if not TESTING else config.test_mongo_url).db
+app.rdb = rdb = RedisIO(config.REDIS_URL)
+app.mdb = mdb = PyMongo(app, config.MONGO_URL).db
 
 CORS(app)
 

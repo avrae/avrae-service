@@ -1,4 +1,16 @@
 import os
 
-mongo_url = os.environ['MONGO_URL']
-redis_url = os.environ['REDIS_URL']
+TESTING = True if os.environ.get("TESTING") else False
+
+MONGO_URL = os.environ['MONGO_URL']
+REDIS_URL = os.environ['REDIS_URL']
+SENTRY_DSN = os.getenv('SENTRY_DSN')
+
+# discord oauth
+DISCORD_CLIENT_ID = os.getenv('DISCORD_CLIENT_ID')
+DISCORD_CLIENT_SECRET = os.getenv('DISCORD_CLIENT_SECRET')
+OAUTH_REDIRECT_URI = "https://avrae.io/login"
+OAUTH_SCOPE = "identify guilds"
+
+# site auth
+JWT_SECRET = os.getenv('JWT_SECRET')
