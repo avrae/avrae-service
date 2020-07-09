@@ -16,6 +16,7 @@ MarkupSafe==1.1.1
 newrelic==5.2.0.127
 numexpr==2.7.0
 numpy==1.18.1
+PyJWT==1.7.1
 pymongo==3.9.0
 redis==3.3.8
 requests==2.22.0
