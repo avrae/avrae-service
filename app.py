@@ -1,5 +1,4 @@
 import json
-import os
 
 import d20
 import sentry_sdk
@@ -17,7 +16,8 @@ from blueprints.discord import discord
 from blueprints.homebrew.items import items
 from blueprints.homebrew.spells import spells
 from lib import errors
-from lib.discord import get_user_info
+from lib.auth import requires_auth
+from lib.discord import discord_token_for, get_user_info
 from lib.redisIO import RedisIO
 from lib.utils import jsonify
 
@@ -42,8 +42,9 @@ def hello_world():
 
 
 @app.route('/user', methods=["GET"])
-def user():
-    info = get_user_info()
+@requires_auth
+def user(the_user):
+    info = get_user_info(discord_token_for(the_user.id))
     data = {
         "username": info.username,
         "discriminator": info.discriminator,
@@ -54,12 +55,12 @@ def user():
 
 
 @app.route('/userStats', methods=["GET"])
-def user_stats():
-    info = get_user_info()
+@requires_auth
+def user_stats(the_user):
     data = {
-        "numCharacters": app.mdb.characters.count_documents({"owner": info.id}),
-        "numCustomizations": sum((app.mdb.aliases.count_documents({"owner": info.id}),
-                                  app.mdb.snippets.count_documents({"owner": info.id})))
+        "numCharacters": app.mdb.characters.count_documents({"owner": the_user.id}),
+        "numCustomizations": sum((app.mdb.aliases.count_documents({"owner": the_user.id}),
+                                  app.mdb.snippets.count_documents({"owner": the_user.id})))
     }
     return jsonify(data)
 

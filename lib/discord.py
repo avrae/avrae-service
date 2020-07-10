@@ -110,13 +110,8 @@ def get(endpoint, token):
     return requests.get(f"{DISCORD_API}{endpoint}", headers=headers)
 
 
-def get_user_info():
-    token = None
-    try:
-        token = request.headers['Authorization']
-    except KeyError:
-        abort(403)
-    r = get("/users/@me", token)
+def get_user_info(discord_access_token):
+    r = get("/users/@me", discord_access_token)
     try:
         data = r.json()
         # cache us

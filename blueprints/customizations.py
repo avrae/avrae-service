@@ -2,15 +2,15 @@ import uuid
 
 from flask import Blueprint, current_app, request
 
-from lib.discord import get_user_info
+from lib.auth import requires_auth
 from lib.utils import jsonify
 
 customizations = Blueprint('customizations', __name__)
 
 
 @customizations.route("", methods=["GET"])
-def customization_list():
-    user = get_user_info()
+@requires_auth
+def customization_list(user):
     data = {
         "aliases": list(current_app.mdb.aliases.find({"owner": user.id})),
         "snippets": list(current_app.mdb.snippets.find({"owner": user.id})),
@@ -20,15 +20,15 @@ def customization_list():
 
 
 @customizations.route("/aliases", methods=["GET"])
-def alias_list():
-    user = get_user_info()
+@requires_auth
+def alias_list(user):
     data = list(current_app.mdb.aliases.find({"owner": user.id}))
     return jsonify(data)
 
 
 @customizations.route("/aliases/<name>", methods=["POST"])
-def alias_update(name):
-    user = get_user_info()
+@requires_auth
+def alias_update(user, name):
     data = request.json
     if data is None:
         return "No data found", 400
@@ -49,8 +49,8 @@ def alias_update(name):
 
 
 @customizations.route("/aliases/<name>", methods=["DELETE"])
-def alias_delete(name):
-    user = get_user_info()
+@requires_auth
+def alias_delete(user, name):
     result = current_app.mdb.aliases.delete_one({"owner": user.id, "name": name})
     if not result.deleted_count:
         return "Alias not found.", 404
@@ -58,15 +58,15 @@ def alias_delete(name):
 
 
 @customizations.route("/snippets", methods=["GET"])
-def snippet_list():
-    user = get_user_info()
+@requires_auth
+def snippet_list(user):
     data = list(current_app.mdb.snippets.find({"owner": user.id}))
     return jsonify(data)
 
 
 @customizations.route("/snippets/<name>", methods=["POST"])
-def snippet_update(name):
-    user = get_user_info()
+@requires_auth
+def snippet_update(user, name):
     data = request.json
     if data is None:
         return "No data found", 400
@@ -87,8 +87,8 @@ def snippet_update(name):
 
 
 @customizations.route("/snippets/<name>", methods=["DELETE"])
-def snippet_delete(name):
-    user = get_user_info()
+@requires_auth
+def snippet_delete(user, name):
     result = current_app.mdb.snippets.delete_one({"owner": user.id, "name": name})
     if not result.deleted_count:
         return "Snippet not found.", 404
@@ -96,15 +96,15 @@ def snippet_delete(name):
 
 
 @customizations.route("/uvars", methods=["GET"])
-def uvar_list():
-    user = get_user_info()
+@requires_auth
+def uvar_list(user):
     data = list(current_app.mdb.uvars.find({"owner": user.id}))
     return jsonify(data)
 
 
 @customizations.route("/uvars/<name>", methods=["POST"])
-def uvar_update(name):
-    user = get_user_info()
+@requires_auth
+def uvar_update(user, name):
     data = request.json
     if data is None:
         return "No data found", 400
@@ -120,8 +120,8 @@ def uvar_update(name):
 
 
 @customizations.route("/uvars/<name>", methods=["DELETE"])
-def uvar_delete(name):
-    user = get_user_info()
+@requires_auth
+def uvar_delete(user, name):
     result = current_app.mdb.uvars.delete_one({"owner": user.id, "name": name})
     if not result.deleted_count:
         return "Uvar not found.", 404
@@ -129,30 +129,30 @@ def uvar_delete(name):
 
 
 @customizations.route("/gvars", methods=["GET"])
-def gvar_list():
-    user = get_user_info()
+@requires_auth
+def gvar_list(user):
     data = {"owned": list(current_app.mdb.gvars.find({"owner": user.id})),
             "editable": list(current_app.mdb.gvars.find({"editors": user.id}))}
     return jsonify(data)
 
 
 @customizations.route("/gvars/owned", methods=["GET"])
-def gvar_list_owned():
-    user = get_user_info()
+@requires_auth
+def gvar_list_owned(user):
     data = list(current_app.mdb.gvars.find({"owner": user.id}))
     return jsonify(data)
 
 
 @customizations.route("/gvars/editable", methods=["GET"])
-def gvar_list_editable():
-    user = get_user_info()
+@requires_auth
+def gvar_list_editable(user):
     data = list(current_app.mdb.gvars.find({"editors": user.id}))
     return jsonify(data)
 
 
 @customizations.route("/gvars", methods=["POST"])
-def gvar_new():
-    user = get_user_info()
+@requires_auth
+def gvar_new(user):
     data = request.json
     if data is None:
         return "No data found", 400
@@ -173,8 +173,8 @@ def gvar_new():
 
 
 @customizations.route("/gvars/<key>", methods=["GET"])
-def get_specific_gvar(key):
-    get_user_info()  # endpoint requires auth
+@requires_auth
+def get_specific_gvar(_, key):
     gvar = current_app.mdb.gvars.find_one({"key": key})
     if gvar is None:
         return "Gvar not found", 404
@@ -183,8 +183,8 @@ def get_specific_gvar(key):
 
 
 @customizations.route("/gvars/<key>", methods=["POST"])
-def gvar_update(key):
-    user = get_user_info()
+@requires_auth
+def gvar_update(user, key):
     data = request.json
     gvar = current_app.mdb.gvars.find_one({"key": key}, ['owner', 'editors'])
     if data is None:
@@ -202,8 +202,8 @@ def gvar_update(key):
 
 
 @customizations.route("/gvars/<key>", methods=["DELETE"])
-def gvar_delete(key):
-    user = get_user_info()
+@requires_auth
+def gvar_delete(user, key):
     gvar = current_app.mdb.gvars.find_one({"key": key}, ['owner'])
     if gvar is None:
         return "Gvar not found", 404

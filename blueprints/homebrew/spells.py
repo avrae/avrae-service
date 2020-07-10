@@ -1,9 +1,9 @@
 import json
 
 from bson import ObjectId
-from flask import Blueprint, current_app, request, app
+from flask import Blueprint, current_app, request
 
-from lib.discord import get_user_info
+from lib.auth import maybe_auth, requires_auth
 from lib.utils import jsonify
 from lib.validation import ValidationError, check_automation, ensure_spell_keys
 from .helpers import user_can_edit, user_can_view, user_editable, user_is_owner
@@ -35,8 +35,8 @@ def _editable(user):
 
 
 @spells.route('/me', methods=['GET'])
-def user_tomes():
-    user = get_user_info()
+@requires_auth
+def user_tomes(user):
     data = list(_editable(user))
     for tome in data:
         tome['numSpells'] = len(tome['spells'])
@@ -46,8 +46,8 @@ def user_tomes():
 
 
 @spells.route('', methods=['POST'])
-def new_tome():
-    user = get_user_info()
+@requires_auth
+def new_tome(user):
     reqdata = request.json
     if reqdata is None:
         return "No data found", 400
@@ -67,10 +67,8 @@ def new_tome():
 
 
 @spells.route('/<tome>', methods=['GET'])
-def get_tome(tome):
-    user = None
-    if 'Authorization' in request.headers:
-        user = get_user_info()
+@maybe_auth
+def get_tome(user, tome):
     data = current_app.mdb.tomes.find_one({"_id": ObjectId(tome)})
     if data is None:
         return "Tome not found", 404
@@ -81,8 +79,8 @@ def get_tome(tome):
 
 
 @spells.route('/<tome>', methods=['PUT'])
-def put_tome(tome):
-    user = get_user_info()
+@requires_auth
+def put_tome(user, tome):
     reqdata = request.json
     if not _can_edit(user, ObjectId(tome)):
         return "You do not have permission to edit this tome", 403
@@ -107,8 +105,8 @@ def put_tome(tome):
 
 
 @spells.route('/<tome>', methods=['DELETE'])
-def delete_tome(tome):
-    user = get_user_info()
+@requires_auth
+def delete_tome(user, tome):
     if not _is_owner(user, ObjectId(tome)):
         return "You do not have permission to delete this tome", 403
     current_app.mdb.tomes.delete_one({"_id": ObjectId(tome)})
@@ -117,8 +115,8 @@ def delete_tome(tome):
 
 
 @spells.route('/<tome>/editors', methods=['GET'])
-def get_tome_editors(tome):
-    user = get_user_info()
+@requires_auth
+def get_tome_editors(user, tome):
     if not _can_view(user, ObjectId(tome)):
         return "You do not have permission to view this tome", 403
 

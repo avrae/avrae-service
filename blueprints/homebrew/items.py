@@ -3,7 +3,7 @@ import json
 from bson import ObjectId
 from flask import Blueprint, current_app, request
 
-from lib.discord import get_user_info
+from lib.auth import maybe_auth, requires_auth
 from lib.utils import jsonify
 from .helpers import user_can_edit, user_can_view, user_editable, user_is_owner
 
@@ -33,8 +33,8 @@ def _editable(user):
 
 
 @items.route('/me', methods=['GET'])
-def user_packs():
-    user = get_user_info()
+@requires_auth
+def user_packs(user):
     data = list(_editable(user))
     for pack in data:
         pack['numItems'] = len(pack['items'])
@@ -44,8 +44,8 @@ def user_packs():
 
 
 @items.route('', methods=['POST'])
-def new_pack():
-    user = get_user_info()
+@requires_auth
+def new_pack(user):
     reqdata = request.json
     if reqdata is None:
         return "No data found", 400
@@ -65,10 +65,8 @@ def new_pack():
 
 
 @items.route('/<pack>', methods=['GET'])
-def get_pack(pack):
-    user = None
-    if 'Authorization' in request.headers:
-        user = get_user_info()
+@maybe_auth
+def get_pack(user, pack):
     data = current_app.mdb.packs.find_one({"_id": ObjectId(pack)})
     if data is None:
         return "Pack not found", 404
@@ -79,8 +77,8 @@ def get_pack(pack):
 
 
 @items.route('/<pack>', methods=['PUT'])
-def put_pack(pack):
-    user = get_user_info()
+@requires_auth
+def put_pack(user, pack):
     reqdata = request.json
     if not _can_edit(user=user, obj_id=ObjectId(pack)):
         return "You do not have permission to edit this pack", 403
@@ -101,8 +99,8 @@ def put_pack(pack):
 
 
 @items.route('/<pack>', methods=['DELETE'])
-def delete_pack(pack):
-    user = get_user_info()
+@requires_auth
+def delete_pack(user, pack):
     if not _is_owner(user, ObjectId(pack)):
         return "You do not have permission to delete this pack", 403
     current_app.mdb.packs.delete_one({"_id": ObjectId(pack)})
@@ -111,8 +109,8 @@ def delete_pack(pack):
 
 
 @items.route('/<pack>/editors', methods=['GET'])
-def get_pack_editors(pack):
-    user = get_user_info()
+@requires_auth
+def get_pack_editors(user, pack):
     if not _can_view(user, ObjectId(pack)):
         return "You do not have permission to view this pack", 403
 
