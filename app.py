@@ -10,7 +10,6 @@ from sentry_sdk.integrations.flask import FlaskIntegration
 import config
 from blueprints.bot import bot
 from blueprints.characters import characters
-from blueprints.cheatsheets import cheatsheets
 from blueprints.customizations import customizations
 from blueprints.discord import discord
 from blueprints.homebrew.items import items
@@ -65,13 +64,6 @@ def user_stats(the_user):
     return jsonify(data)
 
 
-@app.route('/commands', methods=["GET"])
-def commands():
-    with open("static/commands.json") as f:
-        data = json.load(f)
-    return jsonify(data)
-
-
 @app.route('/roll', methods=['GET'])
 def roll():
     to_roll = request.args.get('dice') or '1d20'
@@ -92,7 +84,6 @@ def roll():
 app.register_blueprint(characters, url_prefix="/characters")
 app.register_blueprint(customizations, url_prefix="/customizations")
 app.register_blueprint(bot, url_prefix="/bot")
-app.register_blueprint(cheatsheets, url_prefix="/cheatsheets")
 app.register_blueprint(discord, url_prefix="/discord")
 app.register_blueprint(items, url_prefix="/homebrew/items")
 app.register_blueprint(spells, url_prefix="/homebrew/spells")
