@@ -2,7 +2,7 @@ import json
 
 from flask import Blueprint, current_app, request
 
-from lib.discord import get_user_info
+from lib.auth import requires_auth
 from lib.utils import jsonify
 from lib.validation import is_valid_automation
 
@@ -10,15 +10,15 @@ characters = Blueprint('characters', __name__)
 
 
 @characters.route('', methods=["GET"])
-def character_list():
-    user = get_user_info()
+@requires_auth
+def character_list(user):
     data = list(current_app.mdb.characters.find({"owner": user.id}))
     return jsonify(data)
 
 
 @characters.route('/meta', methods=["GET"])
-def meta():
-    user = get_user_info()
+@requires_auth
+def meta(user):
     data = list(current_app.mdb.characters.find({"owner": user.id},
                                                 ["upstream", "active", "name", "description", "image", "levels",
                                                  "import_version", "overrides"]))
@@ -26,18 +26,18 @@ def meta():
 
 
 @characters.route('/<upstream>/attacks', methods=["GET"])
-def attacks(upstream):
+@requires_auth
+def attacks(user, upstream):
     """Returns a character's overriden attacks."""
-    user = get_user_info()
     data = current_app.mdb.characters.find_one({"owner": user.id, "upstream": upstream},
                                                ["overrides"])
     return jsonify(data['overrides']['attacks'])
 
 
 @characters.route('/<upstream>/attacks', methods=["PUT"])
-def put_attacks(upstream):
+@requires_auth
+def put_attacks(user, upstream):
     """Sets a character's attack overrides. Must PUT a list of attacks."""
-    user = get_user_info()
     the_attacks = request.json
 
     # validation
