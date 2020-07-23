@@ -1,5 +1,3 @@
-import json
-
 import d20
 import sentry_sdk
 from flask import Flask, request
@@ -14,6 +12,7 @@ from blueprints.customizations import customizations
 from blueprints.discord import discord
 from blueprints.homebrew.items import items
 from blueprints.homebrew.spells import spells
+from blueprints.workshop import workshop
 from lib import errors
 from lib.auth import requires_auth
 from lib.discord import discord_token_for, get_user_info
@@ -87,6 +86,7 @@ app.register_blueprint(bot, url_prefix="/bot")
 app.register_blueprint(discord, url_prefix="/discord")
 app.register_blueprint(items, url_prefix="/homebrew/items")
 app.register_blueprint(spells, url_prefix="/homebrew/spells")
+app.register_blueprint(workshop, url_prefix="/workshop")
 
 errors.register_error_handlers(app)
 
