@@ -140,8 +140,13 @@ class EditorMixin(MixinBase, abc.ABC):
         """Removes the user from the editor list of this object."""
         self.sub_coll(current_app.mdb).delete_many({"type": "editor", "subscriber_id": user_id, "object_id": self.id})
 
+    def get_editor_ids(self):
+        """Returns an iterator of user ids (int) that can edit this object."""
+        for sub in self.sub_coll(current_app.mdb).find({"type": "editor", "object_id": self.id}):
+            yield sub['subscriber_id']
+
     @classmethod
     def my_editable_ids(cls, user_id: int):
-        """Returns an async iterator of ObjectIds representing objects the user can edit."""
+        """Returns an iterator of ObjectIds representing objects the user can edit."""
         for sub in cls.sub_coll(current_app.mdb).find({"type": "editor", "subscriber_id": user_id}):
             yield sub['object_id']

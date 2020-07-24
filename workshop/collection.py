@@ -177,6 +177,40 @@ class WorkshopCollection(SubscriberMixin, GuildActiveMixin, EditorMixin):
         self.image = image
         self.last_edited = datetime.datetime.now()
 
+    def set_state(self, new_state):
+        """
+        Updates the collection's publication state, running checks as necessary.
+
+        :type new_state: str or PublicationState
+        """
+        if isinstance(new_state, str):
+            new_state = PublicationState(new_state.upper())
+
+        if new_state == self.publish_state:  # we don't need to do anything
+            return
+
+        # cannot unpublish
+        if self.publish_state == PublicationState.PUBLISHED:
+            raise NotAllowed("You cannot unpublish a collection after it has been published")
+
+        # prepublish check: name and description are present, at least one alias/snippet
+        if new_state == PublicationState.PUBLISHED:
+            if not self.name:
+                raise NotAllowed("A name must be present to publish this collection")
+            if not self.description:
+                raise NotAllowed("A description must be present to publish this collection")
+            if len(self._alias_ids) == 0 and len(self._snippet_ids) == 0:
+                raise NotAllowed("At least one alias or snippet must be present to publish this collection")
+
+        current_app.mdb.workshop_collections.update_one(
+            {"_id": self.id},
+            {
+                "$set": {"publish_state": new_state.value},
+                "$currentDate": {"last_edited": True}
+            }
+        )
+        self.publish_state = new_state
+
     # bindings
     def _generate_default_alias_bindings(self):
         """
