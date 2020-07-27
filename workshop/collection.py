@@ -210,6 +210,37 @@ class WorkshopCollection(SubscriberMixin, GuildActiveMixin, EditorMixin):
             }
         )
         self.publish_state = new_state
+        self.last_edited = datetime.datetime.now()
+
+    def create_alias(self, name, docs):
+        code = "echo Hello world!"
+        # noinspection PyTypeChecker
+        # id is None until inserted
+        inst = WorkshopAlias(None, name, code, [], docs, [], self.id, [], None, collection=self)
+        result = current_app.mdb.workshop_aliases.insert_one(inst.to_dict())
+        inst.id = result.inserted_id
+
+        # update collection references
+        if self._aliases is not None:
+            self._aliases.append(inst)
+        self._alias_ids.append(result.inserted_id)
+        current_app.mdb.workshop_collections.update_one(
+            {"_id": self.id},
+            {
+                "$set": {"alias_ids": self._alias_ids},
+                "$currentDate": {"last_edited": True}
+            }
+        )
+        self.last_edited = datetime.datetime.now()
+
+        # update all subscriber bindings
+        new_binding = {"name": inst.name, "id": inst.id}
+        self.sub_coll(current_app.mdb).update_many(
+            {"type": {"$in": ["subscribe", "server_active"]}, "object_id": self.id},
+            {"$push": {"alias_bindings": new_binding}}
+        )
+
+        return inst
 
     # bindings
     def _generate_default_alias_bindings(self):
@@ -395,6 +426,17 @@ class WorkshopCollectableObject(abc.ABC):
             out[ent.entity_type].append(ent.entity_id)
         return out
 
+    def to_dict(self, js=False):
+        versions = [cv.to_dict() for cv in self.versions]
+        entitlements = [ent.to_dict() for ent in self.entitlements]
+        out = {
+            "name": self.name, "code": self.code, "versions": versions, "docs": self.docs, "entitlements": entitlements,
+            "collection_id": self._collection_id
+        }
+        if js:
+            out['_id'] = self.id
+        return out
+
 
 class WorkshopAlias(WorkshopCollectableObject):
     def __init__(self, _id, name, code, versions, docs, entitlements, collection_id, subcommand_ids, parent_id,
@@ -454,6 +496,13 @@ class WorkshopAlias(WorkshopCollectableObject):
             raise CollectableNotFound()
         return cls.from_dict(raw, collection, parent)
 
+    def to_dict(self, js=False):
+        out = super().to_dict(js)
+        out.update({
+            "subcommand_ids": self._subcommand_ids, "parent_id": self._parent_id
+        })
+        return out
+
 
 class WorkshopSnippet(WorkshopCollectableObject):
     @classmethod
@@ -492,6 +541,12 @@ class CodeVersion:
     def from_dict(cls, raw):
         return cls(**raw)
 
+    def to_dict(self):
+        return {
+            "version": self.version, "content": self.content, "created_at": self.created_at,
+            "is_current": self.is_current
+        }
+
 
 class RequiredEntitlement:
     """An entitlement that a user must have to invoke this alias/snippet."""
@@ -509,3 +564,8 @@ class RequiredEntitlement:
     @classmethod
     def from_dict(cls, raw):
         return cls(**raw)
+
+    def to_dict(self):
+        return {
+            "entity_type": self.entity_type, "entity_id": self.entity_id, "required": self.required
+        }

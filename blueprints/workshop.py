@@ -1,4 +1,4 @@
-from flask import Blueprint
+from flask import Blueprint, current_app
 
 from lib.auth import requires_auth
 from lib.discord import fetch_user_info
@@ -112,10 +112,20 @@ def remove_tag(user, body, coll_id):
 
 # ---- alias operations ----
 @workshop.route("collection/<coll_id>/alias", methods=["POST"])
-@expect_json()
+@expect_json(name=str, docs=str)
 @requires_auth
 def create_alias(user, body, coll_id):
-    pass
+    coll = WorkshopCollection.from_id(coll_id)
+    if not (coll.is_owner(int(user.id)) or coll.is_editor(int(user.id))):
+        return error(403, "you do not have permission to edit this collection")
+
+    if ' ' in body['name']:
+        return error(400, "Alias names cannot contain spaces")
+    if body['name'] in current_app.rdb.jget("default_commands", []):
+        return error(409, f"{body['name']} is already a built-in command")
+
+    alias = coll.create_alias(body['name'], body['docs'])
+    return success(alias.to_dict(js=True), 201)
 
 
 @workshop.route("alias/<alias_id>/alias", methods=["POST"])
