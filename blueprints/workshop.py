@@ -28,7 +28,7 @@ def create_collection(user, body):
 
 @workshop.route("collection/<coll_id>", methods=["GET"])
 def get_collection(coll_id):
-    return success(WorkshopCollection.from_id(coll_id).to_dict(js=True), 201)
+    return success(WorkshopCollection.from_id(coll_id).to_dict(js=True), 200)
 
 
 @workshop.route("collection/<coll_id>", methods=["PATCH"])
@@ -145,24 +145,40 @@ def create_subalias(user, body, alias_id):
 
 
 @workshop.route("alias/<alias_id>", methods=["PATCH"])
-@expect_json()
+@expect_json(name=str, docs=str)
 @requires_auth
 def edit_alias(user, body, alias_id):
-    pass
+    alias = WorkshopAlias.from_id(alias_id)
+    coll = alias.load_collection()
+
+    if not (coll.is_owner(int(user.id)) or coll.is_editor(int(user.id))):
+        return error(403, "you do not have permission to edit this collection")
+    if ' ' in body['name']:
+        return error(400, "Alias names cannot contain spaces")
+    if body['name'] in current_app.rdb.jget("default_commands", []):
+        return error(409, f"{body['name']} is already a built-in command")
+
+    alias.update_info(body['name'], body['docs'])
+    return success(alias.to_dict(js=True), 200)
 
 
 @workshop.route("alias/<alias_id>", methods=["GET"])
-@expect_json()
-@requires_auth
-def get_alias(user, body, alias_id):
-    pass
+def get_alias(alias_id):
+    alias = WorkshopAlias.from_id(alias_id)
+    return success(alias.to_dict(js=True), 200)
 
 
 @workshop.route("alias/<alias_id>", methods=["DELETE"])
-@expect_json()
 @requires_auth
-def delete_alias(user, body, alias_id):
-    pass
+def delete_alias(user, alias_id):
+    alias = WorkshopAlias.from_id(alias_id)
+    coll = alias.load_collection()
+
+    if not (coll.is_owner(int(user.id)) or coll.is_editor(int(user.id))):
+        return error(403, "you do not have permission to edit this collection")
+
+    alias.delete()
+    return success(f"Deleted {alias.name}", 200)
 
 
 @workshop.route("alias/<alias_id>/code", methods=["POST"])

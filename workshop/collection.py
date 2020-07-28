@@ -177,6 +177,13 @@ class WorkshopCollection(SubscriberMixin, GuildActiveMixin, EditorMixin):
         self.image = image
         self.last_edited = datetime.datetime.now()
 
+    def update_edit_time(self):
+        current_app.mdb.workshop_collections.update_one(
+            {"_id": self.id},
+            {"$currentDate": {"last_edited": True}}
+        )
+        self.last_edited = datetime.datetime.now()
+
     def set_state(self, new_state):
         """
         Updates the collection's publication state, running checks as necessary.
@@ -223,14 +230,14 @@ class WorkshopCollection(SubscriberMixin, GuildActiveMixin, EditorMixin):
         # update collection references
         if self._aliases is not None:
             self._aliases.append(inst)
-        self._alias_ids.append(result.inserted_id)
         current_app.mdb.workshop_collections.update_one(
             {"_id": self.id},
             {
-                "$set": {"alias_ids": self._alias_ids},
+                "$push": {"alias_ids": result.inserted_id},
                 "$currentDate": {"last_edited": True}
             }
         )
+        self._alias_ids.append(result.inserted_id)
         self.last_edited = datetime.datetime.now()
 
         # update all subscriber bindings
@@ -412,7 +419,7 @@ class WorkshopCollectableObject(abc.ABC):
     @property
     def collection(self):
         if self._collection is None:
-            raise AttributeError("Collection is not loaded - run load_collection() first")
+            self.load_collection()
         return self._collection
 
     def load_collection(self):
@@ -457,14 +464,16 @@ class WorkshopAlias(WorkshopCollectableObject):
 
     @property
     def parent(self):
+        if self._parent_id is None:
+            return None
         if self._parent is None:
-            raise AttributeError("Parent is not loaded yet - run load_parent() first")
+            self.load_parent()
         return self._parent
 
     @property
     def subcommands(self):
         if self._subcommands is None:
-            raise AttributeError("Subcommands are not loaded yet - run load_subcommands() first")
+            self.load_subcommands()
         return self._subcommands
 
     def load_parent(self):
@@ -507,21 +516,71 @@ class WorkshopAlias(WorkshopCollectableObject):
     def create_subalias(self, name, docs):
         code = "echo Hello world!"
         # noinspection PyTypeChecker
-        inst = WorkshopAlias(None, name, code, [], docs, [], self.id, [], self.id, parent=self)
+        inst = WorkshopAlias(None, name, code, [], docs, [], self.collection.id, [], self.id, parent=self)
         result = current_app.mdb.workshop_aliases.insert_one(inst.to_dict())
         inst.id = result.inserted_id
 
         # update alias references
         if self._subcommands is not None:
             self._subcommands.append(inst)
-        self._subcommand_ids.append(result.inserted_id)
         current_app.mdb.workshop_aliases.update_one(
             {"_id": self.id},
-            {"$set": {"subcommand_ids": self._subcommand_ids}}
+            {"$push": {"subcommand_ids": result.inserted_id}}
         )
+        self._subcommand_ids.append(result.inserted_id)
 
-        # because collection might not be loaded, we don't update last edited time
+        self.collection.update_edit_time()
         return inst
+
+    def update_info(self, name: str, docs: str):
+        """Updates the alias' information."""
+        current_app.mdb.workshop_aliases.update_one(
+            {"_id": self.id},
+            {"$set": {"name": name, "docs": docs}}
+        )
+        self.name = name
+        self.docs = docs
+        self.collection.update_edit_time()
+
+    def delete(self):
+        """Deletes the alias from the collection."""
+
+        # do not allow deletion of top-level aliases
+        if self.collection.publish_state == PublicationState.PUBLISHED and self._parent_id is None:
+            raise NotAllowed("You cannot delete a top-level object from a published collection.")
+
+        if self._parent_id is None:
+            # clear all bindings
+            self.collection.sub_coll(current_app.mdb).update_many(
+                {"type": {"$in": ["subscribe", "server_active"]}, "object_id": self.collection.id},
+                {"$pull": {"alias_bindings": {"id": self.id}}}
+                # pull from the alias_bindings array all docs with this id
+            )
+
+            # remove reference from collection
+            current_app.mdb.workshop_collections.update_one(
+                {"_id": self.collection.id},
+                {"$pull": {"alias_ids": self.id}}
+            )
+            self.collection._alias_ids.remove(self.id)
+        else:
+            # remove reference from parent
+            current_app.mdb.workshop_aliases.update_one(
+                {"_id": self.parent.id},
+                {"$pull": {"subcommand_ids": self.id}}
+            )
+            self.parent._subcommand_ids.remove(self.id)
+
+        # delete all children
+        for child in self.subcommands:
+            child.delete()
+
+        self.collection.update_edit_time()
+
+        # delete from db
+        current_app.mdb.workshop_aliases.delete_one(
+            {"_id": self.id}
+        )
 
 
 class WorkshopSnippet(WorkshopCollectableObject):
