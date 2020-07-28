@@ -582,6 +582,44 @@ class WorkshopAlias(WorkshopCollectableObject):
             {"_id": self.id}
         )
 
+    def create_code_version(self, content: str):
+        """Creates a new inactive code version, incrementing version num and setting creation time."""
+        version = max((cv.version for cv in self.versions), default=0) + 1
+        cv = CodeVersion(version, content, datetime.datetime.now(), False)
+        current_app.mdb.workshop_aliases.update_one(
+            {"_id": self.id},
+            {"$push": {"versions": cv.to_dict()}}
+        )
+        self.versions.append(cv)
+        self.collection.update_edit_time()
+        return cv
+
+    def set_active_code_version(self, version: int):
+        """Sets the code version with version=version active."""
+        cv = next((cv for cv in self.versions if cv.version == version), None)
+        if cv is None:
+            raise NotAllowed("This code version does not exist")
+        # unset all old versions
+        current_app.mdb.workshop_aliases.update_one(
+            {"_id": self.id},
+            {"$set": {"versions.$[].is_current": False}
+             }
+        )
+        # set correct current version and update code
+        current_app.mdb.workshop_aliases.update_one(
+            {"_id": self.id},
+            {"$set": {
+                "code": cv.content,
+                f"versions.$[current].is_current": True
+            }},
+            array_filters=[{"current.version": version}]
+        )
+        for old_cv in self.versions:
+            old_cv.is_current = False
+        cv.is_current = True
+        self.code = cv.content
+        self.collection.update_edit_time()
+
 
 class WorkshopSnippet(WorkshopCollectableObject):
     @classmethod

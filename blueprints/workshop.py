@@ -4,6 +4,7 @@ from lib.auth import requires_auth
 from lib.discord import fetch_user_info
 from lib.utils import error, expect_json, nullable, success
 from workshop.collection import WorkshopAlias, WorkshopCollection
+from workshop.constants import ALIAS_SIZE_LIMIT
 from workshop.errors import CollectableNotFound, CollectionNotFound
 
 workshop = Blueprint('workshop', __name__)
@@ -133,7 +134,7 @@ def create_alias(user, body, coll_id):
 @requires_auth
 def create_subalias(user, body, alias_id):
     alias = WorkshopAlias.from_id(alias_id)
-    coll = alias.load_collection()
+    coll = alias.collection
 
     if not (coll.is_owner(int(user.id)) or coll.is_editor(int(user.id))):
         return error(403, "you do not have permission to edit this collection")
@@ -149,7 +150,7 @@ def create_subalias(user, body, alias_id):
 @requires_auth
 def edit_alias(user, body, alias_id):
     alias = WorkshopAlias.from_id(alias_id)
-    coll = alias.load_collection()
+    coll = alias.collection
 
     if not (coll.is_owner(int(user.id)) or coll.is_editor(int(user.id))):
         return error(403, "you do not have permission to edit this collection")
@@ -172,7 +173,7 @@ def get_alias(alias_id):
 @requires_auth
 def delete_alias(user, alias_id):
     alias = WorkshopAlias.from_id(alias_id)
-    coll = alias.load_collection()
+    coll = alias.collection
 
     if not (coll.is_owner(int(user.id)) or coll.is_editor(int(user.id))):
         return error(403, "you do not have permission to edit this collection")
@@ -182,17 +183,33 @@ def delete_alias(user, alias_id):
 
 
 @workshop.route("alias/<alias_id>/code", methods=["POST"])
-@expect_json()
+@expect_json(content=str)
 @requires_auth
 def create_alias_code_version(user, body, alias_id):
-    pass
+    alias = WorkshopAlias.from_id(alias_id)
+    coll = alias.collection
+
+    if not (coll.is_owner(int(user.id)) or coll.is_editor(int(user.id))):
+        return error(403, "you do not have permission to edit this collection")
+    if len(body['content']) > ALIAS_SIZE_LIMIT:
+        return error(400, f"max alias size is {ALIAS_SIZE_LIMIT}")
+
+    cv = alias.create_code_version(body['content'])
+    return success(cv.to_dict(), 201)
 
 
 @workshop.route("alias/<alias_id>/active-code", methods=["PUT"])
-@expect_json()
+@expect_json(version=int)
 @requires_auth
 def set_active_alias_code_version(user, body, alias_id):
-    pass
+    alias = WorkshopAlias.from_id(alias_id)
+    coll = alias.collection
+
+    if not (coll.is_owner(int(user.id)) or coll.is_editor(int(user.id))):
+        return error(403, "you do not have permission to edit this collection")
+
+    alias.set_active_code_version(body['version'])
+    return success(alias.to_dict(js=True), 200)
 
 
 # todo entitlements
