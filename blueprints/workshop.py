@@ -3,7 +3,7 @@ from flask import Blueprint, current_app
 from lib.auth import requires_auth
 from lib.discord import fetch_user_info
 from lib.utils import error, expect_json, nullable, success
-from workshop.collection import WorkshopCollection
+from workshop.collection import WorkshopAlias, WorkshopCollection
 from workshop.errors import CollectableNotFound, CollectionNotFound
 
 workshop = Blueprint('workshop', __name__)
@@ -129,10 +129,19 @@ def create_alias(user, body, coll_id):
 
 
 @workshop.route("alias/<alias_id>/alias", methods=["POST"])
-@expect_json()
+@expect_json(name=str, docs=str)
 @requires_auth
 def create_subalias(user, body, alias_id):
-    pass
+    alias = WorkshopAlias.from_id(alias_id)
+    coll = alias.load_collection()
+
+    if not (coll.is_owner(int(user.id)) or coll.is_editor(int(user.id))):
+        return error(403, "you do not have permission to edit this collection")
+    if ' ' in body['name']:
+        return error(400, "Alias names cannot contain spaces")
+
+    subalias = alias.create_subalias(body['name'], body['docs'])
+    return success(subalias.to_dict(js=True), 201)
 
 
 @workshop.route("alias/<alias_id>", methods=["PATCH"])

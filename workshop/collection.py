@@ -503,6 +503,26 @@ class WorkshopAlias(WorkshopCollectableObject):
         })
         return out
 
+    # database touchers
+    def create_subalias(self, name, docs):
+        code = "echo Hello world!"
+        # noinspection PyTypeChecker
+        inst = WorkshopAlias(None, name, code, [], docs, [], self.id, [], self.id, parent=self)
+        result = current_app.mdb.workshop_aliases.insert_one(inst.to_dict())
+        inst.id = result.inserted_id
+
+        # update alias references
+        if self._subcommands is not None:
+            self._subcommands.append(inst)
+        self._subcommand_ids.append(result.inserted_id)
+        current_app.mdb.workshop_aliases.update_one(
+            {"_id": self.id},
+            {"$set": {"subcommand_ids": self._subcommand_ids}}
+        )
+
+        # because collection might not be loaded, we don't update last edited time
+        return inst
+
 
 class WorkshopSnippet(WorkshopCollectableObject):
     @classmethod
