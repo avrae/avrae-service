@@ -599,20 +599,15 @@ class WorkshopAlias(WorkshopCollectableObject):
         cv = next((cv for cv in self.versions if cv.version == version), None)
         if cv is None:
             raise NotAllowed("This code version does not exist")
-        # unset all old versions
-        current_app.mdb.workshop_aliases.update_one(
-            {"_id": self.id},
-            {"$set": {"versions.$[].is_current": False}
-             }
-        )
         # set correct current version and update code
         current_app.mdb.workshop_aliases.update_one(
             {"_id": self.id},
             {"$set": {
                 "code": cv.content,
-                f"versions.$[current].is_current": True
+                "versions.$[current].is_current": True,
+                "versions.$[notcurrent].is_current": False
             }},
-            array_filters=[{"current.version": version}]
+            array_filters=[{"current.version": version}, {"notcurrent.version": {"$ne": version}}]
         )
         for old_cv in self.versions:
             old_cv.is_current = False
