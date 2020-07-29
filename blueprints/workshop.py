@@ -3,8 +3,8 @@ from flask import Blueprint, current_app
 from lib.auth import requires_auth
 from lib.discord import fetch_user_info
 from lib.utils import error, expect_json, nullable, success
-from workshop.collection import WorkshopAlias, WorkshopCollection
-from workshop.constants import ALIAS_SIZE_LIMIT
+from workshop.collection import WorkshopAlias, WorkshopCollection, WorkshopSnippet
+from workshop.constants import ALIAS_SIZE_LIMIT, SNIPPET_SIZE_LIMIT
 from workshop.errors import CollectableNotFound, CollectionNotFound
 
 workshop = Blueprint('workshop', __name__)
@@ -111,7 +111,7 @@ def remove_tag(user, body, coll_id):
     return error(404, "not yet implemented")
 
 
-# ---- alias operations ----
+# ---- alias/snippet operations ----
 @workshop.route("collection/<coll_id>/alias", methods=["POST"])
 @expect_json(name=str, docs=str)
 @requires_auth
@@ -229,45 +229,87 @@ def delete_alias_entitlement(user, body, alias_id):
 
 # ---- snippet operations ----
 @workshop.route("collection/<coll_id>/snippet", methods=["POST"])
-@expect_json()
+@expect_json(name=str, docs=str)
 @requires_auth
 def create_snippet(user, body, coll_id):
-    pass
+    coll = WorkshopCollection.from_id(coll_id)
+    if not (coll.is_owner(int(user.id)) or coll.is_editor(int(user.id))):
+        return error(403, "you do not have permission to edit this collection")
+
+    if ' ' in body['name']:
+        return error(400, "snippet names cannot contain spaces")
+    if len(body['name']) < 2:
+        return error(400, "snippet names must be at least 2 characters")
+
+    snippet = coll.create_snippet(body['name'], body['docs'])
+    return success(snippet.to_dict(js=True), 201)
 
 
 @workshop.route("snippet/<snippet_id>", methods=["PATCH"])
-@expect_json()
+@expect_json(name=str, docs=str)
 @requires_auth
 def edit_snippet(user, body, snippet_id):
-    pass
+    snippet = WorkshopSnippet.from_id(snippet_id)
+    coll = snippet.collection
+
+    if not (coll.is_owner(int(user.id)) or coll.is_editor(int(user.id))):
+        return error(403, "you do not have permission to edit this collection")
+    if ' ' in body['name']:
+        return error(400, "snippet names cannot contain spaces")
+    if len(body['name']) < 2:
+        return error(400, "snippet names must be at least 2 characters")
+
+    snippet.update_info(body['name'], body['docs'])
+    return success(snippet.to_dict(js=True), 200)
 
 
 @workshop.route("snippet/<snippet_id>", methods=["GET"])
-@expect_json()
-@requires_auth
-def get_snippet(user, body, snippet_id):
-    pass
+def get_snippet(snippet_id):
+    snippet = WorkshopSnippet.from_id(snippet_id)
+    return success(snippet.to_dict(js=True), 200)
 
 
 @workshop.route("snippet/<snippet_id>", methods=["DELETE"])
-@expect_json()
 @requires_auth
-def delete_snippet(user, body, snippet_id):
-    pass
+def delete_snippet(user, snippet_id):
+    snippet = WorkshopSnippet.from_id(snippet_id)
+    coll = snippet.collection
+
+    if not (coll.is_owner(int(user.id)) or coll.is_editor(int(user.id))):
+        return error(403, "you do not have permission to edit this collection")
+
+    snippet.delete()
+    return success(f"Deleted {snippet.name}", 200)
 
 
 @workshop.route("snippet/<snippet_id>/code", methods=["POST"])
-@expect_json()
+@expect_json(content=str)
 @requires_auth
 def create_snippet_code_version(user, body, snippet_id):
-    pass
+    snippet = WorkshopSnippet.from_id(snippet_id)
+    coll = snippet.collection
+
+    if not (coll.is_owner(int(user.id)) or coll.is_editor(int(user.id))):
+        return error(403, "you do not have permission to edit this collection")
+    if len(body['content']) > SNIPPET_SIZE_LIMIT:
+        return error(400, f"max snippet size is {SNIPPET_SIZE_LIMIT}")
+
+    cv = snippet.create_code_version(body['content'])
+    return success(cv.to_dict(), 201)
 
 
 @workshop.route("snippet/<snippet_id>/active-code", methods=["PUT"])
-@expect_json()
+@expect_json(version=int)
 @requires_auth
 def set_active_snippet_code_version(user, body, snippet_id):
-    pass
+    snippet = WorkshopSnippet.from_id(snippet_id)
+    coll = snippet.collection
+
+    if not (coll.is_owner(int(user.id)) or coll.is_editor(int(user.id))):
+        return error(403, "you do not have permission to edit this collection")
+
+    snippet.set_active_code_version(body['version'])
+    return success(snippet.to_dict(js=True), 200)
 
 
 # todo entitlements

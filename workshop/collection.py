@@ -249,6 +249,36 @@ class WorkshopCollection(SubscriberMixin, GuildActiveMixin, EditorMixin):
 
         return inst
 
+    def create_snippet(self, name, docs):
+        code = '-phrase "Hello world!"'
+        # noinspection PyTypeChecker
+        # id is None until inserted
+        inst = WorkshopSnippet(None, name, code, [], docs, [], self.id, collection=self)
+        result = current_app.mdb.workshop_snippets.insert_one(inst.to_dict())
+        inst.id = result.inserted_id
+
+        # update collection references
+        if self._snippets is not None:
+            self._snippets.append(inst)
+        current_app.mdb.workshop_collections.update_one(
+            {"_id": self.id},
+            {
+                "$push": {"snippet_ids": result.inserted_id},
+                "$currentDate": {"last_edited": True}
+            }
+        )
+        self._snippet_ids.append(result.inserted_id)
+        self.last_edited = datetime.datetime.now()
+
+        # update all subscriber bindings
+        new_binding = {"name": inst.name, "id": inst.id}
+        self.sub_coll(current_app.mdb).update_many(
+            {"type": {"$in": ["subscribe", "server_active"]}, "object_id": self.id},
+            {"$push": {"snippet_bindings": new_binding}}
+        )
+
+        return inst
+
     # bindings
     def _generate_default_alias_bindings(self):
         """
@@ -444,6 +474,54 @@ class WorkshopCollectableObject(abc.ABC):
             out['_id'] = self.id
         return out
 
+    @staticmethod
+    def mdb_coll():
+        raise NotImplementedError
+
+    # database touchers
+    def update_info(self, name: str, docs: str):
+        """Updates the alias' information."""
+        self.mdb_coll().update_one(
+            {"_id": self.id},
+            {"$set": {"name": name, "docs": docs}}
+        )
+        self.name = name
+        self.docs = docs
+        self.collection.update_edit_time()
+
+    def create_code_version(self, content: str):
+        """Creates a new inactive code version, incrementing version num and setting creation time."""
+        version = max((cv.version for cv in self.versions), default=0) + 1
+        cv = CodeVersion(version, content, datetime.datetime.now(), False)
+        self.mdb_coll().update_one(
+            {"_id": self.id},
+            {"$push": {"versions": cv.to_dict()}}
+        )
+        self.versions.append(cv)
+        self.collection.update_edit_time()
+        return cv
+
+    def set_active_code_version(self, version: int):
+        """Sets the code version with version=version active."""
+        cv = next((cv for cv in self.versions if cv.version == version), None)
+        if cv is None:
+            raise NotAllowed("This code version does not exist")
+        # set correct current version and update code
+        self.mdb_coll().update_one(
+            {"_id": self.id},
+            {"$set": {
+                "code": cv.content,
+                "versions.$[current].is_current": True,
+                "versions.$[notcurrent].is_current": False
+            }},
+            array_filters=[{"current.version": version}, {"notcurrent.version": {"$ne": version}}]
+        )
+        for old_cv in self.versions:
+            old_cv.is_current = False
+        cv.is_current = True
+        self.code = cv.content
+        self.collection.update_edit_time()
+
 
 class WorkshopAlias(WorkshopCollectableObject):
     def __init__(self, _id, name, code, versions, docs, entitlements, collection_id, subcommand_ids, parent_id,
@@ -487,6 +565,10 @@ class WorkshopAlias(WorkshopCollectableObject):
                 WorkshopAlias.from_id(subcommand_id, collection=self._collection, parent=self))
         return self._subcommands
 
+    @staticmethod
+    def mdb_coll():
+        return current_app.mdb.workshop_aliases
+
     # constructors
     @classmethod
     def from_dict(cls, raw, collection=None, parent=None):
@@ -500,7 +582,7 @@ class WorkshopAlias(WorkshopCollectableObject):
         if not isinstance(_id, ObjectId):
             _id = ObjectId(_id)
 
-        raw = current_app.mdb.workshop_aliases.find_one({"_id": _id})
+        raw = cls.mdb_coll().find_one({"_id": _id})
         if raw is None:
             raise CollectableNotFound()
         return cls.from_dict(raw, collection, parent)
@@ -517,13 +599,13 @@ class WorkshopAlias(WorkshopCollectableObject):
         code = "echo Hello world!"
         # noinspection PyTypeChecker
         inst = WorkshopAlias(None, name, code, [], docs, [], self.collection.id, [], self.id, parent=self)
-        result = current_app.mdb.workshop_aliases.insert_one(inst.to_dict())
+        result = self.mdb_coll().insert_one(inst.to_dict())
         inst.id = result.inserted_id
 
         # update alias references
         if self._subcommands is not None:
             self._subcommands.append(inst)
-        current_app.mdb.workshop_aliases.update_one(
+        self.mdb_coll().update_one(
             {"_id": self.id},
             {"$push": {"subcommand_ids": result.inserted_id}}
         )
@@ -532,22 +614,12 @@ class WorkshopAlias(WorkshopCollectableObject):
         self.collection.update_edit_time()
         return inst
 
-    def update_info(self, name: str, docs: str):
-        """Updates the alias' information."""
-        current_app.mdb.workshop_aliases.update_one(
-            {"_id": self.id},
-            {"$set": {"name": name, "docs": docs}}
-        )
-        self.name = name
-        self.docs = docs
-        self.collection.update_edit_time()
-
     def delete(self):
         """Deletes the alias from the collection."""
 
         # do not allow deletion of top-level aliases
         if self.collection.publish_state == PublicationState.PUBLISHED and self._parent_id is None:
-            raise NotAllowed("You cannot delete a top-level object from a published collection.")
+            raise NotAllowed("You cannot delete a top-level alias from a published collection.")
 
         if self._parent_id is None:
             # clear all bindings
@@ -562,10 +634,11 @@ class WorkshopAlias(WorkshopCollectableObject):
                 {"_id": self.collection.id},
                 {"$pull": {"alias_ids": self.id}}
             )
+            # noinspection PyProtectedMember
             self.collection._alias_ids.remove(self.id)
         else:
             # remove reference from parent
-            current_app.mdb.workshop_aliases.update_one(
+            self.mdb_coll().update_one(
                 {"_id": self.parent.id},
                 {"$pull": {"subcommand_ids": self.id}}
             )
@@ -578,42 +651,9 @@ class WorkshopAlias(WorkshopCollectableObject):
         self.collection.update_edit_time()
 
         # delete from db
-        current_app.mdb.workshop_aliases.delete_one(
+        self.mdb_coll().delete_one(
             {"_id": self.id}
         )
-
-    def create_code_version(self, content: str):
-        """Creates a new inactive code version, incrementing version num and setting creation time."""
-        version = max((cv.version for cv in self.versions), default=0) + 1
-        cv = CodeVersion(version, content, datetime.datetime.now(), False)
-        current_app.mdb.workshop_aliases.update_one(
-            {"_id": self.id},
-            {"$push": {"versions": cv.to_dict()}}
-        )
-        self.versions.append(cv)
-        self.collection.update_edit_time()
-        return cv
-
-    def set_active_code_version(self, version: int):
-        """Sets the code version with version=version active."""
-        cv = next((cv for cv in self.versions if cv.version == version), None)
-        if cv is None:
-            raise NotAllowed("This code version does not exist")
-        # set correct current version and update code
-        current_app.mdb.workshop_aliases.update_one(
-            {"_id": self.id},
-            {"$set": {
-                "code": cv.content,
-                "versions.$[current].is_current": True,
-                "versions.$[notcurrent].is_current": False
-            }},
-            array_filters=[{"current.version": version}, {"notcurrent.version": {"$ne": version}}]
-        )
-        for old_cv in self.versions:
-            old_cv.is_current = False
-        cv.is_current = True
-        self.code = cv.content
-        self.collection.update_edit_time()
 
 
 class WorkshopSnippet(WorkshopCollectableObject):
@@ -630,6 +670,39 @@ class WorkshopSnippet(WorkshopCollectableObject):
         entitlements = [RequiredEntitlement.from_dict(ent) for ent in raw['entitlements']]
         return cls(raw['_id'], raw['name'], raw['code'], versions, raw['docs'], entitlements,
                    raw['collection_id'], collection)
+
+    @staticmethod
+    def mdb_coll():
+        return current_app.mdb.workshop_snippets
+
+    # database touchers
+    def delete(self):
+        """Deletes the snippet from the collection."""
+
+        # do not allow deletion of top-level aliases
+        if self.collection.publish_state == PublicationState.PUBLISHED:
+            raise NotAllowed("You cannot delete a top-level snippet from a published collection.")
+
+        # clear all bindings
+        self.collection.sub_coll(current_app.mdb).update_many(
+            {"type": {"$in": ["subscribe", "server_active"]}, "object_id": self.collection.id},
+            {"$pull": {"snippet_bindings": {"id": self.id}}}
+            # pull from the snippet_bindings array all docs with this id
+        )
+
+        # remove reference from collection
+        current_app.mdb.workshop_collections.update_one(
+            {"_id": self.collection.id},
+            {"$pull": {"snippet_ids": self.id}}
+        )
+        # noinspection PyProtectedMember
+        self.collection._snippet_ids.remove(self.id)
+        self.collection.update_edit_time()
+
+        # delete from db
+        self.mdb_coll().delete_one(
+            {"_id": self.id}
+        )
 
 
 class CodeVersion:
