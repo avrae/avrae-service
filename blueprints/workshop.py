@@ -44,6 +44,17 @@ def edit_collection(user, body, coll_id):
     return success(coll.to_dict(js=True), 200)
 
 
+@workshop.route("collection/<coll_id>", methods=["DELETE"])
+@requires_auth
+def delete_collection(user, coll_id):
+    coll = WorkshopCollection.from_id(coll_id)
+    if not coll.is_owner(int(user.id)):
+        return error(403, "you do not have permission to delete this collection")
+
+    coll.delete()
+    return success(f"Deleted {coll.name}", 200)
+
+
 @workshop.route("collection/<coll_id>/state", methods=["PATCH"])
 @expect_json(state=str)  # PRIVATE, UNLISTED, PUBLISHED
 @requires_auth
@@ -217,14 +228,14 @@ def set_active_alias_code_version(user, body, alias_id):
 @expect_json()
 @requires_auth
 def add_alias_entitlement(user, body, alias_id):
-    pass
+    return error(404, "not yet implemented")
 
 
 @workshop.route("alias/<alias_id>/entitlement", methods=["DELETE"])
 @expect_json()
 @requires_auth
 def delete_alias_entitlement(user, body, alias_id):
-    pass
+    return error(404, "not yet implemented")
 
 
 # ---- snippet operations ----
@@ -317,15 +328,66 @@ def set_active_snippet_code_version(user, body, snippet_id):
 @expect_json()
 @requires_auth
 def add_snippet_entitlement(user, body, snippet_id):
-    pass
+    return error(404, "not yet implemented")
 
 
 @workshop.route("snippet/<snippet_id>/entitlement", methods=["DELETE"])
 @expect_json()
 @requires_auth
 def delete_snippet_entitlement(user, body, snippet_id):
-    pass
+    return error(404, "not yet implemented")
+
 
 # ---- subscription operations ----
+@workshop.route("collection/<coll_id>/subscription/me", methods=["PUT"])
+@requires_auth
+def personal_subscribe(user, coll_id):
+    coll = WorkshopCollection.from_id(coll_id)
+    bindings = coll.subscribe(int(user.id))
+    return success(bindings, 200)
+
+
+@workshop.route("collection/<coll_id>/subscription/me", methods=["DELETE"])
+@requires_auth
+def personal_unsubscribe(user, coll_id):
+    coll = WorkshopCollection.from_id(coll_id)
+    coll.unsubscribe(int(user.id))
+    return success(f"Unsubscribed from {coll.name}", 200)
+
+
+@workshop.route("collection/<coll_id>/bindings/me", methods=["PUT"])
+@requires_auth
+def edit_personal_bindings(user, coll_id):
+    pass
+
+
+@workshop.route("subscribed/me", methods=["GET"])
+@requires_auth
+def get_personal_subscriptions(user):
+    pass
+
+
+@workshop.route("collection/<coll_id>/subscription/<int:guild_id>", methods=["PUT"])
+@requires_auth
+def guild_subscribe(user, coll_id, guild_id):
+    pass
+
+
+@workshop.route("collection/<coll_id>/subscription/<int:guild_id>", methods=["DELETE"])
+@requires_auth
+def guild_unsubscribe(user, coll_id, guild_id):
+    pass
+
+
+@workshop.route("collection/<coll_id>/bindings/<int:guild_id>", methods=["PUT"])
+@requires_auth
+def edit_guild_bindings(user, coll_id, guild_id):
+    pass
+
+
+@workshop.route("subscribed/<int:guild_id>", methods=["GET"])
+@requires_auth
+def get_guild_subscriptions(user, guild_id):
+    pass
 
 # ---- other ----

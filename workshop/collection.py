@@ -74,13 +74,13 @@ class WorkshopCollection(SubscriberMixin, GuildActiveMixin, EditorMixin):
     @property
     def aliases(self):
         if self._aliases is None:
-            raise AttributeError("Aliases are not loaded yet - run load_aliases() first")
+            self.load_aliases()
         return self._aliases
 
     @property
     def snippets(self):
         if self._snippets is None:
-            raise AttributeError("Snippets are not loaded yet - run load_snippets() first")
+            self.load_snippets()
         return self._snippets
 
     def load_aliases(self):
@@ -176,6 +176,22 @@ class WorkshopCollection(SubscriberMixin, GuildActiveMixin, EditorMixin):
         self.description = description
         self.image = image
         self.last_edited = datetime.datetime.now()
+
+    def delete(self):
+        # do not allow deletion of published collections
+        if self.publish_state == PublicationState.PUBLISHED:
+            raise NotAllowed("You cannot delete a published collection.")
+
+        # delete all children
+        for alias in self.aliases:
+            alias.delete()
+        for snippet in self.snippets:
+            snippet.delete()
+
+        # delete from db
+        current_app.mdb.workshop_collections.delete_one(
+            {"_id": self.id}
+        )
 
     def update_edit_time(self):
         current_app.mdb.workshop_collections.update_one(
@@ -357,6 +373,8 @@ class WorkshopCollection(SubscriberMixin, GuildActiveMixin, EditorMixin):
             {"type": "subscribe", "object_id": self.id, "timestamp": datetime.datetime.utcnow()}
         )
 
+        return {"alias_bindings": alias_bindings, "snippet_bindings": snippet_bindings}
+
     def unsubscribe(self, user_id: int):
         # remove sub doc
         super().unsubscribe(user_id)
@@ -395,6 +413,8 @@ class WorkshopCollection(SubscriberMixin, GuildActiveMixin, EditorMixin):
         current_app.mdb.analytics_alias_events.insert_one(
             {"type": "server_subscribe", "object_id": self.id, "timestamp": datetime.datetime.utcnow()}
         )
+
+        return {"alias_bindings": alias_bindings, "snippet_bindings": snippet_bindings}
 
     def unset_server_active(self, guild_id: int):
         # remove sub doc
