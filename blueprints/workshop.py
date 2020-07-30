@@ -7,7 +7,8 @@ from lib.errors import NotAllowed
 from lib.utils import error, expect_json, maybe_json, nullable, success
 from workshop.collection import WorkshopAlias, WorkshopCollection, WorkshopSnippet
 from workshop.constants import ALIAS_SIZE_LIMIT, SNIPPET_SIZE_LIMIT
-from workshop.errors import CollectableNotFound, CollectionNotFound
+from workshop.errors import CollectableNotFound, CollectionNotFound, NeedsServerAliaser
+from workshop.utils import guild_permissions_check
 
 workshop = Blueprint('workshop', __name__)
 
@@ -17,6 +18,11 @@ workshop = Blueprint('workshop', __name__)
 @workshop.errorhandler(CollectableNotFound)
 def not_found_handler(e):
     return error(404, str(e))
+
+
+@workshop.errorhandler(NeedsServerAliaser)
+def needs_server_aliaser_handler(e):
+    return error(403, str(e))
 
 
 # ==== routes ====
@@ -406,36 +412,48 @@ def get_personal_subscription(user, coll_id):
 @workshop.route("subscribed/me", methods=["GET"])
 @requires_auth
 def get_personal_subscriptions(user):
-    pass
+    """Returns a list of str representing the IDs of subscribed collections."""
+    return success([str(oid) for oid in WorkshopCollection.my_sub_ids(int(user.id))], 200)
 
 
 @workshop.route("collection/<coll_id>/subscription/<int:guild_id>", methods=["PUT"])
+@maybe_json(alias_bindings=nullable(list), snippet_bindings=nullable(list))
 @requires_auth
-def guild_subscribe(user, coll_id, guild_id):
-    pass
+def guild_subscribe(user, body, coll_id, guild_id):
+    guild_permissions_check(user, guild_id)
+
+    coll = WorkshopCollection.from_id(coll_id)
+    if body is None:
+        alias_bindings = snippet_bindings = None
+    else:
+        alias_bindings = body['alias_bindings']
+        _bindings_check(coll, alias_bindings)
+        snippet_bindings = body['snippet_bindings']
+        _bindings_check(coll, snippet_bindings)
+
+    bindings = coll.set_server_active(guild_id, alias_bindings, snippet_bindings, invoker_id=int(user.id))
+    return success(bindings, 200)
 
 
 @workshop.route("collection/<coll_id>/subscription/<int:guild_id>", methods=["DELETE"])
 @requires_auth
 def guild_unsubscribe(user, coll_id, guild_id):
-    pass
+    guild_permissions_check(user, guild_id)
+
+    coll = WorkshopCollection.from_id(coll_id)
+    coll.unset_server_active(guild_id, int(user.id))
+    return success(f"Unsubscribed from {coll.name}", 200)
 
 
 @workshop.route("collection/<coll_id>/subscription/<int:guild_id>", methods=["GET"])
-@requires_auth
-def get_guild_subscription(user, coll_id, guild_id):
-    pass
-
-
-@workshop.route("collection/<coll_id>/bindings/<int:guild_id>", methods=["PUT"])
-@requires_auth
-def edit_guild_bindings(user, coll_id, guild_id):
-    pass
+def get_guild_subscription(coll_id, guild_id):
+    coll = WorkshopCollection.from_id(coll_id)
+    return success(coll.guild_sub(guild_id), 200)
 
 
 @workshop.route("subscribed/<int:guild_id>", methods=["GET"])
-@requires_auth
-def get_guild_subscriptions(user, guild_id):
-    pass
+def get_guild_subscriptions(guild_id):
+    """Returns a list of str representing the IDs of subscribed collections."""
+    return success([str(oid) for oid in WorkshopCollection.guild_active_ids(guild_id)], 200)
 
 # ---- other ----

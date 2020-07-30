@@ -8,7 +8,7 @@ from flask import current_app
 
 from lib.errors import NotAllowed
 from workshop.errors import CollectableNotFound, CollectionNotFound
-from workshop.utils import EditorMixin, GuildActiveMixin, SubscriberMixin
+from workshop.mixins import EditorMixin, GuildActiveMixin, SubscriberMixin
 
 
 class PublicationState(enum.Enum):
@@ -355,7 +355,7 @@ class WorkshopCollection(SubscriberMixin, GuildActiveMixin, EditorMixin):
             )
             # log subscribe event
             current_app.mdb.analytics_alias_events.insert_one(
-                {"type": "subscribe", "object_id": self.id, "timestamp": datetime.datetime.utcnow()}
+                {"type": "subscribe", "object_id": self.id, "timestamp": datetime.datetime.utcnow(), "user_id": user_id}
             )
 
         return {"alias_bindings": alias_bindings, "snippet_bindings": snippet_bindings}
@@ -370,10 +370,10 @@ class WorkshopCollection(SubscriberMixin, GuildActiveMixin, EditorMixin):
         )
         # log unsub event
         current_app.mdb.analytics_alias_events.insert_one(
-            {"type": "unsubscribe", "object_id": self.id, "timestamp": datetime.datetime.utcnow()}
+            {"type": "unsubscribe", "object_id": self.id, "timestamp": datetime.datetime.utcnow(), "user_id": user_id}
         )
 
-    def set_server_active(self, guild_id: int, alias_bindings=None, snippet_bindings=None):
+    def set_server_active(self, guild_id: int, alias_bindings=None, snippet_bindings=None, invoker_id: int = None):
         """Sets the object as active for the contextual guild, with given name bindings."""
         if self.publish_state == PublicationState.PRIVATE:
             raise NotAllowed("This collection is private.")
@@ -404,12 +404,13 @@ class WorkshopCollection(SubscriberMixin, GuildActiveMixin, EditorMixin):
             )
             # log sub event
             current_app.mdb.analytics_alias_events.insert_one(
-                {"type": "server_subscribe", "object_id": self.id, "timestamp": datetime.datetime.utcnow()}
+                {"type": "server_subscribe", "object_id": self.id, "timestamp": datetime.datetime.utcnow(),
+                 "user_id": invoker_id}
             )
 
         return {"alias_bindings": alias_bindings, "snippet_bindings": snippet_bindings}
 
-    def unset_server_active(self, guild_id: int):
+    def unset_server_active(self, guild_id: int, invoker_id: int = None):
         # remove sub doc
         super().unset_server_active(guild_id)
         # decr sub count
@@ -419,7 +420,8 @@ class WorkshopCollection(SubscriberMixin, GuildActiveMixin, EditorMixin):
         )
         # log unsub event
         current_app.mdb.analytics_alias_events.insert_one(
-            {"type": "server_unsubscribe", "object_id": self.id, "timestamp": datetime.datetime.utcnow()}
+            {"type": "server_unsubscribe", "object_id": self.id, "timestamp": datetime.datetime.utcnow(),
+             "user_id": invoker_id}
         )
 
 
