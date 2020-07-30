@@ -65,6 +65,11 @@ class SubscriberMixin(MixinBase, abc.ABC):
         for sub in cls.my_subs(user_id):
             yield sub['object_id']
 
+    def my_sub(self, user_id: int):
+        """Returns the subscription object for the current collection and the given user."""
+        return self.sub_coll(current_app.mdb).find_one(
+            {"type": "subscribe", "subscriber_id": user_id, "object_id": self.id})
+
 
 class GuildActiveMixin(MixinBase, abc.ABC):
     """A mixin that offers guild active support."""
@@ -109,6 +114,11 @@ class GuildActiveMixin(MixinBase, abc.ABC):
         """Returns a async iterator of ObjectIds representing the objects active in the guild."""
         for sub in cls.guild_active_subs(guild_id):
             yield sub['object_id']
+
+    def guild_sub(self, guild_id: int):
+        """Returns the subscription object for the current collection and the given guild."""
+        return self.sub_coll(current_app.mdb).find_one(
+            {"type": "server_active", "subscriber_id": guild_id, "object_id": self.id})
 
 
 class EditorMixin(MixinBase, abc.ABC):

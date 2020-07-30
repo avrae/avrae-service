@@ -67,6 +67,26 @@ def expect_json(*, strict=False, **fields):
     return wrapper
 
 
+def maybe_json(**jkwargs):
+    """
+    Returns a wrapper that enforces the presence of certain fields in a JSON body, if a body is present.
+    Passes the JSON body as the first argument to the inner, or None if there is no body.
+
+    If a field is missing or has the wrong type, returns 400.
+    """
+
+    def wrapper(func):
+        @functools.wraps(func)
+        def inner(*args, **kwargs):
+            if request.content_length == 0:
+                return func(None, *args, **kwargs)
+            return expect_json(**jkwargs)(func)(*args, **kwargs)
+
+        return inner
+
+    return wrapper
+
+
 def nullable(t: type):
     """A helper function for type checking - type *t* or None."""
     return t, type(None)

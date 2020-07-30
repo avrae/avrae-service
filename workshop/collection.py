@@ -64,8 +64,8 @@ class WorkshopCollection(SubscriberMixin, GuildActiveMixin, EditorMixin):
         self.created_at = created_at
         self.tags = tags
         # lazy-load aliases/snippets
-        self._alias_ids = alias_ids
-        self._snippet_ids = snippet_ids
+        self.alias_ids = alias_ids
+        self.snippet_ids = snippet_ids
 
     @property
     def url(self):
@@ -85,13 +85,13 @@ class WorkshopCollection(SubscriberMixin, GuildActiveMixin, EditorMixin):
 
     def load_aliases(self):
         self._aliases = []
-        for alias_id in self._alias_ids:
+        for alias_id in self.alias_ids:
             self._aliases.append(WorkshopAlias.from_id(alias_id, collection=self, parent=None))
         return self._aliases
 
     def load_snippets(self):
         self._snippets = []
-        for snippet_id in self._snippet_ids:
+        for snippet_id in self.snippet_ids:
             self._snippets.append(WorkshopSnippet.from_id(snippet_id, collection=self))
         return self._snippets
 
@@ -141,7 +141,7 @@ class WorkshopCollection(SubscriberMixin, GuildActiveMixin, EditorMixin):
     def to_dict(self, js=False):
         out = {
             "name": self.name, "description": self.description, "image": self.image, "owner": self.owner,
-            "alias_ids": self._alias_ids, "snippet_ids": self._snippet_ids,
+            "alias_ids": self.alias_ids, "snippet_ids": self.snippet_ids,
             "publish_state": self.publish_state.value, "num_subscribers": self.approx_num_subscribers,
             "num_guild_subscribers": self.approx_num_guild_subscribers, "last_edited": self.last_edited,
             "created_at": self.created_at, "tags": self.tags
@@ -222,7 +222,7 @@ class WorkshopCollection(SubscriberMixin, GuildActiveMixin, EditorMixin):
                 raise NotAllowed("A name must be present to publish this collection")
             if not self.description:
                 raise NotAllowed("A description must be present to publish this collection")
-            if len(self._alias_ids) == 0 and len(self._snippet_ids) == 0:
+            if len(self.alias_ids) == 0 and len(self.snippet_ids) == 0:
                 raise NotAllowed("At least one alias or snippet must be present to publish this collection")
 
         current_app.mdb.workshop_collections.update_one(
@@ -253,7 +253,7 @@ class WorkshopCollection(SubscriberMixin, GuildActiveMixin, EditorMixin):
                 "$currentDate": {"last_edited": True}
             }
         )
-        self._alias_ids.append(result.inserted_id)
+        self.alias_ids.append(result.inserted_id)
         self.last_edited = datetime.datetime.now()
 
         # update all subscriber bindings
@@ -283,7 +283,7 @@ class WorkshopCollection(SubscriberMixin, GuildActiveMixin, EditorMixin):
                 "$currentDate": {"last_edited": True}
             }
         )
-        self._snippet_ids.append(result.inserted_id)
+        self.snippet_ids.append(result.inserted_id)
         self.last_edited = datetime.datetime.now()
 
         # update all subscriber bindings
@@ -300,17 +300,13 @@ class WorkshopCollection(SubscriberMixin, GuildActiveMixin, EditorMixin):
         """
         Returns a list of {name: str, id: ObjectId} bindings based on the default names of aliases in the collection.
         """
-        if self._aliases is None:
-            self.load_aliases()
-        return [{"name": alias.name, "id": alias.id} for alias in self._aliases]
+        return [{"name": alias.name, "id": alias.id} for alias in self.aliases]
 
     def _generate_default_snippet_bindings(self):
         """
         Returns a list of {name: str, id: ObjectId} bindings based on the default names of snippets in the collection.
         """
-        if self._snippets is None:
-            self.load_snippets()
-        return [{"name": snippet.name, "id": snippet.id} for snippet in self._snippets]
+        return [{"name": snippet.name, "id": snippet.id} for snippet in self.snippets]
 
     def _bindings_sanity_check(self, the_ids, the_bindings, binding_cls):
         # sanity check: ensure all aliases are in the bindings
@@ -323,55 +319,44 @@ class WorkshopCollection(SubscriberMixin, GuildActiveMixin, EditorMixin):
         # sanity check: ensure there is no binding to anything deleted
         return [b for b in the_bindings if b['id'] in the_ids]
 
-    def update_alias_bindings(self, subscription_doc):
-        """Updates the alias bindings for a given subscription (given the entire subscription document)."""
-        the_bindings = self._bindings_sanity_check(self._alias_ids, subscription_doc['alias_bindings'], WorkshopAlias)
-
-        self.sub_coll(current_app.mdb).update_one(
-            {"_id": subscription_doc['_id']},
-            {"$set": {"alias_bindings": the_bindings}}
-        )
-
-    def update_snippet_bindings(self, subscription_doc):
-        """Updates the snippet bindings for a given subscription (given the entire subscription document)."""
-        the_bindings = self._bindings_sanity_check(self._snippet_ids, subscription_doc['snippet_bindings'],
-                                                   WorkshopSnippet)
-
-        self.sub_coll(current_app.mdb).update_one(
-            {"_id": subscription_doc['_id']},
-            {"$set": {"snippet_bindings": the_bindings}}
-        )
-
     # implementations
     @staticmethod
     def sub_coll(mdb):
         return mdb.workshop_subscriptions
 
-    def subscribe(self, user_id: int):
-        """Adds the contextual author as a subscriber, with default name bindings."""
-        if self.is_subscribed(user_id):
-            raise NotAllowed("You are already subscribed to this.")
+    def subscribe(self, user_id: int, alias_bindings=None, snippet_bindings=None):
+        """Updates the contextual author as a subscriber, with given name bindings."""
         if self.publish_state == PublicationState.PRIVATE and not self.is_owner(user_id):
             raise NotAllowed("This collection is private.")
 
         # generate default bindings
-        alias_bindings = self._generate_default_alias_bindings()
-        snippet_bindings = self._generate_default_snippet_bindings()
+        if alias_bindings is None:
+            alias_bindings = self._generate_default_alias_bindings()
+        else:
+            alias_bindings = self._bindings_sanity_check(self.alias_ids, alias_bindings, WorkshopAlias)
+
+        if snippet_bindings is None:
+            snippet_bindings = self._generate_default_snippet_bindings()
+        else:
+            snippet_bindings = self._bindings_sanity_check(self.snippet_ids, snippet_bindings, WorkshopSnippet)
 
         # insert subscription
-        self.sub_coll(current_app.mdb).insert_one(
-            {"type": "subscribe", "subscriber_id": user_id, "object_id": self.id,
-             "alias_bindings": alias_bindings, "snippet_bindings": snippet_bindings}
+        result = self.sub_coll(current_app.mdb).update_one(
+            {"type": "subscribe", "subscriber_id": user_id, "object_id": self.id},
+            {"$set": {"alias_bindings": alias_bindings, "snippet_bindings": snippet_bindings}},
+            upsert=True
         )
-        # increase subscription count
-        current_app.mdb.workshop_collections.update_one(
-            {"_id": self.id},
-            {"$inc": {"num_subscribers": 1}}
-        )
-        # log subscribe event
-        current_app.mdb.analytics_alias_events.insert_one(
-            {"type": "subscribe", "object_id": self.id, "timestamp": datetime.datetime.utcnow()}
-        )
+
+        if result.upserted_id is not None:
+            # increase subscription count
+            current_app.mdb.workshop_collections.update_one(
+                {"_id": self.id},
+                {"$inc": {"num_subscribers": 1}}
+            )
+            # log subscribe event
+            current_app.mdb.analytics_alias_events.insert_one(
+                {"type": "subscribe", "object_id": self.id, "timestamp": datetime.datetime.utcnow()}
+            )
 
         return {"alias_bindings": alias_bindings, "snippet_bindings": snippet_bindings}
 
@@ -388,31 +373,39 @@ class WorkshopCollection(SubscriberMixin, GuildActiveMixin, EditorMixin):
             {"type": "unsubscribe", "object_id": self.id, "timestamp": datetime.datetime.utcnow()}
         )
 
-    def set_server_active(self, guild_id: int):
-        """Sets the object as active for the contextual guild, with default name bindings."""
-        if self.is_server_active(guild_id):
-            raise NotAllowed("This collection is already installed on this server.")
+    def set_server_active(self, guild_id: int, alias_bindings=None, snippet_bindings=None):
+        """Sets the object as active for the contextual guild, with given name bindings."""
         if self.publish_state == PublicationState.PRIVATE:
             raise NotAllowed("This collection is private.")
 
         # generate default bindings
-        alias_bindings = self._generate_default_alias_bindings()
-        snippet_bindings = self._generate_default_snippet_bindings()
+        if alias_bindings is None:
+            alias_bindings = self._generate_default_alias_bindings()
+        else:
+            alias_bindings = self._bindings_sanity_check(self.alias_ids, alias_bindings, WorkshopAlias)
+
+        if snippet_bindings is None:
+            snippet_bindings = self._generate_default_snippet_bindings()
+        else:
+            snippet_bindings = self._bindings_sanity_check(self.snippet_ids, snippet_bindings, WorkshopSnippet)
 
         # insert sub doc
-        self.sub_coll(current_app.mdb).insert_one(
-            {"type": "server_active", "subscriber_id": guild_id, "object_id": self.id,
-             "alias_bindings": alias_bindings, "snippet_bindings": snippet_bindings}
+        result = self.sub_coll(current_app.mdb).update_one(
+            {"type": "server_active", "subscriber_id": guild_id, "object_id": self.id},
+            {"$set": {"alias_bindings": alias_bindings, "snippet_bindings": snippet_bindings}},
+            upsert=True
         )
-        # incr sub count
-        current_app.mdb.workshop_collections.update_one(
-            {"_id": self.id},
-            {"$inc": {"num_guild_subscribers": 1}}
-        )
-        # log sub event
-        current_app.mdb.analytics_alias_events.insert_one(
-            {"type": "server_subscribe", "object_id": self.id, "timestamp": datetime.datetime.utcnow()}
-        )
+
+        if result.upserted_id is not None:
+            # incr sub count
+            current_app.mdb.workshop_collections.update_one(
+                {"_id": self.id},
+                {"$inc": {"num_guild_subscribers": 1}}
+            )
+            # log sub event
+            current_app.mdb.analytics_alias_events.insert_one(
+                {"type": "server_subscribe", "object_id": self.id, "timestamp": datetime.datetime.utcnow()}
+            )
 
         return {"alias_bindings": alias_bindings, "snippet_bindings": snippet_bindings}
 
@@ -654,8 +647,7 @@ class WorkshopAlias(WorkshopCollectableObject):
                 {"_id": self.collection.id},
                 {"$pull": {"alias_ids": self.id}}
             )
-            # noinspection PyProtectedMember
-            self.collection._alias_ids.remove(self.id)
+            self.collection.alias_ids.remove(self.id)
         else:
             # remove reference from parent
             self.mdb_coll().update_one(
@@ -715,8 +707,7 @@ class WorkshopSnippet(WorkshopCollectableObject):
             {"_id": self.collection.id},
             {"$pull": {"snippet_ids": self.id}}
         )
-        # noinspection PyProtectedMember
-        self.collection._snippet_ids.remove(self.id)
+        self.collection.snippet_ids.remove(self.id)
         self.collection.update_edit_time()
 
         # delete from db

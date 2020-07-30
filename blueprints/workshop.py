@@ -1,8 +1,10 @@
+from bson import ObjectId
 from flask import Blueprint, current_app
 
 from lib.auth import requires_auth
 from lib.discord import fetch_user_info
-from lib.utils import error, expect_json, nullable, success
+from lib.errors import NotAllowed
+from lib.utils import error, expect_json, maybe_json, nullable, success
 from workshop.collection import WorkshopAlias, WorkshopCollection, WorkshopSnippet
 from workshop.constants import ALIAS_SIZE_LIMIT, SNIPPET_SIZE_LIMIT
 from workshop.errors import CollectableNotFound, CollectionNotFound
@@ -339,11 +341,50 @@ def delete_snippet_entitlement(user, body, snippet_id):
 
 
 # ---- subscription operations ----
+def _bindings_check(coll, bindings):
+    if bindings is None:
+        return
+
+    for binding in bindings:
+        if not isinstance(binding, dict):
+            raise NotAllowed("bindings must be list of {name, id}")
+
+        if set(binding) != {"name", "id"}:
+            raise NotAllowed("bindings must be list of {name, id}")
+
+        if not isinstance(binding['name'], str):
+            raise NotAllowed("binding name must be str")
+
+        if isinstance(binding['id'], dict):
+            if '$oid' not in binding['id']:
+                raise NotAllowed("binding id must be ObjectId")
+            oid = ObjectId(binding['id']['$oid'])
+        elif isinstance(binding['id'], str):
+            oid = ObjectId(binding['id'])
+        else:
+            raise NotAllowed("binding id must be ObjectId")
+
+        if not (oid in coll.alias_ids or oid in coll.snippet_ids):
+            raise NotAllowed("binding must be to object in collection")
+
+        binding['id'] = oid
+
+
 @workshop.route("collection/<coll_id>/subscription/me", methods=["PUT"])
+@maybe_json(alias_bindings=nullable(list), snippet_bindings=nullable(list))
 @requires_auth
-def personal_subscribe(user, coll_id):
+def personal_subscribe(user, body, coll_id):
     coll = WorkshopCollection.from_id(coll_id)
-    bindings = coll.subscribe(int(user.id))
+
+    if body is None:
+        alias_bindings = snippet_bindings = None
+    else:
+        alias_bindings = body['alias_bindings']
+        _bindings_check(coll, alias_bindings)
+        snippet_bindings = body['snippet_bindings']
+        _bindings_check(coll, snippet_bindings)
+
+    bindings = coll.subscribe(int(user.id), alias_bindings, snippet_bindings)
     return success(bindings, 200)
 
 
@@ -355,10 +396,11 @@ def personal_unsubscribe(user, coll_id):
     return success(f"Unsubscribed from {coll.name}", 200)
 
 
-@workshop.route("collection/<coll_id>/bindings/me", methods=["PUT"])
+@workshop.route("collection/<coll_id>/subscription/me", methods=["GET"])
 @requires_auth
-def edit_personal_bindings(user, coll_id):
-    pass
+def get_personal_subscription(user, coll_id):
+    coll = WorkshopCollection.from_id(coll_id)
+    return success(coll.my_sub(int(user.id)), 200)
 
 
 @workshop.route("subscribed/me", methods=["GET"])
@@ -376,6 +418,12 @@ def guild_subscribe(user, coll_id, guild_id):
 @workshop.route("collection/<coll_id>/subscription/<int:guild_id>", methods=["DELETE"])
 @requires_auth
 def guild_unsubscribe(user, coll_id, guild_id):
+    pass
+
+
+@workshop.route("collection/<coll_id>/subscription/<int:guild_id>", methods=["GET"])
+@requires_auth
+def get_guild_subscription(user, coll_id, guild_id):
     pass
 
 
