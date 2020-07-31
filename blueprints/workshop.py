@@ -1,5 +1,5 @@
 from bson import ObjectId
-from flask import Blueprint, current_app
+from flask import Blueprint, current_app, request
 
 from lib.auth import requires_auth
 from lib.discord import fetch_user_info
@@ -8,7 +8,7 @@ from lib.utils import error, expect_json, maybe_json, nullable, success
 from workshop.collection import WorkshopAlias, WorkshopCollection, WorkshopSnippet
 from workshop.constants import ALIAS_SIZE_LIMIT, SNIPPET_SIZE_LIMIT
 from workshop.errors import CollectableNotFound, CollectionNotFound, NeedsServerAliaser
-from workshop.utils import guild_permissions_check
+from workshop.utils import explore_collections, guild_permissions_check
 
 workshop = Blueprint('workshop', __name__)
 
@@ -456,4 +456,53 @@ def get_guild_subscriptions(guild_id):
     """Returns a list of str representing the IDs of subscribed collections."""
     return success([str(oid) for oid in WorkshopCollection.guild_active_ids(guild_id)], 200)
 
+
 # ---- other ----
+# todo
+@workshop.route("entitlements", methods=["GET"])
+def get_entitlements():
+    pass
+
+
+@workshop.route("tags", methods=["GET"])
+def get_tags():
+    pass
+
+
+@workshop.route("explore", methods=["GET"])
+def get_explore_collections():
+    """
+    Returns a paginated list of collection IDs (50/page), based on given filters.
+
+    :q str order: The method to explore by: popular-1w, popular-1m, popular-6m, popular-all, newest, edittime
+    :q str tags: A comma-separated list of tags that returned collections must have all of.
+    :q str q: A search query. todo how
+    :q int page: The page of results to return.
+    """
+    order = request.args.get('order', 'popular-1w')
+    tags = request.args.get('tags')
+    if tags:
+        tags = tags.split(',')
+    else:
+        tags = []
+    q = request.args.get('q')
+    page = request.args.get('page')
+    if page:
+        try:
+            page = int(page)
+        except ValueError:
+            return error(400, 'page must be int')
+    coll_ids = explore_collections(order, tags, q, page)
+    return success(coll_ids, 200)
+
+
+@workshop.route("owned", methods=["GET"])
+@requires_auth
+def get_owned_collections(user):
+    pass
+
+
+@workshop.route("editable", methods=["GET"])
+@requires_auth
+def get_editable_collections(user):
+    pass
