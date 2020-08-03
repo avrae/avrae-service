@@ -492,7 +492,12 @@ def get_explore_collections():
             page = int(page)
         except ValueError:
             return error(400, 'page must be int')
-    coll_ids = explore_collections(order, tags, q, page)
+
+    try:
+        coll_ids = explore_collections(order, tags, q, page)
+    except ValueError as e:
+        return error(400, str(e))
+
     return success(coll_ids, 200)
 
 

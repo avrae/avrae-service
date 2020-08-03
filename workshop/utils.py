@@ -52,11 +52,11 @@ def explore_collections(order: str = 'popular-1w', tags: list = None, q: str = N
     elif order == "edittime":
         return _metric_based_explore("last_edited", tags, q, page)
     elif order == "popular-1w":
-        return _popularity_based_explore(datetime.datetime.now() - datetime.timedelta(days=7), tags, q, page)
+        return _popularity_based_explore('7d', tags, q, page)
     elif order == "popular-1m":
-        return _popularity_based_explore(datetime.datetime.now() - datetime.timedelta(days=30), tags, q, page)
+        return _popularity_based_explore('30d', tags, q, page)
     elif order == "popular-6m":
-        return _popularity_based_explore(datetime.datetime.now() - datetime.timedelta(days=180), tags, q, page)
+        return _popularity_based_explore('180d', tags, q, page)
     elif order == "popular-all":
         return _metric_based_explore("num_guild_subscribers", tags, q, page)
     else:
@@ -71,60 +71,83 @@ def _metric_based_explore(metric: str, tags: list, q: str, page: int):
     if tags:
         query["tags"] = {"$all": tags}
 
+    if q:
+        # https://docs.mongodb.com/manual/text-search/
+        query["$text"] = {"$search": q}
+
     cursor = current_app.mdb.workshop_collections.find(query)
 
     cursor.sort(metric, pymongo.DESCENDING)
-
     cursor.limit(50)  # 50 results/page
     cursor.skip(50 * (page - 1))  # seek to page
 
     return [str(coll['_id']) for coll in cursor]
 
 
-def _popularity_based_explore(since: datetime.datetime, tags: list, q: str, page: int):
+def _popularity_based_explore(since: str, tags: list, q: str, page: int):
     """Returns a list of ids for a popularity-based explore query."""
+    if since not in ('7d', '30d', '180d'):
+        raise ValueError("since must be 7d, 30d, or 180d")
 
-    # todo this needs to be heavily cached
+    if since == '7d':
+        since_ts = datetime.datetime.now() - datetime.timedelta(days=7)
+        cache_coll = "workshop_explore_scores_7d"
+    elif since == '30d':
+        since_ts = datetime.datetime.now() - datetime.timedelta(days=30)
+        cache_coll = "workshop_explore_scores_30d"
+    else:  # 180d
+        since_ts = datetime.datetime.now() - datetime.timedelta(days=180)
+        cache_coll = "workshop_explore_scores_180d"
 
-    pipeline = [
-        # get all sub/unsub docs since time
-        {"$match": {"timestamp": {"$gt": since},
-                    "type": {"$in": ["subscribe", "unsubscribe", "server_subscribe", "server_unsubscribe"]}}},
+    # do we have cached scores already?
+    if (cached := current_app.mdb[cache_coll].find_one()) is None or cached['expire_at'] < datetime.datetime.now():
+        # if not, refresh the cache
+        pipeline = [
+            # get all sub/unsub docs since time
+            {"$match": {"timestamp": {"$gt": since_ts},
+                        "type": {"$in": ["subscribe", "unsubscribe", "server_subscribe", "server_unsubscribe"]}}},
 
-        # give all subscribe and server_subscribe docs score: 1
-        # and all unsubscribe and server_unsubscribe docs score: -1
-        {"$addFields": {"score": {"$cond": {
-            "if": {"$in": ["$type", ["subscribe", "server_subscribe"]]},
-            "then": 1,
-            "else": -1}}}},
+            # give all subscribe and server_subscribe docs score: 1
+            # and all unsubscribe and server_unsubscribe docs score: -1
+            {"$addFields": {"score": {"$cond": {
+                "if": {"$in": ["$type", ["subscribe", "server_subscribe"]]},
+                "then": 1,
+                "else": -1}}}},
 
-        # group all these docs by collection id (object_id)
-        # -> {_id: coll_id, score: num_subs}
-        {"$group": {"_id": "$object_id", "score": {"$sum": "$score"}}},
+            # group all these docs by collection id (object_id)
+            # -> {_id: coll_id, score: num_subs}
+            {"$group": {"_id": "$object_id", "score": {"$sum": "$score"}}},
 
-        # put the actual collection in the doc
-        {"$lookup": {"from": "workshop_collections", "localField": "_id", "foreignField": "_id", "as": "collection"}},
+            # put the actual collection in the doc
+            {"$lookup": {"from": "workshop_collections", "localField": "_id", "foreignField": "_id",
+                         "as": "collection"}},
 
-        # filter out deleted and non-published collections
-        {"$match": {"collection": {"$size": 1},
-                    "collection.0.publish_state": PublicationState.PUBLISHED.value}},
+            # filter out deleted and non-published collections
+            {"$match": {"collection": {"$size": 1},
+                        "collection.0.publish_state": PublicationState.PUBLISHED.value}},
 
-        # TODO cache this here with like a TTL 1d or something
-        # the rest of the pipeline can probably be accomplished by piping this to an $out and querying on that
+            # add a timestamp for the expiring index (TTL 6h)
+            {"$addFields": {"expire_at": datetime.datetime.now() + datetime.timedelta(hours=6)}},
 
-        # sort by popularity descending
-        {"$sort": {"score": -1}},
+            # pipe the scores to an expiring collection for further queries
+            {"$out": cache_coll}
+        ]
 
-        # # todo filter by tags
-        # {"$match": {"collection.0.tags": {"$all": tags}}},
+        current_app.mdb.analytics_alias_events.aggregate(pipeline)
 
-        # skip to the appropriate page,
-        {"$skip": 50 * (page - 1)},
+    # now that the cache is up-to-date, we can query it
+    query = {}
 
-        # limit to 50 docs returned (we skip first since if a limit is right after a sort, it only sorts the min amount)
-        # https://docs.mongodb.com/v3.6/reference/operator/aggregation/limit/
-        {"$limit": 50}
-    ]
+    if tags:
+        query["collection.0.tags"] = {"$all": tags}
 
-    cursor = current_app.mdb.analytics_alias_events.aggregate(pipeline)
+    if q:
+        query["$text"] = {"$search": q}
+
+    cursor = current_app.mdb[cache_coll].find(query)
+
+    cursor.sort('score', pymongo.DESCENDING)
+    cursor.limit(50)  # 50 results/page
+    cursor.skip(50 * (page - 1))  # seek to page
+
     return [str(coll['_id']) for coll in cursor]
