@@ -47,7 +47,9 @@ def explore_collections(order: str = 'popular-1w', tags: list = None, q: str = N
 
     # todo check tag validity
 
-    if order == "newest":
+    if order == "relevance":
+        return _relevance_based_explore(tags, q, page)
+    elif order == "newest":
         return _metric_based_explore("created_at", tags, q, page)
     elif order == "edittime":
         return _metric_based_explore("last_edited", tags, q, page)
@@ -61,6 +63,26 @@ def explore_collections(order: str = 'popular-1w', tags: list = None, q: str = N
         return _metric_based_explore("num_guild_subscribers", tags, q, page)
     else:
         raise ValueError(f"unknown order: {order}")
+
+
+def _relevance_based_explore(tags: list, q: str, page: int):
+    """Returns a list of ids for a relevance-based explore query."""
+    if not q:
+        return _popularity_based_explore('7d', tags, q, page)
+
+    query = {"publish_state": PublicationState.PUBLISHED.value,
+             "$text": {"$search": q}}
+
+    if tags:
+        query["tags"] = {"$all": tags}
+
+    cursor = current_app.mdb.workshop_collections.find(query, {'score': {'$meta': 'textScore'}})
+
+    cursor.sort([('score', {'$meta': 'textScore'})])
+    cursor.limit(50)  # 50 results/page
+    cursor.skip(50 * (page - 1))  # seek to page
+
+    return [str(coll['_id']) for coll in cursor]
 
 
 def _metric_based_explore(metric: str, tags: list, q: str, page: int):

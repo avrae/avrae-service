@@ -474,9 +474,9 @@ def get_explore_collections():
     """
     Returns a paginated list of collection IDs (50/page), based on given filters.
 
-    :q str order: The method to explore by: popular-1w, popular-1m, popular-6m, popular-all, newest, edittime
+    :q str order: The method to explore by: popular-1w, popular-1m, popular-6m, popular-all, newest, edittime, relevance
     :q str tags: A comma-separated list of tags that returned collections must have all of.
-    :q str q: A search query. todo how
+    :q str q: A search query.
     :q int page: The page of results to return.
     """
     order = request.args.get('order', 'popular-1w')
