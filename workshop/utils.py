@@ -47,8 +47,10 @@ def explore_collections(order: str = 'popular-1w', tags: list = None, q: str = N
 
     # todo check tag validity
 
-    if order in ("newest", "edittime"):
-        return _time_based_explore(order, tags, q, page)
+    if order == "newest":
+        return _metric_based_explore("created_at", tags, q, page)
+    elif order == "edittime":
+        return _metric_based_explore("last_edited", tags, q, page)
     elif order == "popular-1w":
         return _popularity_based_explore(datetime.datetime.now() - datetime.timedelta(days=7), tags, q, page)
     elif order == "popular-1m":
@@ -56,26 +58,22 @@ def explore_collections(order: str = 'popular-1w', tags: list = None, q: str = N
     elif order == "popular-6m":
         return _popularity_based_explore(datetime.datetime.now() - datetime.timedelta(days=180), tags, q, page)
     elif order == "popular-all":
-        return _popularity_based_explore(datetime.datetime.fromtimestamp(0), tags, q, page)
+        return _metric_based_explore("num_guild_subscribers", tags, q, page)
     else:
         raise ValueError(f"unknown order: {order}")
 
 
-def _time_based_explore(order: str, tags: list, q: str, page: int):
+def _metric_based_explore(metric: str, tags: list, q: str, page: int):
     """Returns a list of ids for a time-based explore query."""
 
-    if tags is None:
-        cursor = current_app.mdb.workshop_collections.find({"publish_state": PublicationState.PUBLISHED.value})
-    else:
-        cursor = current_app.mdb.workshop_collections.find(
-            {"publish_state": PublicationState.PUBLISHED.value,
-             "tags": {"$all": tags}}
-        )
+    query = {"publish_state": PublicationState.PUBLISHED.value}
 
-    if order == "newest":
-        cursor.sort("created_at", pymongo.DESCENDING)
-    else:
-        cursor.sort("last_edited", pymongo.DESCENDING)
+    if tags:
+        query["tags"] = {"$all": tags}
+
+    cursor = current_app.mdb.workshop_collections.find(query)
+
+    cursor.sort(metric, pymongo.DESCENDING)
 
     cursor.limit(50)  # 50 results/page
     cursor.skip(50 * (page - 1))  # seek to page
@@ -86,7 +84,8 @@ def _time_based_explore(order: str, tags: list, q: str, page: int):
 def _popularity_based_explore(since: datetime.datetime, tags: list, q: str, page: int):
     """Returns a list of ids for a popularity-based explore query."""
 
-    # pipeline on analytics events: turn analytics stream into {_id: coll_id, score: num_subs}
+    # todo this needs to be heavily cached
+
     pipeline = [
         # get all sub/unsub docs since time
         {"$match": {"timestamp": {"$gt": since},
@@ -95,16 +94,37 @@ def _popularity_based_explore(since: datetime.datetime, tags: list, q: str, page
         # give all subscribe and server_subscribe docs score: 1
         # and all unsubscribe and server_unsubscribe docs score: -1
         {"$addFields": {"score": {"$cond": {
-            "if": {"type": {"$in": ["subscribe", "server_subscribe"]}},
+            "if": {"$in": ["$type", ["subscribe", "server_subscribe"]]},
             "then": 1,
             "else": -1}}}},
 
         # group all these docs by collection id (object_id)
         # -> {_id: coll_id, score: num_subs}
-        {"$group": {"_id": "$object_id", "score": {"$sum": "$score"}}}
+        {"$group": {"_id": "$object_id", "score": {"$sum": "$score"}}},
+
+        # put the actual collection in the doc
+        {"$lookup": {"from": "workshop_collections", "localField": "_id", "foreignField": "_id", "as": "collection"}},
+
+        # filter out deleted and non-published collections
+        {"$match": {"collection": {"$size": 1},
+                    "collection.0.publish_state": PublicationState.PUBLISHED.value}},
+
+        # TODO cache this here with like a TTL 1d or something
+        # the rest of the pipeline can probably be accomplished by piping this to an $out and querying on that
+
+        # sort by popularity descending
+        {"$sort": {"score": -1}},
+
+        # # todo filter by tags
+        # {"$match": {"collection.0.tags": {"$all": tags}}},
+
+        # skip to the appropriate page,
+        {"$skip": 50 * (page - 1)},
+
+        # limit to 50 docs returned (we skip first since if a limit is right after a sort, it only sorts the min amount)
+        # https://docs.mongodb.com/v3.6/reference/operator/aggregation/limit/
+        {"$limit": 50}
     ]
 
-    # todo get actual collections from id, score pairs
-    # probably using $in a lot
     cursor = current_app.mdb.analytics_alias_events.aggregate(pipeline)
-    return cursor
+    return [str(coll['_id']) for coll in cursor]

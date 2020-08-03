@@ -486,7 +486,7 @@ def get_explore_collections():
     else:
         tags = []
     q = request.args.get('q')
-    page = request.args.get('page')
+    page = request.args.get('page', 1)
     if page:
         try:
             page = int(page)
