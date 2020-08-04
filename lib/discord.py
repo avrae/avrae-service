@@ -141,6 +141,14 @@ def fetch_user_info(user_id):
         return UserInfo({"username": str(user_id), "id": str(user_id), "discriminator": "0000", "avatar": None})
 
 
+def search_by_username(username, discriminator):
+    user = current_app.mdb.users.find_one({"username": username, "discriminator": discriminator})
+    if user is not None:
+        del user['_id']  # mongo ID
+        return UserInfo(user)
+    return None
+
+
 # guilds
 def get_current_user_guilds(discord_access_token):
     """
