@@ -514,16 +514,32 @@ def get_explore_collections():
 @workshop.route("owned", methods=["GET"])
 @requires_auth
 def get_owned_collections(user):
-    pass
+    """Returns a list of collection IDs the user owns in an unsorted order."""
+    owned = WorkshopCollection.user_owned_ids(int(user.id))
+    return success([str(o) for o in owned], 200)
 
 
 @workshop.route("editable", methods=["GET"])
 @requires_auth
 def get_editable_collections(user):
-    pass
+    """Returns a list of collection IDs the user has edit permission on in an unsorted order."""
+    editable = WorkshopCollection.my_editable_ids(int(user.id))
+    return success(list([str(o) for o in editable]), 200)
 
 
 @workshop.route("guild-check", methods=["GET"])
 @requires_auth
-def guild_permissions_check(user):
-    pass
+def do_guild_permissions_check(user):
+    if 'g' not in request.args:
+        return error(400, "g is a required query param")
+    guild_id = request.args.get('g')
+    try:
+        guild_id = int(guild_id)
+    except ValueError:
+        return error(400, f"{guild_id} is not a valid guild id")
+
+    try:
+        result = guild_permissions_check(user, guild_id)
+    except NeedsServerAliaser as e:
+        return success({"can_edit": False, "message": str(e)})
+    return success({"can_edit": result, "message": None})
