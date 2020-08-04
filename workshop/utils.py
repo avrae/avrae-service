@@ -42,10 +42,13 @@ def explore_collections(order: str = 'popular-1w', tags: list = None, q: str = N
     """Returns a list of ids (str) of collections that match the given search parameters."""
     if page < 1:
         raise ValueError("page must be at least 1")
-    if not isinstance(tags, list):
-        raise ValueError("tags must be comma-separated list of tags")
-
-    # todo check tag validity
+    if tags is not None:
+        if not isinstance(tags, list):
+            raise ValueError("tags must be comma-separated list of tags")
+        # check tag validity
+        for tag in tags:
+            if current_app.mdb.workshop_tags.find_one({"slug": tag}) is None:
+                raise ValueError(f"{tag} is an invalid tag")
 
     if order == "relevance":
         return _relevance_based_explore(tags, q, page)

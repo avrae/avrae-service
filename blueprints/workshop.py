@@ -115,19 +115,28 @@ def get_editors(_, coll_id):
     return success(get_editors(coll), 200)
 
 
-# todo tags
 @workshop.route("collection/<coll_id>/tag", methods=["POST"])
 @expect_json(tag=str)
 @requires_auth
 def add_tag(user, body, coll_id):
-    return error(404, "not yet implemented")
+    coll = WorkshopCollection.from_id(coll_id)
+    if not (coll.is_owner(int(user.id)) or coll.is_editor(int(user.id))):
+        return error(403, "you do not have permission to edit this collection")
+
+    coll.add_tag(body['tag'])
+    return success(coll.tags, 200)
 
 
 @workshop.route("collection/<coll_id>/tag", methods=["DELETE"])
 @expect_json(tag=str)
 @requires_auth
 def remove_tag(user, body, coll_id):
-    return error(404, "not yet implemented")
+    coll = WorkshopCollection.from_id(coll_id)
+    if not (coll.is_owner(int(user.id)) or coll.is_editor(int(user.id))):
+        return error(403, "you do not have permission to edit this collection")
+
+    coll.remove_tag(body['tag'])
+    return success(coll.tags, 200)
 
 
 # ---- alias/snippet operations ----
@@ -466,7 +475,8 @@ def get_entitlements():
 
 @workshop.route("tags", methods=["GET"])
 def get_tags():
-    pass
+    tags = current_app.mdb.workshop_tags.find()
+    return success(list(tags), 200)
 
 
 @workshop.route("explore", methods=["GET"])
@@ -510,4 +520,10 @@ def get_owned_collections(user):
 @workshop.route("editable", methods=["GET"])
 @requires_auth
 def get_editable_collections(user):
+    pass
+
+
+@workshop.route("guild-check", methods=["GET"])
+@requires_auth
+def guild_permissions_check(user):
     pass

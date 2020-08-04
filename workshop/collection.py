@@ -295,6 +295,38 @@ class WorkshopCollection(SubscriberMixin, GuildActiveMixin, EditorMixin):
 
         return inst
 
+    def add_tag(self, tag: str):
+        """Adds a tag to this collection. Validates the tag. Does nothing if the tag already exists."""
+        if current_app.mdb.workshop_tags.find_one({"slug": tag}) is None:
+            raise NotAllowed(f"{tag} is not a valid tag")
+        if tag in self.tags:
+            return  # we already have the tag, do a no-op
+
+        current_app.mdb.workshop_collections.update_one(
+            {"_id": self.id},
+            {
+                "$push": {"tags": tag},
+                "$currentDate": {"last_edited": True}
+            }
+        )
+        self.tags.append(tag)
+        self.last_edited = datetime.datetime.now()
+
+    def remove_tag(self, tag: str):
+        """Removes a tag from this collection. Does nothing if the tag is not in the collection."""
+        if tag not in self.tags:
+            return  # we already don't have the tag, do a no-op
+
+        current_app.mdb.workshop_collections.update_one(
+            {"_id": self.id},
+            {
+                "$pull": {"tags": tag},
+                "$currentDate": {"last_edited": True}
+            }
+        )
+        self.tags.remove(tag)
+        self.last_edited = datetime.datetime.now()
+
     # bindings
     def _generate_default_alias_bindings(self):
         """
