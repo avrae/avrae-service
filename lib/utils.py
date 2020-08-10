@@ -1,5 +1,8 @@
+import datetime
 import functools
+import json
 
+from bson import ObjectId
 from bson.json_util import dumps
 from flask import Response, request
 
@@ -8,15 +11,34 @@ def jsonify(data, status=200):
     return Response(dumps(data), status=status, mimetype="application/json")
 
 
+class HelperEncoder(json.JSONEncoder):
+    def default(self, o):
+        if isinstance(o, ObjectId):
+            return str(o)
+        if isinstance(o, datetime.datetime):
+            return o.isoformat()
+        return super().default(o)
+
+
+def new_jsonify(data, status=200):
+    """
+    Like jsonify, but handles BSON objects (ObjectId, datetime) better.
+
+    ObjectId -> str
+    datetime -> ISO8601 str
+    """
+    return Response(json.dumps(data, cls=HelperEncoder), status=status, mimetype="application/json")
+
+
 def success(data, status=200):
-    return jsonify({
+    return new_jsonify({
         "success": True,
         "data": data
     }, status)
 
 
 def error(status: int, message: str = None):
-    return jsonify({
+    return new_jsonify({
         "success": False,
         "error": message
     }, status)
