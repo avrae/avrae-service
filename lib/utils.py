@@ -16,7 +16,10 @@ class HelperEncoder(json.JSONEncoder):
         if isinstance(o, ObjectId):
             return str(o)
         if isinstance(o, datetime.datetime):
-            return o.isoformat()
+            dt = o.isoformat()
+            if o.utcoffset() is None:  # BSON returns utc timestamps, without tzinfo
+                dt += 'Z'
+            return dt
         return super().default(o)
 
 

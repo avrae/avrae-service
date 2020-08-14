@@ -390,7 +390,8 @@ class WorkshopCollection(SubscriberMixin, GuildActiveMixin, EditorMixin):
                 {"type": "subscribe", "object_id": self.id, "timestamp": datetime.datetime.utcnow(), "user_id": user_id}
             )
 
-        return {"alias_bindings": alias_bindings, "snippet_bindings": snippet_bindings}
+        return {"alias_bindings": alias_bindings, "snippet_bindings": snippet_bindings,
+                "new_subscription": result.upserted_id is not None}
 
     def unsubscribe(self, user_id: int):
         # remove sub doc
@@ -440,7 +441,8 @@ class WorkshopCollection(SubscriberMixin, GuildActiveMixin, EditorMixin):
                  "user_id": invoker_id}
             )
 
-        return {"alias_bindings": alias_bindings, "snippet_bindings": snippet_bindings}
+        return {"alias_bindings": alias_bindings, "snippet_bindings": snippet_bindings,
+                "new_subscription": result.upserted_id is not None}
 
     def unset_server_active(self, guild_id: int, invoker_id: int = None):
         # remove sub doc

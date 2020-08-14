@@ -1,6 +1,7 @@
 import datetime
 
 import pymongo
+import requests
 from flask import current_app
 
 from lib import discord
@@ -10,6 +11,7 @@ from workshop.errors import NeedsServerAliaser
 
 ALIASER_ROLE_NAMES = ("server aliaser", "dragonspeaker")
 ALIASER_PERMISSION = 8  # administrator
+RESULTS_PER_PAGE = 48
 
 
 def guild_permissions_check(user: UserInfo, guild_id: int):
@@ -19,14 +21,19 @@ def guild_permissions_check(user: UserInfo, guild_id: int):
     user_guilds = discord.get_current_user_guilds(discord.discord_token_for(user.id))
     the_guild = next((g for g in user_guilds if g['id'] == str(guild_id)), None)
     if the_guild is None:
-        raise NeedsServerAliaser("You are not in this server")
+        raise NeedsServerAliaser("You are not in this server.")
 
     # 2: does the user have Administrator in the guild?
     if the_guild['owner'] or (the_guild['permissions'] & ALIASER_PERMISSION):
         return True
 
     # 3: does the user have a role in the aliaser role names in the guild?
-    guild_roles = discord.get_guild_roles(guild_id)
+    try:
+        guild_roles = discord.get_guild_roles(guild_id)
+    except requests.HTTPError:
+        raise NeedsServerAliaser(
+            "You do not have permissions to edit server collections - make sure Avrae is in the server you want to "
+            "add collections to.")
     role_map = {r['id']: r for r in guild_roles}
     guild_member = discord.get_guild_member(guild_id, user.id)
 
@@ -34,8 +41,8 @@ def guild_permissions_check(user: UserInfo, guild_id: int):
         if role_map[role_id]['name'].lower() in ALIASER_ROLE_NAMES:
             return True
 
-    raise NeedsServerAliaser("You do not have permissions to edit server collections - either Administrator Discord"
-                             "permissions or a role named \"Server Aliaser\" is required")
+    raise NeedsServerAliaser("You do not have permissions to edit server collections - either Administrator Discord "
+                             "permissions or a role named \"Server Aliaser\" is required.")
 
 
 def explore_collections(order: str = 'popular-1w', tags: list = None, q: str = None, page: int = 1):
@@ -82,8 +89,8 @@ def _relevance_based_explore(tags: list, q: str, page: int):
     cursor = current_app.mdb.workshop_collections.find(query, {'score': {'$meta': 'textScore'}})
 
     cursor.sort([('score', {'$meta': 'textScore'})])
-    cursor.limit(50)  # 50 results/page
-    cursor.skip(50 * (page - 1))  # seek to page
+    cursor.limit(RESULTS_PER_PAGE)  # 50 results/page
+    cursor.skip(RESULTS_PER_PAGE * (page - 1))  # seek to page
 
     return [str(coll['_id']) for coll in cursor]
 
@@ -103,8 +110,8 @@ def _metric_based_explore(metric: str, tags: list, q: str, page: int):
     cursor = current_app.mdb.workshop_collections.find(query)
 
     cursor.sort(metric, pymongo.DESCENDING)
-    cursor.limit(50)  # 50 results/page
-    cursor.skip(50 * (page - 1))  # seek to page
+    cursor.limit(RESULTS_PER_PAGE)  # 50 results/page
+    cursor.skip(RESULTS_PER_PAGE * (page - 1))  # seek to page
 
     return [str(coll['_id']) for coll in cursor]
 
@@ -172,7 +179,7 @@ def _popularity_based_explore(since: str, tags: list, q: str, page: int):
     cursor = current_app.mdb[cache_coll].find(query)
 
     cursor.sort('score', pymongo.DESCENDING)
-    cursor.limit(50)  # 50 results/page
-    cursor.skip(50 * (page - 1))  # seek to page
+    cursor.limit(RESULTS_PER_PAGE)  # 50 results/page
+    cursor.skip(RESULTS_PER_PAGE * (page - 1))  # seek to page
 
     return [str(coll['_id']) for coll in cursor]
