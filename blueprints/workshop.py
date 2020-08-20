@@ -110,7 +110,7 @@ def remove_editor(user, coll_id, editor_id: int):
 
 @workshop.route("collection/<coll_id>/editors", methods=["GET"])
 @requires_auth
-def get_editors(_, coll_id):
+def route_get_editors(_, coll_id):
     coll = WorkshopCollection.from_id(coll_id)
     return success(get_editors(coll), 200)
 
