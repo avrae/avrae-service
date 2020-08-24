@@ -1,11 +1,11 @@
 from bson import ObjectId
 from flask import Blueprint, current_app, request
 
-from lib.auth import requires_auth
+from lib.auth import maybe_auth, requires_auth
 from lib.discord import fetch_user_info
 from lib.errors import NotAllowed
 from lib.utils import error, expect_json, maybe_json, nullable, success
-from workshop.collection import WorkshopAlias, WorkshopCollection, WorkshopSnippet
+from workshop.collection import PublicationState, WorkshopAlias, WorkshopCollection, WorkshopSnippet
 from workshop.constants import ALIAS_SIZE_LIMIT, SNIPPET_SIZE_LIMIT
 from workshop.errors import CollectableNotFound, CollectionNotFound, NeedsServerAliaser
 from workshop.utils import explore_collections, guild_permissions_check
@@ -36,8 +36,32 @@ def create_collection(user, body):
 
 
 @workshop.route("collection/<coll_id>", methods=["GET"])
-def get_collection(coll_id):
-    return success(WorkshopCollection.from_id(coll_id).to_dict(js=True), 200)
+@maybe_auth
+def get_collection(user, coll_id):
+    coll = WorkshopCollection.from_id(coll_id)
+    if coll.publish_state == PublicationState.PRIVATE and (user is None or not coll.is_owner(int(user.id))):
+        return error(403, "This collection is private.")
+    return success(coll.to_dict(js=True), 200)
+
+
+@workshop.route("collection/<coll_id>/full", methods=["GET"])
+@maybe_auth
+def get_collection_full(user, coll_id):
+    coll = WorkshopCollection.from_id(coll_id)
+    if coll.publish_state == PublicationState.PRIVATE and (user is None or not coll.is_owner(int(user.id))):
+        return error(403, "This collection is private.")
+    out = coll.to_dict(js=True)
+
+    def dictify(alias):
+        ad = alias.to_dict(js=True)
+        ad['subcommands'] = [dictify(subcommand) for subcommand in alias.subcommands]
+        return ad
+
+    out.update({
+        "aliases": [dictify(alias) for alias in coll.aliases],
+        "snippets": [snippet.to_dict(js=True) for snippet in coll.snippets]
+    })
+    return success(out, 200)
 
 
 @workshop.route("collection/<coll_id>", methods=["PATCH"])
