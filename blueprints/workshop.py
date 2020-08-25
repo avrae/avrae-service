@@ -439,7 +439,10 @@ def personal_unsubscribe(user, coll_id):
 @requires_auth
 def get_personal_subscription(user, coll_id):
     coll = WorkshopCollection.from_id(coll_id)
-    return success(coll.my_sub(int(user.id)), 200)
+    sub = coll.my_sub(int(user.id))
+    if sub is None:
+        return error(404, "You are not subscribed to this collection")
+    return success(sub, 200)
 
 
 @workshop.route("subscribed/me", methods=["GET"])
@@ -481,7 +484,10 @@ def guild_unsubscribe(user, coll_id, guild_id):
 @workshop.route("collection/<coll_id>/subscription/<int:guild_id>", methods=["GET"])
 def get_guild_subscription(coll_id, guild_id):
     coll = WorkshopCollection.from_id(coll_id)
-    return success(coll.guild_sub(guild_id), 200)
+    sub = coll.guild_sub(guild_id)
+    if sub is None:
+        return error(404, "You are not subscribed to this collection")
+    return success(sub, 200)
 
 
 @workshop.route("subscribed/<int:guild_id>", methods=["GET"])
