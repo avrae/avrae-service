@@ -348,6 +348,19 @@ class WorkshopCollection(SubscriberMixin, GuildActiveMixin, EditorMixin):
             obj = binding_cls.from_id(missing, collection=self)
             the_bindings.append({"name": obj.name, "id": obj.id})
 
+        # sanity check: ensure all names are valid
+        for binding in the_bindings:
+            if ' ' in binding['name']:
+                raise NotAllowed("Spaces are not allowed in bindings.")
+            # alias-only checks
+            if binding_cls is WorkshopAlias:
+                if binding['name'] in current_app.rdb.jget("default_commands", []):
+                    raise NotAllowed(f"{binding['name']} is already a built-in command.")
+            # snippet-only checks
+            if binding_cls is WorkshopSnippet:
+                if len(binding['name']) < 2:
+                    raise NotAllowed("Snippet names must be at least 2 characters.")
+
         # sanity check: ensure there is no binding to anything deleted
         return [b for b in the_bindings if b['id'] in the_ids]
 
