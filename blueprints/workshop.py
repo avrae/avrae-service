@@ -1,4 +1,5 @@
 from bson import ObjectId
+from bson.errors import InvalidId
 from flask import Blueprint, current_app, request
 
 from lib.auth import maybe_auth, requires_auth
@@ -62,6 +63,28 @@ def get_collection_full(user, coll_id):
         "snippets": [snippet.to_dict(js=True) for snippet in coll.snippets]
     })
     return success(out, 200)
+
+
+@workshop.route("collection/batch", methods=["GET"])
+@requires_auth
+def get_collection_batch(user):
+    """
+    Gets many collections in a single request.
+
+    GET /workshop/collection/batch?c=1,2,3,4,...
+    """
+    if 'c' not in request.args:
+        return error(400, "c is a required query param")
+    collections = []
+    try:
+        for coll_id in map(ObjectId, request.args.get('c').split(',')):
+            coll = WorkshopCollection.from_id(coll_id)
+            if coll.publish_state == PublicationState.PRIVATE and (user is None or not coll.is_owner(int(user.id))):
+                return error(403, "This collection is private.")
+            collections.append(coll.to_dict(js=True))
+    except InvalidId:
+        return error(400, "invalid collection ID")
+    return success(collections, 200)
 
 
 @workshop.route("collection/<coll_id>", methods=["PATCH"])
