@@ -6,7 +6,6 @@ from flask import current_app
 
 from lib import discord
 from lib.discord import UserInfo
-from lib.utils import now
 from workshop.collection import PublicationState
 from workshop.errors import NeedsServerAliaser
 
@@ -123,17 +122,17 @@ def _popularity_based_explore(since: str, tags: list, q: str, page: int):
         raise ValueError("since must be 7d, 30d, or 180d")
 
     if since == '7d':
-        since_ts = now() - datetime.timedelta(days=7)
+        since_ts = datetime.datetime.now() - datetime.timedelta(days=7)
         cache_coll = "workshop_explore_scores_7d"
     elif since == '30d':
-        since_ts = now() - datetime.timedelta(days=30)
+        since_ts = datetime.datetime.now() - datetime.timedelta(days=30)
         cache_coll = "workshop_explore_scores_30d"
     else:  # 180d
-        since_ts = now() - datetime.timedelta(days=180)
+        since_ts = datetime.datetime.now() - datetime.timedelta(days=180)
         cache_coll = "workshop_explore_scores_180d"
 
     # do we have cached scores already?
-    if (cached := current_app.mdb[cache_coll].find_one()) is None or cached['expire_at'] < now():
+    if (cached := current_app.mdb[cache_coll].find_one()) is None or cached['expire_at'] < datetime.datetime.now():
         # if not, refresh the cache
         pipeline = [
             # get all sub/unsub docs since time
@@ -160,7 +159,7 @@ def _popularity_based_explore(since: str, tags: list, q: str, page: int):
                         "collection.0.publish_state": PublicationState.PUBLISHED.value}},
 
             # add a timestamp for the expiring index (TTL 6h)
-            {"$addFields": {"expire_at": now() + datetime.timedelta(hours=6)}},
+            {"$addFields": {"expire_at": datetime.datetime.now() + datetime.timedelta(hours=6)}},
 
             # pipe the scores to an expiring collection for further queries
             {"$out": cache_coll}

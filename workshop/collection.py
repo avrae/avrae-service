@@ -7,7 +7,6 @@ from bson import ObjectId
 from flask import current_app
 
 from lib.errors import NotAllowed
-from lib.utils import now
 from workshop.errors import CollectableNotFound, CollectionNotFound
 from workshop.mixins import EditorMixin, GuildActiveMixin, SubscriberMixin
 
@@ -160,9 +159,10 @@ class WorkshopCollection(SubscriberMixin, GuildActiveMixin, EditorMixin):
             raise NotAllowed("Name is required.")
         if not description:
             raise NotAllowed("Description is required.")
+        now = datetime.datetime.now()
         # noinspection PyTypeChecker
         # id is None until inserted
-        inst = cls(None, name, description, image, user_id, [], [], PublicationState.PRIVATE, 0, 0, now(), now(), [])
+        inst = cls(None, name, description, image, user_id, [], [], PublicationState.PRIVATE, 0, 0, now, now, [])
         result = current_app.mdb.workshop_collections.insert_one(inst.to_dict())
         inst.id = result.inserted_id
         return inst
@@ -183,7 +183,7 @@ class WorkshopCollection(SubscriberMixin, GuildActiveMixin, EditorMixin):
         self.name = name
         self.description = description
         self.image = image
-        self.last_edited = now()
+        self.last_edited = datetime.datetime.now()
 
     def delete(self):
         # do not allow deletion of published collections
@@ -206,7 +206,7 @@ class WorkshopCollection(SubscriberMixin, GuildActiveMixin, EditorMixin):
             {"_id": self.id},
             {"$currentDate": {"last_edited": True}}
         )
-        self.last_edited = now()
+        self.last_edited = datetime.datetime.now()
 
     def set_state(self, new_state):
         """
@@ -241,7 +241,7 @@ class WorkshopCollection(SubscriberMixin, GuildActiveMixin, EditorMixin):
             }
         )
         self.publish_state = new_state
-        self.last_edited = now()
+        self.last_edited = datetime.datetime.now()
 
     def create_alias(self, name, docs):
         code = "echo Hello world!"
@@ -262,7 +262,7 @@ class WorkshopCollection(SubscriberMixin, GuildActiveMixin, EditorMixin):
             }
         )
         self.alias_ids.append(result.inserted_id)
-        self.last_edited = now()
+        self.last_edited = datetime.datetime.now()
 
         # update all subscriber bindings
         new_binding = {"name": inst.name, "id": inst.id}
@@ -292,7 +292,7 @@ class WorkshopCollection(SubscriberMixin, GuildActiveMixin, EditorMixin):
             }
         )
         self.snippet_ids.append(result.inserted_id)
-        self.last_edited = now()
+        self.last_edited = datetime.datetime.now()
 
         # update all subscriber bindings
         new_binding = {"name": inst.name, "id": inst.id}
@@ -318,7 +318,7 @@ class WorkshopCollection(SubscriberMixin, GuildActiveMixin, EditorMixin):
             }
         )
         self.tags.append(tag)
-        self.last_edited = now()
+        self.last_edited = datetime.datetime.now()
 
     def remove_tag(self, tag: str):
         """Removes a tag from this collection. Does nothing if the tag is not in the collection."""
@@ -333,7 +333,7 @@ class WorkshopCollection(SubscriberMixin, GuildActiveMixin, EditorMixin):
             }
         )
         self.tags.remove(tag)
-        self.last_edited = now()
+        self.last_edited = datetime.datetime.now()
 
     # bindings
     def _generate_default_alias_bindings(self):
@@ -562,7 +562,7 @@ class WorkshopCollectableObject(abc.ABC):
     def create_code_version(self, content: str):
         """Creates a new inactive code version, incrementing version num and setting creation time."""
         version = max((cv.version for cv in self.versions), default=0) + 1
-        cv = CodeVersion(version, content, now(), False)
+        cv = CodeVersion(version, content, datetime.datetime.now(), False)
         self.mdb_coll().update_one(
             {"_id": self.id},
             {"$push": {"versions": cv.to_dict()}}

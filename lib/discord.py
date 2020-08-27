@@ -4,7 +4,6 @@ import requests
 from flask import abort, current_app
 
 import config
-from lib.utils import now
 
 DISCORD_API = "https://discord.com/api/v6"
 DISCORD_CDN = "https://cdn.discordapp.com"
@@ -51,7 +50,7 @@ def refresh_token(ref_token):
 def handle_token_response(access_token_resp):
     access_token = access_token_resp['access_token']
     ref_token = access_token_resp['refresh_token']
-    expiry = now() + datetime.timedelta(seconds=access_token_resp['expires_in'])
+    expiry = datetime.datetime.now() + datetime.timedelta(seconds=access_token_resp['expires_in'])
 
     r = get("/users/@me", access_token)
     r.raise_for_status()
@@ -79,7 +78,7 @@ def discord_token_for(user_id: str):
         return None
 
     expiry = user['discord_auth']['expiry']
-    if expiry < now():
+    if expiry < datetime.datetime.now():
         resp = refresh_token(user['discord_auth']['refresh_token'])
         token, _ = handle_token_response(resp)
         return token
