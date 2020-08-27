@@ -115,3 +115,8 @@ def maybe_json(**jkwargs):
 def nullable(t: type):
     """A helper function for type checking - type *t* or None."""
     return t, type(None)
+
+
+def now():
+    """Returns a tz-aware datetime object (UTC tz) representing the moment this function was called."""
+    return datetime.datetime.now(tz=datetime.timezone.utc)

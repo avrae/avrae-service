@@ -1,5 +1,3 @@
-import datetime
-
 import jwt
 from flask import Blueprint, request
 from requests import HTTPError
@@ -8,7 +6,7 @@ import config
 from lib.auth import requires_auth
 from lib.discord import discord_token_for, exchange_code, fetch_user_info, get_current_user_guilds, \
     handle_token_response, search_by_username
-from lib.utils import error, expect_json, jsonify, success
+from lib.utils import error, expect_json, jsonify, now, success
 
 discord = Blueprint('discord', __name__)
 
@@ -73,7 +71,7 @@ def handle_auth(data):
         {
             'iss': 'avrae.io',
             'aud': 'avrae.io',
-            'iat': datetime.datetime.now(),
+            'iat': now(),
             'id': str(user.id),
             'username': user.username,
             'discriminator': user.discriminator,
