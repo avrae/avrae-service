@@ -526,6 +526,14 @@ def get_entitlements():
     pass
 
 
+def get_entitlements_list():
+    pass
+
+
+def get_specific_entitlements():
+    pass
+
+
 @workshop.route("tags", methods=["GET"])
 def get_tags():
     tags = current_app.mdb.workshop_tags.find()

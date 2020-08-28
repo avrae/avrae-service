@@ -1,3 +1,6 @@
+import logging
+import sys
+
 import d20
 import sentry_sdk
 from flask import Flask, request
@@ -13,6 +16,7 @@ from blueprints.discord import discord
 from blueprints.homebrew.items import items
 from blueprints.homebrew.spells import spells
 from blueprints.workshop import workshop
+from gamedata.compendium import compendium
 from lib import errors
 from lib.auth import requires_auth
 from lib.discord import discord_token_for, get_user_info
@@ -26,11 +30,20 @@ if config.SENTRY_DSN is not None:
         integrations=[FlaskIntegration()]
     )
 
+# app init
 app = Flask(__name__)
 app.rdb = rdb = RedisIO(config.REDIS_URL)
 app.mdb = mdb = PyMongo(app, config.MONGO_URL).db
 
 CORS(app)
+
+# logging init
+log_formatter = logging.Formatter('%(levelname)s:%(name)s: %(message)s')
+handler = logging.StreamHandler(sys.stdout)
+handler.setFormatter(log_formatter)
+logger = logging.getLogger()
+logger.setLevel(logging.INFO)
+logger.addHandler(handler)
 
 
 # routes
@@ -89,6 +102,8 @@ app.register_blueprint(spells, url_prefix="/homebrew/spells")
 app.register_blueprint(workshop, url_prefix="/workshop")
 
 errors.register_error_handlers(app)
+
+compendium.reload(mdb)
 
 if __name__ == '__main__':
     app.run()
