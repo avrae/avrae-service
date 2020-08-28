@@ -5,7 +5,7 @@ from flask import Blueprint, current_app, request
 from gamedata.compendium import compendium
 from lib.auth import maybe_auth, requires_auth
 from lib.discord import fetch_user_info
-from lib.errors import NotAllowed
+from lib.errors import Error, NotAllowed
 from lib.utils import error, expect_json, maybe_json, nullable, success
 from workshop.collection import PublicationState, WorkshopAlias, WorkshopCollection, WorkshopSnippet
 from workshop.constants import ALIAS_SIZE_LIMIT, SNIPPET_SIZE_LIMIT
@@ -25,6 +25,23 @@ def not_found_handler(e):
 @workshop.errorhandler(NeedsServerAliaser)
 def needs_server_aliaser_handler(e):
     return error(403, str(e))
+
+
+# ==== auth helpers ====
+def get_collection_with_editor_check(coll_id, user):
+    coll = WorkshopCollection.from_id(coll_id)
+    if not (coll.is_owner(int(user.id)) or coll.is_editor(int(user.id))):
+        raise Error(403, "you do not have permission to edit this collection")
+    return coll
+
+
+def get_collectable_with_editor_check(cls, collectable_id, user):
+    collectable = cls.from_id(collectable_id)
+    coll = collectable.collection
+
+    if not (coll.is_owner(int(user.id)) or coll.is_editor(int(user.id))):
+        raise Error(403, "you do not have permission to edit this collection")
+    return collectable
 
 
 # ==== routes ====
@@ -92,10 +109,7 @@ def get_collection_batch(user):
 @expect_json(name=str, description=str, image=nullable(str))
 @requires_auth
 def edit_collection(user, body, coll_id):
-    coll = WorkshopCollection.from_id(coll_id)
-    if not (coll.is_owner(int(user.id)) or coll.is_editor(int(user.id))):
-        return error(403, "you do not have permission to edit this collection")
-
+    coll = get_collection_with_editor_check(coll_id, user)
     coll.update_info(name=body['name'], description=body['description'], image=body['image'])
     return success(coll.to_dict(js=True), 200)
 
@@ -167,10 +181,7 @@ def route_get_editors(_, coll_id):
 @expect_json(tag=str)
 @requires_auth
 def add_tag(user, body, coll_id):
-    coll = WorkshopCollection.from_id(coll_id)
-    if not (coll.is_owner(int(user.id)) or coll.is_editor(int(user.id))):
-        return error(403, "you do not have permission to edit this collection")
-
+    coll = get_collection_with_editor_check(coll_id, user)
     coll.add_tag(body['tag'])
     return success(coll.tags, 200)
 
@@ -179,10 +190,7 @@ def add_tag(user, body, coll_id):
 @expect_json(tag=str)
 @requires_auth
 def remove_tag(user, body, coll_id):
-    coll = WorkshopCollection.from_id(coll_id)
-    if not (coll.is_owner(int(user.id)) or coll.is_editor(int(user.id))):
-        return error(403, "you do not have permission to edit this collection")
-
+    coll = get_collection_with_editor_check(coll_id, user)
     coll.remove_tag(body['tag'])
     return success(coll.tags, 200)
 
@@ -192,9 +200,7 @@ def remove_tag(user, body, coll_id):
 @expect_json(name=str, docs=str)
 @requires_auth
 def create_alias(user, body, coll_id):
-    coll = WorkshopCollection.from_id(coll_id)
-    if not (coll.is_owner(int(user.id)) or coll.is_editor(int(user.id))):
-        return error(403, "you do not have permission to edit this collection")
+    coll = get_collection_with_editor_check(coll_id, user)
 
     if ' ' in body['name']:
         return error(400, "Alias names cannot contain spaces")
@@ -209,11 +215,8 @@ def create_alias(user, body, coll_id):
 @expect_json(name=str, docs=str)
 @requires_auth
 def create_subalias(user, body, alias_id):
-    alias = WorkshopAlias.from_id(alias_id)
-    coll = alias.collection
+    alias = get_collectable_with_editor_check(WorkshopAlias, alias_id, user)
 
-    if not (coll.is_owner(int(user.id)) or coll.is_editor(int(user.id))):
-        return error(403, "you do not have permission to edit this collection")
     if ' ' in body['name']:
         return error(400, "Alias names cannot contain spaces")
 
@@ -225,11 +228,8 @@ def create_subalias(user, body, alias_id):
 @expect_json(name=str, docs=str)
 @requires_auth
 def edit_alias(user, body, alias_id):
-    alias = WorkshopAlias.from_id(alias_id)
-    coll = alias.collection
+    alias = get_collectable_with_editor_check(WorkshopAlias, alias_id, user)
 
-    if not (coll.is_owner(int(user.id)) or coll.is_editor(int(user.id))):
-        return error(403, "you do not have permission to edit this collection")
     if ' ' in body['name']:
         return error(400, "Alias names cannot contain spaces")
     if body['name'] in current_app.rdb.jget("default_commands", []):
@@ -248,12 +248,7 @@ def get_alias(alias_id):
 @workshop.route("alias/<alias_id>", methods=["DELETE"])
 @requires_auth
 def delete_alias(user, alias_id):
-    alias = WorkshopAlias.from_id(alias_id)
-    coll = alias.collection
-
-    if not (coll.is_owner(int(user.id)) or coll.is_editor(int(user.id))):
-        return error(403, "you do not have permission to edit this collection")
-
+    alias = get_collectable_with_editor_check(WorkshopAlias, alias_id, user)
     alias.delete()
     return success(f"Deleted {alias.name}", 200)
 
@@ -262,11 +257,8 @@ def delete_alias(user, alias_id):
 @expect_json(content=str)
 @requires_auth
 def create_alias_code_version(user, body, alias_id):
-    alias = WorkshopAlias.from_id(alias_id)
-    coll = alias.collection
+    alias = get_collectable_with_editor_check(WorkshopAlias, alias_id, user)
 
-    if not (coll.is_owner(int(user.id)) or coll.is_editor(int(user.id))):
-        return error(403, "you do not have permission to edit this collection")
     if len(body['content']) > ALIAS_SIZE_LIMIT:
         return error(400, f"max alias size is {ALIAS_SIZE_LIMIT}")
 
@@ -278,12 +270,7 @@ def create_alias_code_version(user, body, alias_id):
 @expect_json(version=int)
 @requires_auth
 def set_active_alias_code_version(user, body, alias_id):
-    alias = WorkshopAlias.from_id(alias_id)
-    coll = alias.collection
-
-    if not (coll.is_owner(int(user.id)) or coll.is_editor(int(user.id))):
-        return error(403, "you do not have permission to edit this collection")
-
+    alias = get_collectable_with_editor_check(WorkshopAlias, alias_id, user)
     alias.set_active_code_version(body['version'])
     return success(alias.to_dict(js=True), 200)
 
@@ -306,12 +293,7 @@ def _remove_entitlement_from_collectable(collectable, entity_type: str, entity_i
 @expect_json(entity_type=str, entity_id=(str, int), required=bool, optional=['required'])
 @requires_auth
 def add_alias_entitlement(user, body, alias_id):
-    alias = WorkshopAlias.from_id(alias_id)
-    coll = alias.collection
-
-    if not (coll.is_owner(int(user.id)) or coll.is_editor(int(user.id))):
-        return error(403, "you do not have permission to edit this collection")
-
+    alias = get_collectable_with_editor_check(WorkshopAlias, alias_id, user)
     return success(_add_entitlement_to_collectable(alias, body['entity_type'], int(body['entity_id'])))
 
 
@@ -319,12 +301,7 @@ def add_alias_entitlement(user, body, alias_id):
 @expect_json(entity_type=str, entity_id=str)
 @requires_auth
 def delete_alias_entitlement(user, body, alias_id):
-    alias = WorkshopAlias.from_id(alias_id)
-    coll = alias.collection
-
-    if not (coll.is_owner(int(user.id)) or coll.is_editor(int(user.id))):
-        return error(403, "you do not have permission to edit this collection")
-
+    alias = get_collectable_with_editor_check(WorkshopAlias, alias_id, user)
     return success(_remove_entitlement_from_collectable(alias, body['entity_type'], int(body['entity_id'])))
 
 
@@ -333,9 +310,7 @@ def delete_alias_entitlement(user, body, alias_id):
 @expect_json(name=str, docs=str)
 @requires_auth
 def create_snippet(user, body, coll_id):
-    coll = WorkshopCollection.from_id(coll_id)
-    if not (coll.is_owner(int(user.id)) or coll.is_editor(int(user.id))):
-        return error(403, "you do not have permission to edit this collection")
+    coll = get_collection_with_editor_check(coll_id, user)
 
     if ' ' in body['name']:
         return error(400, "snippet names cannot contain spaces")
@@ -350,11 +325,8 @@ def create_snippet(user, body, coll_id):
 @expect_json(name=str, docs=str)
 @requires_auth
 def edit_snippet(user, body, snippet_id):
-    snippet = WorkshopSnippet.from_id(snippet_id)
-    coll = snippet.collection
+    snippet = get_collectable_with_editor_check(WorkshopSnippet, snippet_id, user)
 
-    if not (coll.is_owner(int(user.id)) or coll.is_editor(int(user.id))):
-        return error(403, "you do not have permission to edit this collection")
     if ' ' in body['name']:
         return error(400, "snippet names cannot contain spaces")
     if len(body['name']) < 2:
@@ -373,11 +345,7 @@ def get_snippet(snippet_id):
 @workshop.route("snippet/<snippet_id>", methods=["DELETE"])
 @requires_auth
 def delete_snippet(user, snippet_id):
-    snippet = WorkshopSnippet.from_id(snippet_id)
-    coll = snippet.collection
-
-    if not (coll.is_owner(int(user.id)) or coll.is_editor(int(user.id))):
-        return error(403, "you do not have permission to edit this collection")
+    snippet = get_collectable_with_editor_check(WorkshopSnippet, snippet_id, user)
 
     snippet.delete()
     return success(f"Deleted {snippet.name}", 200)
@@ -387,11 +355,8 @@ def delete_snippet(user, snippet_id):
 @expect_json(content=str)
 @requires_auth
 def create_snippet_code_version(user, body, snippet_id):
-    snippet = WorkshopSnippet.from_id(snippet_id)
-    coll = snippet.collection
+    snippet = get_collectable_with_editor_check(WorkshopSnippet, snippet_id, user)
 
-    if not (coll.is_owner(int(user.id)) or coll.is_editor(int(user.id))):
-        return error(403, "you do not have permission to edit this collection")
     if len(body['content']) > SNIPPET_SIZE_LIMIT:
         return error(400, f"max snippet size is {SNIPPET_SIZE_LIMIT}")
 
@@ -403,12 +368,7 @@ def create_snippet_code_version(user, body, snippet_id):
 @expect_json(version=int)
 @requires_auth
 def set_active_snippet_code_version(user, body, snippet_id):
-    snippet = WorkshopSnippet.from_id(snippet_id)
-    coll = snippet.collection
-
-    if not (coll.is_owner(int(user.id)) or coll.is_editor(int(user.id))):
-        return error(403, "you do not have permission to edit this collection")
-
+    snippet = get_collectable_with_editor_check(WorkshopSnippet, snippet_id, user)
     snippet.set_active_code_version(body['version'])
     return success(snippet.to_dict(js=True), 200)
 
@@ -417,11 +377,7 @@ def set_active_snippet_code_version(user, body, snippet_id):
 @expect_json(entity_type=str, entity_id=str, required=bool, optional=['required'])
 @requires_auth
 def add_snippet_entitlement(user, body, snippet_id):
-    snippet = WorkshopSnippet.from_id(snippet_id)
-    coll = snippet.collection
-    if not (coll.is_owner(int(user.id)) or coll.is_editor(int(user.id))):
-        return error(403, "you do not have permission to edit this collection")
-
+    snippet = get_collectable_with_editor_check(WorkshopSnippet, snippet_id, user)
     return success(_add_entitlement_to_collectable(snippet, body['entity_type'], int(body['entity_id'])))
 
 
@@ -429,11 +385,7 @@ def add_snippet_entitlement(user, body, snippet_id):
 @expect_json(entity_type=str, entity_id=str)
 @requires_auth
 def delete_snippet_entitlement(user, body, snippet_id):
-    snippet = WorkshopSnippet.from_id(snippet_id)
-    coll = snippet.collection
-    if not (coll.is_owner(int(user.id)) or coll.is_editor(int(user.id))):
-        return error(403, "you do not have permission to edit this collection")
-
+    snippet = get_collectable_with_editor_check(WorkshopSnippet, snippet_id, user)
     return success(_remove_entitlement_from_collectable(snippet, body['entity_type'], int(body['entity_id'])))
 
 
