@@ -47,7 +47,7 @@ def error(status: int, message: str = None):
     }, status)
 
 
-def expect_json(*, strict=False, **fields):
+def expect_json(*, strict=False, optional=None, **fields):
     """
     Returns a wrapper that enforces the presence of a JSON body, and the presence of certain fields in that body.
     Passes the JSON body as the first argument to the inner.
@@ -55,9 +55,12 @@ def expect_json(*, strict=False, **fields):
     If a field is missing or has the wrong type, returns 400.
 
     :param bool strict: Whether *only* the fields defined in *fields* are allowed.
+    :param list optional: A list of field names that should be optional.
     :param fields: A mapping of field->type of expected fields.
-    :type fields: type
+    :type fields: type or tuple
     """
+    if optional is None:
+        optional = set()
 
     def wrapper(func):
         @functools.wraps(func)
@@ -73,14 +76,16 @@ def expect_json(*, strict=False, **fields):
 
             # ensure fields are present
             if strict:
-                if set(fields) != set(body):
-                    return error(400, f"invalid body fields: expected {list(fields)}, got {list(body)}")
+                if not ((required := set(fields).difference(optional)).issubset(body) and set(fields).issuperset(body)):
+                    return error(400, f"invalid body fields: expected {list(required)}, got {list(body)}")
             else:
-                if not set(fields).issubset(body):
-                    return error(400, f"missing body fields: {list(set(fields).difference(body))}")
+                if not set(fields).difference(optional).issubset(body):
+                    return error(400, f"missing body fields: {list(set(fields).difference(optional, body))}")
 
             # check field types
             for field, e_type in fields.items():
+                if field in optional and field not in body:
+                    continue
                 if not isinstance(body[field], e_type):
                     return error(400, f"expected {field} to be {e_type.__name__}")
 

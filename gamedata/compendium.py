@@ -36,13 +36,13 @@ class Compendium:
         self.spells = []  # type: list[Sourced]
 
         # lookup helpers
-        self._entitlement_lookup = {}
+        self.entitlement_lookup = {}
 
     def reload(self, mdb):
         log.info("Reloading data")
         self.load_all_mongodb(mdb)
         self.load_common()
-        log.info(f"Data loading complete - {len(self._entitlement_lookup)} objects registered")
+        log.info(f"Data loading complete - {len(self.entitlement_lookup)} objects registered")
 
     def load_all_mongodb(self, mdb):
         lookup = {d['key']: d['object'] for d in mdb.static_data.find({})}
@@ -57,7 +57,7 @@ class Compendium:
         self.raw_spells = lookup.get('spells', [])
 
     def load_common(self):
-        self._entitlement_lookup = {}
+        self.entitlement_lookup = {}
 
         def deserialize_and_register_lookups(cls, data_source, entity_type):
             out = []
@@ -93,15 +93,15 @@ class Compendium:
         if entity.entity_id < 0:  # negative entity IDs is a nonmagical item hack, and can be ignored for now
             return
         k = (entity_type, entity.entity_id)
-        if k in self._entitlement_lookup:
+        if k in self.entitlement_lookup:
             log.info(f"Overwriting existing entity lookup key: {k} "
-                     f"({self._entitlement_lookup[k].name} -> {entity.name})")
-        self._entitlement_lookup[k] = entity
+                     f"({self.entitlement_lookup[k].name} -> {entity.name})")
+        self.entitlement_lookup[k] = entity
 
     # helpers
     def lookup_by_entitlement(self, entity_type: str, entity_id: int):
         """Gets an entity by its entitlement data."""
-        return self._entitlement_lookup.get((entity_type, entity_id))
+        return self.entitlement_lookup.get((entity_type, entity_id))
 
 
 compendium = Compendium()

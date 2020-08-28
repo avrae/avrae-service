@@ -592,6 +592,53 @@ class WorkshopCollectableObject(abc.ABC):
         self.code = cv.content
         self.collection.update_edit_time()
 
+    def add_entitlement(self, sourced_entity, required=False):
+        """
+        Adds a required entitlement to this collectable.
+
+        :type sourced_entity: gamedata.shared.Sourced
+        :param bool required: Whether or not this entitlement is required by a moderator (cannot be removed).
+        """
+        if sourced_entity.is_free:
+            raise NotAllowed("This entitlement is for a free object.")
+        re = RequiredEntitlement(sourced_entity.entity_type, sourced_entity.entity_id, required)
+        if (re.entity_type, re.entity_id) in ((existing.entity_type, existing.entity_id) for existing in
+                                              self.entitlements):
+            raise NotAllowed("This collectable already has this entitlement required.")
+        # add to database
+        self.mdb_coll().update_one(
+            {"_id": self.id},
+            {"$push": {
+                "entitlements": re.to_dict()
+            }}
+        )
+        self.collection.update_edit_time()
+        self.entitlements.append(re)
+        return [e.to_dict() for e in self.entitlements]
+
+    def remove_entitlement(self, sourced_entity):
+        """
+        Removes a required entitlement from this collectable.
+
+        :type sourced_entity: gamedata.shared.Sourced
+        """
+        existing = next((e for e in self.entitlements if
+                         (e.entity_type, e.entity_id) == (sourced_entity.entity_type, sourced_entity.entity_id)), None)
+        if existing is None:
+            raise NotAllowed("This collectable does not require this entitlement.")
+        if existing.required:
+            raise NotAllowed("This entitlement is required.")
+        # add to database
+        self.mdb_coll().update_one(
+            {"_id": self.id},
+            {"$pull": {
+                "entitlements": {"entity_type": existing.entity_type, "entity_id": existing.entity_id}
+            }}
+        )
+        self.collection.update_edit_time()
+        self.entitlements.remove(existing)
+        return [e.to_dict() for e in self.entitlements]
+
 
 class WorkshopAlias(WorkshopCollectableObject):
     def __init__(self, _id, name, code, versions, docs, entitlements, collection_id, subcommand_ids, parent_id,

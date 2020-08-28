@@ -2,6 +2,7 @@ from bson import ObjectId
 from bson.errors import InvalidId
 from flask import Blueprint, current_app, request
 
+from gamedata.compendium import compendium
 from lib.auth import maybe_auth, requires_auth
 from lib.discord import fetch_user_info
 from lib.errors import NotAllowed
@@ -287,19 +288,44 @@ def set_active_alias_code_version(user, body, alias_id):
     return success(alias.to_dict(js=True), 200)
 
 
-# todo entitlements
+def _add_entitlement_to_collectable(collectable, entity_type: str, entity_id: int):
+    sourced = compendium.lookup_by_entitlement(entity_type, entity_id)
+    if sourced is None:
+        return error(404, "Entitlement entity not found")
+    return collectable.add_entitlement(sourced)
+
+
+def _remove_entitlement_from_collectable(collectable, entity_type: str, entity_id: int):
+    sourced = compendium.lookup_by_entitlement(entity_type, entity_id)
+    if sourced is None:
+        return error(404, "Entitlement entity not found")
+    return collectable.remove_entitlement(sourced)
+
+
 @workshop.route("alias/<alias_id>/entitlement", methods=["POST"])
-@expect_json()
+@expect_json(entity_type=str, entity_id=(str, int), required=bool, optional=['required'])
 @requires_auth
 def add_alias_entitlement(user, body, alias_id):
-    return error(404, "not yet implemented")
+    alias = WorkshopAlias.from_id(alias_id)
+    coll = alias.collection
+
+    if not (coll.is_owner(int(user.id)) or coll.is_editor(int(user.id))):
+        return error(403, "you do not have permission to edit this collection")
+
+    return success(_add_entitlement_to_collectable(alias, body['entity_type'], int(body['entity_id'])))
 
 
 @workshop.route("alias/<alias_id>/entitlement", methods=["DELETE"])
-@expect_json()
+@expect_json(entity_type=str, entity_id=str)
 @requires_auth
 def delete_alias_entitlement(user, body, alias_id):
-    return error(404, "not yet implemented")
+    alias = WorkshopAlias.from_id(alias_id)
+    coll = alias.collection
+
+    if not (coll.is_owner(int(user.id)) or coll.is_editor(int(user.id))):
+        return error(403, "you do not have permission to edit this collection")
+
+    return success(_remove_entitlement_from_collectable(alias, body['entity_type'], int(body['entity_id'])))
 
 
 # ---- snippet operations ----
@@ -387,19 +413,28 @@ def set_active_snippet_code_version(user, body, snippet_id):
     return success(snippet.to_dict(js=True), 200)
 
 
-# todo entitlements
 @workshop.route("snippet/<snippet_id>/entitlement", methods=["POST"])
-@expect_json()
+@expect_json(entity_type=str, entity_id=str, required=bool, optional=['required'])
 @requires_auth
 def add_snippet_entitlement(user, body, snippet_id):
-    return error(404, "not yet implemented")
+    snippet = WorkshopSnippet.from_id(snippet_id)
+    coll = snippet.collection
+    if not (coll.is_owner(int(user.id)) or coll.is_editor(int(user.id))):
+        return error(403, "you do not have permission to edit this collection")
+
+    return success(_add_entitlement_to_collectable(snippet, body['entity_type'], int(body['entity_id'])))
 
 
 @workshop.route("snippet/<snippet_id>/entitlement", methods=["DELETE"])
-@expect_json()
+@expect_json(entity_type=str, entity_id=str)
 @requires_auth
 def delete_snippet_entitlement(user, body, snippet_id):
-    return error(404, "not yet implemented")
+    snippet = WorkshopSnippet.from_id(snippet_id)
+    coll = snippet.collection
+    if not (coll.is_owner(int(user.id)) or coll.is_editor(int(user.id))):
+        return error(403, "you do not have permission to edit this collection")
+
+    return success(_remove_entitlement_from_collectable(snippet, body['entity_type'], int(body['entity_id'])))
 
 
 # ---- subscription operations ----
@@ -520,18 +555,17 @@ def get_guild_subscriptions(guild_id):
 
 
 # ---- other ----
-# todo
 @workshop.route("entitlements", methods=["GET"])
 def get_entitlements():
-    pass
-
-
-def get_entitlements_list():
-    pass
-
-
-def get_specific_entitlements():
-    pass
+    """
+    Gets a dict of all valid entitlements.
+    Query: free: bool - include free entities?
+    {type-id -> entitlement}
+    """
+    if 'free' in request.args:
+        return success({f"{t}-{i}": sourced.to_dict() for (t, i), sourced in compendium.entitlement_lookup.items()})
+    return success({f"{t}-{i}": sourced.to_dict() for (t, i), sourced in compendium.entitlement_lookup.items() if
+                    not sourced.is_free})
 
 
 @workshop.route("tags", methods=["GET"])
