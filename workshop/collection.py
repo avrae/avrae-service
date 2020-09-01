@@ -379,7 +379,7 @@ class WorkshopCollection(SubscriberMixin, GuildActiveMixin, EditorMixin):
 
     def subscribe(self, user_id: int, alias_bindings=None, snippet_bindings=None):
         """Updates the contextual author as a subscriber, with given name bindings."""
-        if self.publish_state == PublicationState.PRIVATE and not self.is_owner(user_id):
+        if self.publish_state == PublicationState.PRIVATE and not (self.is_owner(user_id) or self.is_editor(user_id)):
             raise NotAllowed("This collection is private.")
 
         # generate default bindings
@@ -429,7 +429,8 @@ class WorkshopCollection(SubscriberMixin, GuildActiveMixin, EditorMixin):
 
     def set_server_active(self, guild_id: int, alias_bindings=None, snippet_bindings=None, invoker_id: int = None):
         """Sets the object as active for the contextual guild, with given name bindings."""
-        if self.publish_state == PublicationState.PRIVATE:
+        if self.publish_state == PublicationState.PRIVATE \
+                and not (self.is_owner(invoker_id) or self.is_editor(invoker_id)):
             raise NotAllowed("This collection is private.")
 
         # generate default bindings
