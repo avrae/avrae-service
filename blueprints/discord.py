@@ -35,7 +35,7 @@ def search_user(_):
     un = request.args['username']
     if '#' not in un:
         return error(400, "username must be username#discrim")
-    username, discriminator = un.split('#', 1)
+    username, discriminator = un.rsplit('#', 1)
     user = search_by_username(username, discriminator)
     if user is not None:
         return success(user.to_dict(), 200)

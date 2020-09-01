@@ -143,7 +143,7 @@ class EditorMixin(MixinBase, abc.ABC):
     def add_editor(self, user_id: int):
         """Adds the user to the editor list of this object."""
         if self.is_editor(user_id):
-            raise NotAllowed("you are already an editor")
+            raise NotAllowed("This user is already an editor.")
         self.sub_coll(current_app.mdb).insert_one({"type": "editor", "subscriber_id": user_id, "object_id": self.id})
 
     def remove_editor(self, user_id: int):

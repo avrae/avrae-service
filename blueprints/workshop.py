@@ -153,9 +153,14 @@ def get_editors(coll):
 def add_editor(user, coll_id, editor_id: int):
     coll = WorkshopCollection.from_id(coll_id)
     if not coll.is_owner(int(user.id)):
-        return error(403, "you do not have permission to add editors to this collection")
+        return error(403, "You do not have permission to add editors to this collection.")
+    if coll.is_owner(editor_id):
+        return error(409, "You are already the owner of this collection.")
 
-    coll.add_editor(editor_id)
+    try:
+        coll.add_editor(editor_id)
+    except NotAllowed as e:
+        return error(409, str(e))
     return success(get_editors(coll), 200)
 
 
