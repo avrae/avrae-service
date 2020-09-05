@@ -207,13 +207,17 @@ def remove_tag(user, body, coll_id):
 def create_alias(user, body, coll_id):
     coll = get_collection_with_editor_check(coll_id, user)
 
+    if not body['name']:
+        return error(400, "Alias must have a name")
     if ' ' in body['name']:
         return error(400, "Alias names cannot contain spaces")
     if body['name'] in current_app.rdb.jget("default_commands", []):
         return error(409, f"{body['name']} is already a built-in command")
 
     alias = coll.create_alias(body['name'], body['docs'])
-    return success(alias.to_dict(js=True), 201)
+    result = alias.to_dict(js=True)
+    result['subcommands'] = []  # return WorkshopAliasFull interface
+    return success(result, 201)
 
 
 @workshop.route("alias/<alias_id>/alias", methods=["POST"])
@@ -222,11 +226,15 @@ def create_alias(user, body, coll_id):
 def create_subalias(user, body, alias_id):
     alias = get_collectable_with_editor_check(WorkshopAlias, alias_id, user)
 
+    if not body['name']:
+        return error(400, "Alias must have a name")
     if ' ' in body['name']:
         return error(400, "Alias names cannot contain spaces")
 
     subalias = alias.create_subalias(body['name'], body['docs'])
-    return success(subalias.to_dict(js=True), 201)
+    result = subalias.to_dict(js=True)
+    result['subcommands'] = []  # return WorkshopAliasFull interface
+    return success(result, 201)
 
 
 @workshop.route("alias/<alias_id>", methods=["PATCH"])
@@ -235,6 +243,8 @@ def create_subalias(user, body, alias_id):
 def edit_alias(user, body, alias_id):
     alias = get_collectable_with_editor_check(WorkshopAlias, alias_id, user)
 
+    if not body['name']:
+        return error(400, "Alias must have a name")
     if ' ' in body['name']:
         return error(400, "Alias names cannot contain spaces")
     if body['name'] in current_app.rdb.jget("default_commands", []):
