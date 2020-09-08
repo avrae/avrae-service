@@ -313,7 +313,7 @@ def add_alias_entitlement(user, body, alias_id):
 
 
 @workshop.route("alias/<alias_id>/entitlement", methods=["DELETE"])
-@expect_json(entity_type=str, entity_id=str)
+@expect_json(entity_type=str, entity_id=(str, int))
 @requires_auth
 def delete_alias_entitlement(user, body, alias_id):
     alias = get_collectable_with_editor_check(WorkshopAlias, alias_id, user)
@@ -389,7 +389,7 @@ def set_active_snippet_code_version(user, body, snippet_id):
 
 
 @workshop.route("snippet/<snippet_id>/entitlement", methods=["POST"])
-@expect_json(entity_type=str, entity_id=str, required=bool, optional=['required'])
+@expect_json(entity_type=str, entity_id=(str, int), required=bool, optional=['required'])
 @requires_auth
 def add_snippet_entitlement(user, body, snippet_id):
     snippet = get_collectable_with_editor_check(WorkshopSnippet, snippet_id, user)
@@ -397,7 +397,7 @@ def add_snippet_entitlement(user, body, snippet_id):
 
 
 @workshop.route("snippet/<snippet_id>/entitlement", methods=["DELETE"])
-@expect_json(entity_type=str, entity_id=str)
+@expect_json(entity_type=str, entity_id=(str, int))
 @requires_auth
 def delete_snippet_entitlement(user, body, snippet_id):
     snippet = get_collectable_with_editor_check(WorkshopSnippet, snippet_id, user)
