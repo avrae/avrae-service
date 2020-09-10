@@ -113,22 +113,33 @@ def _relevance_based_explore(tags: list, q: str, page: int):
 def _metric_based_explore(metric: str, tags: list, q: str, page: int):
     """Returns a list of ids for a time-based explore query."""
 
-    query = {"publish_state": PublicationState.PUBLISHED.value}
+    query = [{"term": {"publish_state": PublicationState.PUBLISHED.value}}]
 
     if tags:
-        query["tags"] = {"$all": tags}
+        query.append({"terms": {"tags": tags}})
 
     if q:
-        # https://docs.mongodb.com/manual/text-search/
-        query["$text"] = {"$search": q}
+        query.append({"multi_match": {
+            "query": q,
+            "fields": ["name", "description"]  # search for the query in name, desc - name 3x more important
+        }})
 
-    cursor = current_app.mdb.workshop_collections.find(query)
+    resp = requests.get(
+        f"{config.ELASTICSEARCH_ENDPOINT}/workshop_collections/_search",
+        json={
+            "query": {"bool": {
+                "must": query
+            }},
+            "sort": [{metric: "desc"}],
+            "from": RESULTS_PER_PAGE * (page - 1),
+            "size": RESULTS_PER_PAGE,
+            "_source": False
+        }
+    )
+    resp.raise_for_status()
+    result = resp.json()
 
-    cursor.sort(metric, pymongo.DESCENDING)
-    cursor.limit(RESULTS_PER_PAGE)  # 50 results/page
-    cursor.skip(RESULTS_PER_PAGE * (page - 1))  # seek to page
-
-    return [str(coll['_id']) for coll in cursor]
+    return [str(sr['_id']) for sr in result['hits']['hits']]
 
 
 def _popularity_based_explore(days: int, tags: list, q: str, page: int):
