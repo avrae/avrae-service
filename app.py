@@ -17,7 +17,7 @@ from blueprints.homebrew.items import items
 from blueprints.homebrew.spells import spells
 from blueprints.workshop import workshop
 from gamedata.compendium import compendium
-from lib import errors
+from lib import elasticsearch, errors
 from lib.auth import requires_auth
 from lib.discord import discord_token_for, get_user_info
 from lib.redisIO import RedisIO
@@ -104,6 +104,7 @@ app.register_blueprint(workshop, url_prefix="/workshop")
 errors.register_error_handlers(app)
 
 compendium.reload(mdb)
+elasticsearch.init()
 
 if __name__ == '__main__':
     app.run()
