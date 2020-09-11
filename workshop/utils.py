@@ -75,25 +75,29 @@ def explore_collections(order: str = 'popular-1w', tags: list = None, q: str = N
         raise ValueError(f"unknown order: {order}")
 
 
+def _build_query(tags: list, q: str):
+    """Builds a default ES query."""
+    query = [{"term": {"publish_state": {"value": PublicationState.PUBLISHED.value}}}]
+
+    if tags:
+        query.append({"terms": {"tags": tags}})
+
+    if q:
+        query.append({"multi_match": {
+            "query": q,
+            "fields": ["name^3", "description"]  # search for the query in name, desc - name 3x more important
+        }})
+    return query
+
+
 def _relevance_based_explore(tags: list, q: str, page: int):
     """Returns a list of ids for a relevance-based explore query."""
     if not q:
         return _popularity_based_explore(7, tags, q, page)
 
-    query = [
-        {"multi_match": {
-            "query": q,
-            "fields": ["name^3", "description"]  # search for the query in name, desc - name 3x more important
-        }}
-    ]
-
-    if tags:
-        query.append({"terms": {"tags": tags}})
-
     es_query = {
         "query": {"bool": {
-            "filter": {"term": {"publish_state": {"value": PublicationState.PUBLISHED.value}}},
-            "must": query
+            "must": _build_query(tags, q)
         }},
         "sort": ["_score"],
         "from": RESULTS_PER_PAGE * (page - 1),
@@ -114,20 +118,9 @@ def _relevance_based_explore(tags: list, q: str, page: int):
 def _metric_based_explore(metric: str, tags: list, q: str, page: int):
     """Returns a list of ids for a time-based explore query."""
 
-    query = [{"term": {"publish_state": {"value": PublicationState.PUBLISHED.value}}}]
-
-    if tags:
-        query.append({"terms": {"tags": tags}})
-
-    if q:
-        query.append({"multi_match": {
-            "query": q,
-            "fields": ["name", "description"]  # search for the query in name, desc - name 3x more important
-        }})
-
     es_query = {
         "query": {"bool": {
-            "must": query
+            "must": _build_query(tags, q)
         }},
         "sort": [{metric: "desc"}],
         "from": RESULTS_PER_PAGE * (page - 1),
@@ -184,20 +177,9 @@ def _popularity_based_explore(days: int, tags: list, q: str, page: int):
     most_popular_ids = [(b['key'], b['the_score']['value']) for b in result['aggregations']['collections']['buckets']]
 
     # filter most popular ids by search/publish state
-    query = [{"term": {"publish_state": {"value": PublicationState.PUBLISHED.value}}}]
-
-    if tags:
-        query.append({"terms": {"tags": tags}})
-
-    if q:
-        query.append({"multi_match": {
-            "query": q,
-            "fields": ["name", "description"]
-        }})
-
     es_query = {
         "query": {"bool": {
-            "filter": query,  # filter results by search, tags, publish state
+            "filter": _build_query(tags, q),  # filter results by search, tags, publish state
             "should": [
                 {"term": {"_id": {"value": the_id, "boost": the_score}}}
                 for the_id, the_score in most_popular_ids
