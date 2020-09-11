@@ -1,6 +1,3 @@
-import datetime
-
-import pymongo
 import requests
 from flask import current_app
 
@@ -91,18 +88,20 @@ def _relevance_based_explore(tags: list, q: str, page: int):
     if tags:
         query.append({"terms": {"tags": tags}})
 
+    es_query = {
+        "query": {"bool": {
+            "filter": {"term": {"publish_state": {"value": PublicationState.PUBLISHED.value}}},
+            "must": query
+        }},
+        "sort": ["_score"],
+        "from": RESULTS_PER_PAGE * (page - 1),
+        "size": RESULTS_PER_PAGE,
+        "_source": False
+    }
+
     resp = requests.get(
         f"{config.ELASTICSEARCH_ENDPOINT}/workshop_collections/_search",
-        json={
-            "query": {"bool": {
-                "filter": {"term": {"publish_state": PublicationState.PUBLISHED.value}},
-                "must": query
-            }},
-            "sort": ["_score"],
-            "from": RESULTS_PER_PAGE * (page - 1),
-            "size": RESULTS_PER_PAGE,
-            "_source": False
-        }
+        json=es_query
     )
     resp.raise_for_status()
     result = resp.json()
@@ -113,7 +112,7 @@ def _relevance_based_explore(tags: list, q: str, page: int):
 def _metric_based_explore(metric: str, tags: list, q: str, page: int):
     """Returns a list of ids for a time-based explore query."""
 
-    query = [{"term": {"publish_state": PublicationState.PUBLISHED.value}}]
+    query = [{"term": {"publish_state": {"value": PublicationState.PUBLISHED.value}}}]
 
     if tags:
         query.append({"terms": {"tags": tags}})
@@ -124,17 +123,19 @@ def _metric_based_explore(metric: str, tags: list, q: str, page: int):
             "fields": ["name", "description"]  # search for the query in name, desc - name 3x more important
         }})
 
+    es_query = {
+        "query": {"bool": {
+            "must": query
+        }},
+        "sort": [{metric: "desc"}],
+        "from": RESULTS_PER_PAGE * (page - 1),
+        "size": RESULTS_PER_PAGE,
+        "_source": False
+    }
+
     resp = requests.get(
         f"{config.ELASTICSEARCH_ENDPOINT}/workshop_collections/_search",
-        json={
-            "query": {"bool": {
-                "must": query
-            }},
-            "sort": [{metric: "desc"}],
-            "from": RESULTS_PER_PAGE * (page - 1),
-            "size": RESULTS_PER_PAGE,
-            "_source": False
-        }
+        json=es_query
     )
     resp.raise_for_status()
     result = resp.json()
