@@ -38,7 +38,8 @@ def ensure_indices_exist():
                     "type": {"type": "keyword"},
                     "object_id": {"type": "keyword"},
                     "timestamp": {"type": "date"},
-                    "user_id": {"type": "keyword"}
+                    "user_id": {"type": "keyword"},
+                    "sub_score": {"type": "integer"}
                 }
             }
         }
