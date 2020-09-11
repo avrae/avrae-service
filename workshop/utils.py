@@ -1,3 +1,5 @@
+import datetime
+
 import requests
 from flask import current_app
 
@@ -145,4 +147,73 @@ def _metric_based_explore(metric: str, tags: list, q: str, page: int):
 
 def _popularity_based_explore(days: int, tags: list, q: str, page: int):
     """Returns a list of ids for a popularity-based explore query."""
-    pass
+    since_ts = datetime.date.today() - datetime.timedelta(days=days)
+
+    es_query = {
+        # get docs that are relevant
+        "query": {"bool": {
+            "must": {"terms": {"type": ["subscribe", "server_subscribe", "unsubscribe", "server_unsubscribe"]}},
+            "filter": {"range": {"timestamp": {"gte": since_ts.isoformat()}}}
+        }},
+        # bucket by collection id and compute sub score per bucket
+        "aggs": {
+            "collections": {
+                "terms": {
+                    "field": "object_id",
+                    "size": 512,  # only 512 most popular collections will be shown
+                    "order": {"the_score": "desc"}  # sort by sub score
+                },
+                "aggs": {
+                    "the_score": {
+                        "sum": {"field": "sub_score", "missing": 0}
+                    }
+                }
+            }
+        },
+        "size": 0  # only return aggregation results
+    }
+
+    # query most popular ids
+    resp = requests.get(
+        f"{config.ELASTICSEARCH_ENDPOINT}/workshop_events/_search?request_cache=true",
+        json=es_query
+    )
+    resp.raise_for_status()
+    result = resp.json()
+
+    most_popular_ids = [(b['key'], b['the_score']['value']) for b in result['aggregations']['collections']['buckets']]
+
+    # filter most popular ids by search/publish state
+    query = [{"term": {"publish_state": {"value": PublicationState.PUBLISHED.value}}}]
+
+    if tags:
+        query.append({"terms": {"tags": tags}})
+
+    if q:
+        query.append({"multi_match": {
+            "query": q,
+            "fields": ["name", "description"]
+        }})
+
+    es_query = {
+        "query": {"bool": {
+            "filter": query,  # filter results by search, tags, publish state
+            "should": [
+                {"term": {"_id": {"value": the_id, "boost": the_score}}}
+                for the_id, the_score in most_popular_ids
+            ]  # and score by popularity
+        }},
+        "sort": ["_score"],
+        "from": RESULTS_PER_PAGE * (page - 1),
+        "size": RESULTS_PER_PAGE,
+        "_source": False
+    }
+
+    resp = requests.get(
+        f"{config.ELASTICSEARCH_ENDPOINT}/workshop_collections/_search",
+        json=es_query
+    )
+    resp.raise_for_status()
+    result = resp.json()
+
+    return [str(sr['_id']) for sr in result['hits']['hits']]

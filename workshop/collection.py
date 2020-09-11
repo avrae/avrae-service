@@ -507,10 +507,19 @@ class WorkshopCollection(SubscriberMixin, GuildActiveMixin, EditorMixin):
     @staticmethod
     def log_event(event):
         """Logs the event and pushes it to ElasticSearch."""
+        es_event = event.copy()  # we make a copy because mdb insert adds an _id field which makes es unhappy
         current_app.mdb.analytics_alias_events.insert_one(event)
+
+        # add a sub_score metric
+        es_event['sub_score'] = 0
+        if es_event['type'] in ('subscribe', 'server_subscribe'):
+            es_event['sub_score'] = 1
+        elif es_event['type'] in ('unsubscribe', 'server_unsubscribe'):
+            es_event['sub_score'] = -1
+
         requests.post(
             f"{config.ELASTICSEARCH_ENDPOINT}/workshop_events/_doc",
-            data=json.dumps(event, cls=HelperEncoder),
+            data=json.dumps(es_event, cls=HelperEncoder),
             headers={"Content-Type": "application/json"}
         )
 
