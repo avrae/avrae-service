@@ -19,3 +19,6 @@ DISCORD_BOT_TOKEN = os.getenv('DISCORD_BOT_TOKEN')
 
 # site auth
 JWT_SECRET = os.getenv('JWT_SECRET')
+
+# AWS stuff
+ELASTICSEARCH_ENDPOINT = os.getenv('ELASTICSEARCH_ENDPOINT')

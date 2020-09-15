@@ -2,11 +2,15 @@ import abc
 import collections
 import datetime
 import enum
+import json
 
+import requests
 from bson import ObjectId
 from flask import current_app
 
+import config
 from lib.errors import NotAllowed
+from lib.utils import HelperEncoder
 from workshop.errors import CollectableNotFound, CollectionNotFound
 from workshop.mixins import EditorMixin, GuildActiveMixin, SubscriberMixin
 
@@ -165,6 +169,7 @@ class WorkshopCollection(SubscriberMixin, GuildActiveMixin, EditorMixin):
         inst = cls(None, name, description, image, user_id, [], [], PublicationState.PRIVATE, 0, 0, now, now, [])
         result = current_app.mdb.workshop_collections.insert_one(inst.to_dict())
         inst.id = result.inserted_id
+        inst.update_elasticsearch()
         return inst
 
     def update_info(self, name: str, description: str, image):
@@ -184,6 +189,7 @@ class WorkshopCollection(SubscriberMixin, GuildActiveMixin, EditorMixin):
         self.description = description
         self.image = image
         self.last_edited = datetime.datetime.now()
+        self.update_elasticsearch()
 
     def delete(self):
         # do not allow deletion of published collections
@@ -200,6 +206,9 @@ class WorkshopCollection(SubscriberMixin, GuildActiveMixin, EditorMixin):
         current_app.mdb.workshop_collections.delete_one(
             {"_id": self.id}
         )
+
+        # delete from elasticsearch
+        requests.delete(f"{config.ELASTICSEARCH_ENDPOINT}/workshop_collections/_doc/{str(self.id)}")
 
     def update_edit_time(self):
         current_app.mdb.workshop_collections.update_one(
@@ -242,6 +251,7 @@ class WorkshopCollection(SubscriberMixin, GuildActiveMixin, EditorMixin):
         )
         self.publish_state = new_state
         self.last_edited = datetime.datetime.now()
+        self.update_elasticsearch()
 
     def create_alias(self, name, docs):
         code = "echo Hello world!"
@@ -270,6 +280,8 @@ class WorkshopCollection(SubscriberMixin, GuildActiveMixin, EditorMixin):
             {"type": {"$in": ["subscribe", "server_active"]}, "object_id": self.id},
             {"$push": {"alias_bindings": new_binding}}
         )
+
+        self.update_elasticsearch()
 
         return inst
 
@@ -301,6 +313,8 @@ class WorkshopCollection(SubscriberMixin, GuildActiveMixin, EditorMixin):
             {"$push": {"snippet_bindings": new_binding}}
         )
 
+        self.update_elasticsearch()
+
         return inst
 
     def add_tag(self, tag: str):
@@ -319,6 +333,7 @@ class WorkshopCollection(SubscriberMixin, GuildActiveMixin, EditorMixin):
         )
         self.tags.append(tag)
         self.last_edited = datetime.datetime.now()
+        self.update_elasticsearch()
 
     def remove_tag(self, tag: str):
         """Removes a tag from this collection. Does nothing if the tag is not in the collection."""
@@ -334,6 +349,7 @@ class WorkshopCollection(SubscriberMixin, GuildActiveMixin, EditorMixin):
         )
         self.tags.remove(tag)
         self.last_edited = datetime.datetime.now()
+        self.update_elasticsearch()
 
     # bindings
     def _generate_default_alias_bindings(self):
@@ -407,7 +423,7 @@ class WorkshopCollection(SubscriberMixin, GuildActiveMixin, EditorMixin):
                 {"$inc": {"num_subscribers": 1}}
             )
             # log subscribe event
-            current_app.mdb.analytics_alias_events.insert_one(
+            self.log_event(
                 {"type": "subscribe", "object_id": self.id, "timestamp": datetime.datetime.utcnow(), "user_id": user_id}
             )
 
@@ -423,7 +439,7 @@ class WorkshopCollection(SubscriberMixin, GuildActiveMixin, EditorMixin):
             {"$inc": {"num_subscribers": -1}}
         )
         # log unsub event
-        current_app.mdb.analytics_alias_events.insert_one(
+        self.log_event(
             {"type": "unsubscribe", "object_id": self.id, "timestamp": datetime.datetime.utcnow(), "user_id": user_id}
         )
 
@@ -458,7 +474,7 @@ class WorkshopCollection(SubscriberMixin, GuildActiveMixin, EditorMixin):
                 {"$inc": {"num_guild_subscribers": 1}}
             )
             # log sub event
-            current_app.mdb.analytics_alias_events.insert_one(
+            self.log_event(
                 {"type": "server_subscribe", "object_id": self.id, "timestamp": datetime.datetime.utcnow(),
                  "user_id": invoker_id}
             )
@@ -475,9 +491,36 @@ class WorkshopCollection(SubscriberMixin, GuildActiveMixin, EditorMixin):
             {"$inc": {"num_guild_subscribers": -1}}
         )
         # log unsub event
-        current_app.mdb.analytics_alias_events.insert_one(
+        self.log_event(
             {"type": "server_unsubscribe", "object_id": self.id, "timestamp": datetime.datetime.utcnow(),
              "user_id": invoker_id}
+        )
+
+    def update_elasticsearch(self):
+        """POSTs the latest version of this collection to ElasticSearch (fire-and-forget)."""
+        requests.post(
+            f"{config.ELASTICSEARCH_ENDPOINT}/workshop_collections/_doc/{str(self.id)}",
+            data=json.dumps(self.to_dict(), cls=HelperEncoder),
+            headers={"Content-Type": "application/json"}
+        )
+
+    @staticmethod
+    def log_event(event):
+        """Logs the event and pushes it to ElasticSearch."""
+        es_event = event.copy()  # we make a copy because mdb insert adds an _id field which makes es unhappy
+        current_app.mdb.analytics_alias_events.insert_one(event)
+
+        # add a sub_score metric
+        es_event['sub_score'] = 0
+        if es_event['type'] in ('subscribe', 'server_subscribe'):
+            es_event['sub_score'] = 1
+        elif es_event['type'] in ('unsubscribe', 'server_unsubscribe'):
+            es_event['sub_score'] = -1
+
+        requests.post(
+            f"{config.ELASTICSEARCH_ENDPOINT}/workshop_events/_doc",
+            data=json.dumps(es_event, cls=HelperEncoder),
+            headers={"Content-Type": "application/json"}
         )
 
 

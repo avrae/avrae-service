@@ -1,9 +1,9 @@
 import datetime
 
-import pymongo
 import requests
 from flask import current_app
 
+import config
 from lib import discord
 from lib.discord import UserInfo
 from workshop.collection import PublicationState
@@ -64,122 +64,138 @@ def explore_collections(order: str = 'popular-1w', tags: list = None, q: str = N
     elif order == "edittime":
         return _metric_based_explore("last_edited", tags, q, page)
     elif order == "popular-1w":
-        return _popularity_based_explore('7d', tags, q, page)
+        return _popularity_based_explore(7, tags, q, page)
     elif order == "popular-1m":
-        return _popularity_based_explore('30d', tags, q, page)
+        return _popularity_based_explore(30, tags, q, page)
     elif order == "popular-6m":
-        return _popularity_based_explore('180d', tags, q, page)
+        return _popularity_based_explore(180, tags, q, page)
     elif order == "popular-all":
         return _metric_based_explore("num_guild_subscribers", tags, q, page)
     else:
         raise ValueError(f"unknown order: {order}")
 
 
+def _build_query(tags: list, q: str):
+    """Builds a default ES query."""
+    query = [{"term": {"publish_state": {"value": PublicationState.PUBLISHED.value}}}]
+
+    if tags:
+        query.append({"terms": {"tags": tags}})
+
+    if q:
+        query.append({"multi_match": {
+            "query": q,
+            "fields": ["name^3", "description"]  # search for the query in name, desc - name 3x more important
+        }})
+    return query
+
+
 def _relevance_based_explore(tags: list, q: str, page: int):
     """Returns a list of ids for a relevance-based explore query."""
     if not q:
-        return _popularity_based_explore('7d', tags, q, page)
+        return _popularity_based_explore(7, tags, q, page)
 
-    query = {"publish_state": PublicationState.PUBLISHED.value,
-             "$text": {"$search": q}}
+    es_query = {
+        "query": {"bool": {
+            "must": _build_query(tags, q)
+        }},
+        "sort": ["_score"],
+        "from": RESULTS_PER_PAGE * (page - 1),
+        "size": RESULTS_PER_PAGE,
+        "_source": False
+    }
 
-    if tags:
-        query["tags"] = {"$all": tags}
+    resp = requests.get(
+        f"{config.ELASTICSEARCH_ENDPOINT}/workshop_collections/_search",
+        json=es_query
+    )
+    resp.raise_for_status()
+    result = resp.json()
 
-    cursor = current_app.mdb.workshop_collections.find(query, {'score': {'$meta': 'textScore'}})
-
-    cursor.sort([('score', {'$meta': 'textScore'})])
-    cursor.limit(RESULTS_PER_PAGE)  # 50 results/page
-    cursor.skip(RESULTS_PER_PAGE * (page - 1))  # seek to page
-
-    return [str(coll['_id']) for coll in cursor]
+    return [str(sr['_id']) for sr in result['hits']['hits']]
 
 
 def _metric_based_explore(metric: str, tags: list, q: str, page: int):
     """Returns a list of ids for a time-based explore query."""
 
-    query = {"publish_state": PublicationState.PUBLISHED.value}
+    es_query = {
+        "query": {"bool": {
+            "must": _build_query(tags, q)
+        }},
+        "sort": [{metric: "desc"}],
+        "from": RESULTS_PER_PAGE * (page - 1),
+        "size": RESULTS_PER_PAGE,
+        "_source": False
+    }
 
-    if tags:
-        query["tags"] = {"$all": tags}
+    resp = requests.get(
+        f"{config.ELASTICSEARCH_ENDPOINT}/workshop_collections/_search",
+        json=es_query
+    )
+    resp.raise_for_status()
+    result = resp.json()
 
-    if q:
-        # https://docs.mongodb.com/manual/text-search/
-        query["$text"] = {"$search": q}
-
-    cursor = current_app.mdb.workshop_collections.find(query)
-
-    cursor.sort(metric, pymongo.DESCENDING)
-    cursor.limit(RESULTS_PER_PAGE)  # 50 results/page
-    cursor.skip(RESULTS_PER_PAGE * (page - 1))  # seek to page
-
-    return [str(coll['_id']) for coll in cursor]
+    return [str(sr['_id']) for sr in result['hits']['hits']]
 
 
-def _popularity_based_explore(since: str, tags: list, q: str, page: int):
+def _popularity_based_explore(days: int, tags: list, q: str, page: int):
     """Returns a list of ids for a popularity-based explore query."""
-    if since not in ('7d', '30d', '180d'):
-        raise ValueError("since must be 7d, 30d, or 180d")
+    since_ts = datetime.date.today() - datetime.timedelta(days=days)
 
-    if since == '7d':
-        since_ts = datetime.datetime.now() - datetime.timedelta(days=7)
-        cache_coll = "workshop_explore_scores_7d"
-    elif since == '30d':
-        since_ts = datetime.datetime.now() - datetime.timedelta(days=30)
-        cache_coll = "workshop_explore_scores_30d"
-    else:  # 180d
-        since_ts = datetime.datetime.now() - datetime.timedelta(days=180)
-        cache_coll = "workshop_explore_scores_180d"
+    es_query = {
+        # get docs that are relevant
+        "query": {"bool": {
+            "must": {"terms": {"type": ["subscribe", "server_subscribe", "unsubscribe", "server_unsubscribe"]}},
+            "filter": {"range": {"timestamp": {"gte": since_ts.isoformat()}}}
+        }},
+        # bucket by collection id and compute sub score per bucket
+        "aggs": {
+            "collections": {
+                "terms": {
+                    "field": "object_id",
+                    "size": 512,  # only 512 most popular collections will be shown
+                    "order": {"the_score": "desc"}  # sort by sub score
+                },
+                "aggs": {
+                    "the_score": {
+                        "sum": {"field": "sub_score", "missing": 0}
+                    }
+                }
+            }
+        },
+        "size": 0  # only return aggregation results
+    }
 
-    # do we have cached scores already?
-    if (cached := current_app.mdb[cache_coll].find_one()) is None or cached['expire_at'] < datetime.datetime.now():
-        # if not, refresh the cache
-        pipeline = [
-            # get all sub/unsub docs since time
-            {"$match": {"timestamp": {"$gt": since_ts},
-                        "type": {"$in": ["subscribe", "unsubscribe", "server_subscribe", "server_unsubscribe"]}}},
+    # query most popular ids
+    resp = requests.get(
+        f"{config.ELASTICSEARCH_ENDPOINT}/workshop_events/_search?request_cache=true",
+        json=es_query
+    )
+    resp.raise_for_status()
+    result = resp.json()
 
-            # give all subscribe and server_subscribe docs score: 1
-            # and all unsubscribe and server_unsubscribe docs score: -1
-            {"$addFields": {"score": {"$cond": {
-                "if": {"$in": ["$type", ["subscribe", "server_subscribe"]]},
-                "then": 1,
-                "else": -1}}}},
+    most_popular_ids = [(b['key'], b['the_score']['value']) for b in result['aggregations']['collections']['buckets']]
 
-            # group all these docs by collection id (object_id)
-            # -> {_id: coll_id, score: num_subs}
-            {"$group": {"_id": "$object_id", "score": {"$sum": "$score"}}},
+    # filter most popular ids by search/publish state
+    es_query = {
+        "query": {"bool": {
+            "filter": _build_query(tags, q),  # filter results by search, tags, publish state
+            "should": [
+                {"term": {"_id": {"value": the_id, "boost": the_score}}}
+                for the_id, the_score in most_popular_ids
+            ]  # and score by popularity
+        }},
+        "sort": ["_score"],
+        "from": RESULTS_PER_PAGE * (page - 1),
+        "size": RESULTS_PER_PAGE,
+        "_source": False
+    }
 
-            # put the actual collection in the doc
-            {"$lookup": {"from": "workshop_collections", "localField": "_id", "foreignField": "_id",
-                         "as": "collection"}},
+    resp = requests.get(
+        f"{config.ELASTICSEARCH_ENDPOINT}/workshop_collections/_search",
+        json=es_query
+    )
+    resp.raise_for_status()
+    result = resp.json()
 
-            # filter out deleted and non-published collections
-            {"$match": {"collection": {"$size": 1},
-                        "collection.0.publish_state": PublicationState.PUBLISHED.value}},
-
-            # add a timestamp for the expiring index (TTL 6h)
-            {"$addFields": {"expire_at": datetime.datetime.now() + datetime.timedelta(hours=6)}},
-
-            # pipe the scores to an expiring collection for further queries
-            {"$out": cache_coll}
-        ]
-
-        current_app.mdb.analytics_alias_events.aggregate(pipeline)
-
-    # now that the cache is up-to-date, we can query it
-    query = {}
-
-    if tags:
-        query["collection.0.tags"] = {"$all": tags}
-
-    if q:
-        query["$text"] = {"$search": q}
-
-    cursor = current_app.mdb[cache_coll].find(query)
-
-    cursor.sort('score', pymongo.DESCENDING)
-    cursor.limit(RESULTS_PER_PAGE)  # 50 results/page
-    cursor.skip(RESULTS_PER_PAGE * (page - 1))  # seek to page
-
-    return [str(coll['_id']) for coll in cursor]
+    return [str(sr['_id']) for sr in result['hits']['hits']]
