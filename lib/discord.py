@@ -1,7 +1,7 @@
 import datetime
 
 import requests
-from flask import abort, current_app, request
+from flask import abort, current_app
 
 import config
 
@@ -110,6 +110,12 @@ def get(endpoint, token):
     return requests.get(f"{DISCORD_API}{endpoint}", headers=headers)
 
 
+def bot_get(endpoint):
+    headers = HEADERS.copy()
+    headers['Authorization'] = f"Bot {config.DISCORD_BOT_TOKEN}"
+    return requests.get(f"{DISCORD_API}{endpoint}", headers=headers)
+
+
 def get_user_info(discord_access_token):
     r = get("/users/@me", discord_access_token)
     try:
@@ -133,3 +139,47 @@ def fetch_user_info(user_id):
         return UserInfo(user)
     else:
         return UserInfo({"username": str(user_id), "id": str(user_id), "discriminator": "0000", "avatar": None})
+
+
+def search_by_username(username, discriminator):
+    user = current_app.mdb.users.find_one({"username": username, "discriminator": discriminator})
+    if user is not None:
+        del user['_id']  # mongo ID
+        return UserInfo(user)
+    return None
+
+
+# guilds
+def get_current_user_guilds(discord_access_token):
+    """
+    Returns a list of partial guild objects the user is a member of.
+    https://discord.com/developers/docs/resources/user#get-current-user-guilds
+    """
+    r = get("/users/@me/guilds", discord_access_token)
+    r.raise_for_status()
+    return r.json()
+
+
+def get_guild_roles(guild_id):
+    """
+    Gets a list of role objects for the guild.
+    https://discord.com/developers/docs/resources/guild#get-guild-roles
+
+    :type guild_id: str or int
+    """
+    r = bot_get(f"/guilds/{guild_id}/roles")
+    r.raise_for_status()
+    return r.json()
+
+
+def get_guild_member(guild_id, user_id):
+    """
+    Gets a guild member object for the given user.
+    https://discord.com/developers/docs/resources/guild#get-guild-member
+
+    :type guild_id: str or int
+    :type user_id: str or int
+    """
+    r = bot_get(f"/guilds/{guild_id}/members/{user_id}")
+    r.raise_for_status()
+    return r.json()

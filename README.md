@@ -19,6 +19,13 @@ The development config defaults to the MongoDB/Redis servers run by [Avrae](http
 1. Copy `docker/config-development.py` to `config.py`.
 2. Set the environment variables `AVRAE_MONGO_URL` and `AVRAE_REDIS_URL`, or change `test_mongo_url` and `test_redis_url` in `config.py`. 
 
+### ElasticSearch
+
+The Avrae service requires ElasticSearch for some features (e.g. searching alias workshop collections). You
+should either set up a dev ElasticSearch instance on AWS, or run an openElasticSearch distro.
+
+Whichever you choose, set the `ELASTICSEARCH_ENDPOINT` env var.
+
 ### Running locally
 
 1. Create a [virtual environment](https://docs.python.org/3/library/venv.html): `python3 -m venv venv`.

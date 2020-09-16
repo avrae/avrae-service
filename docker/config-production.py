@@ -12,5 +12,11 @@ DISCORD_CLIENT_SECRET = os.getenv('DISCORD_CLIENT_SECRET')
 OAUTH_REDIRECT_URI = "https://avrae.io/login"
 OAUTH_SCOPE = "identify guilds"
 
+# other discord
+DISCORD_BOT_TOKEN = os.getenv('DISCORD_BOT_TOKEN')
+
 # site auth
 JWT_SECRET = os.getenv('JWT_SECRET')
+
+# AWS stuff
+ELASTICSEARCH_ENDPOINT = os.getenv('ELASTICSEARCH_ENDPOINT')
