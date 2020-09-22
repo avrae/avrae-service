@@ -207,6 +207,9 @@ class WorkshopCollection(SubscriberMixin, GuildActiveMixin, EditorMixin):
             {"_id": self.id}
         )
 
+        # delete subscriptions
+        self.sub_coll(current_app.mdb).delete_many({"object_id": self.id})
+
         # delete from elasticsearch
         requests.delete(f"{config.ELASTICSEARCH_ENDPOINT}/workshop_collections/_doc/{str(self.id)}")
 
