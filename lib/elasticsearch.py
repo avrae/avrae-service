@@ -1,13 +1,21 @@
+import logging
+
 import requests
 
 import config
+
+log = logging.getLogger(__name__)
 
 
 def init():
     """Various things to run on application init."""
     if not config.ELASTICSEARCH_ENDPOINT:
         return
-    ensure_indices_exist()
+    try:
+        ensure_indices_exist()
+    except requests.ConnectionError as ce:
+        log.error(f"Got an error connecting to ElasticSearch: {ce}\n"
+                  f"This is fine on dev, but /workshop endpoints may be unhappy")
 
 
 def ensure_indices_exist():
