@@ -182,21 +182,18 @@ def _popularity_based_explore(days: int, tags: list, q: str, page: int):
     resp.raise_for_status()
     result = resp.json()
 
-    most_popular_ids = [(b['key'], b['the_score']['value']) for b in result['aggregations']['collections']['buckets']]
+    sorted_popular_ids = [b['key'] for b in result['aggregations']['collections']['buckets']]
 
     # filter most popular ids by search/publish state
     es_query = {
-        "query": {"bool": {
-            "filter": _build_query(tags, q),  # filter results by search, tags, publish state
-            "should": [
-                {"term": {"_id": {"value": the_id, "boost": the_score}}}
-                for the_id, the_score in most_popular_ids
-            ]  # and score by popularity
-        }},
-        "sort": ["_score"],
-        "from": RESULTS_PER_PAGE * (page - 1),
-        "size": RESULTS_PER_PAGE,
-        "_source": False
+        "query": {
+            "bool": {
+                "filter": _build_query(tags, q),  # filter results by search, tags, publish state
+                "must": {"ids": {"values": sorted_popular_ids}}
+            }
+        },
+        "_source": False,
+        "size": len(sorted_popular_ids)
     }
 
     resp = requests.get(
@@ -205,5 +202,11 @@ def _popularity_based_explore(days: int, tags: list, q: str, page: int):
     )
     resp.raise_for_status()
     result = resp.json()
+    matching_ids = {str(sr['_id']) for sr in result['hits']['hits']}
 
-    return [str(sr['_id']) for sr in result['hits']['hits']]
+    # compute final results by discarding nonmatching from popular ids
+    final_results = [i for i in sorted_popular_ids if i in matching_ids]
+    # skip to page
+    from_idx = RESULTS_PER_PAGE * (page - 1)
+    to_idx = from_idx + RESULTS_PER_PAGE
+    return final_results[from_idx:to_idx]
