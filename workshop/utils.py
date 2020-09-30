@@ -83,10 +83,12 @@ def _build_query(tags: list, q: str):
         query.append({"terms": {"tags": tags}})
 
     if q:
-        query.append({"multi_match": {
-            "query": q,
-            "fields": ["name^3", "description"]  # search for the query in name, desc - name 3x more important
-        }})
+        query.append({
+            "multi_match": {
+                "query": q,
+                "fields": ["name^3", "description"]  # search for the query in name, desc - name 3x more important
+            }
+        })
     return query
 
 
@@ -96,9 +98,11 @@ def _relevance_based_explore(tags: list, q: str, page: int):
         return _popularity_based_explore(7, tags, q, page)
 
     es_query = {
-        "query": {"bool": {
-            "must": _build_query(tags, q)
-        }},
+        "query": {
+            "bool": {
+                "must": _build_query(tags, q)
+            }
+        },
         "sort": ["_score"],
         "from": RESULTS_PER_PAGE * (page - 1),
         "size": RESULTS_PER_PAGE,
@@ -119,9 +123,11 @@ def _metric_based_explore(metric: str, tags: list, q: str, page: int):
     """Returns a list of ids for a time-based explore query."""
 
     es_query = {
-        "query": {"bool": {
-            "must": _build_query(tags, q)
-        }},
+        "query": {
+            "bool": {
+                "must": _build_query(tags, q)
+            }
+        },
         "sort": [{metric: "desc"}],
         "from": RESULTS_PER_PAGE * (page - 1),
         "size": RESULTS_PER_PAGE,
@@ -144,10 +150,12 @@ def _popularity_based_explore(days: int, tags: list, q: str, page: int):
 
     es_query = {
         # get docs that are relevant
-        "query": {"bool": {
-            "must": {"terms": {"type": ["subscribe", "server_subscribe", "unsubscribe", "server_unsubscribe"]}},
-            "filter": {"range": {"timestamp": {"gte": since_ts.isoformat()}}}
-        }},
+        "query": {
+            "bool": {
+                "must": {"terms": {"type": ["subscribe", "server_subscribe", "unsubscribe", "server_unsubscribe"]}},
+                "filter": {"range": {"timestamp": {"gte": since_ts.isoformat()}}}
+            }
+        },
         # bucket by collection id and compute sub score per bucket
         "aggs": {
             "collections": {
