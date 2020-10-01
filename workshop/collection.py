@@ -213,12 +213,14 @@ class WorkshopCollection(SubscriberMixin, GuildActiveMixin, EditorMixin):
         # delete from elasticsearch
         requests.delete(f"{config.ELASTICSEARCH_ENDPOINT}/workshop_collections/_doc/{str(self.id)}")
 
-    def update_edit_time(self):
+    def update_edit_time(self, update_es=True):
         current_app.mdb.workshop_collections.update_one(
             {"_id": self.id},
             {"$currentDate": {"last_edited": True}}
         )
         self.last_edited = datetime.datetime.now()
+        if update_es:
+            self.update_elasticsearch()
 
     def set_state(self, new_state):
         """
