@@ -45,7 +45,7 @@ def search_user(_):
 @discord.route("guilds", methods=["GET"])
 @requires_auth
 def get_user_guilds(user):
-    guilds = get_current_user_guilds(discord_token_for(user.id))
+    guilds = get_current_user_guilds(user.id)
     return success(guilds)
 
 

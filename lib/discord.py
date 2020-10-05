@@ -10,6 +10,7 @@ DISCORD_CDN = "https://cdn.discordapp.com"
 HEADERS = {
     "User-Agent": "DiscordBot (https://github.com/avrae/avrae.io, 1)"
 }
+USER_GUILD_TTL = 60 * 5  # 5m
 
 
 # oauth
@@ -150,14 +151,26 @@ def search_by_username(username, discriminator):
 
 
 # guilds
-def get_current_user_guilds(discord_access_token):
+def get_current_user_guilds(user_id):
     """
     Returns a list of partial guild objects the user is a member of.
     https://discord.com/developers/docs/resources/user#get-current-user-guilds
     """
+    guild_cache_key = f"user.{user_id}.guilds"
+    cached_guilds = current_app.rdb.jget(guild_cache_key)
+    if cached_guilds is not None:
+        return cached_guilds
+
+    discord_access_token = discord_token_for(user_id)
     r = get("/users/@me/guilds", discord_access_token)
     r.raise_for_status()
-    return r.json()
+    user_guilds = r.json()
+
+    current_app.rdb.jsetex(guild_cache_key,
+                           user_guilds,
+                           USER_GUILD_TTL)
+
+    return user_guilds
 
 
 def get_guild_roles(guild_id):
