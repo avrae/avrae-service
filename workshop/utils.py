@@ -18,7 +18,7 @@ def guild_permissions_check(user: UserInfo, guild_id: int):
     """Checks whether the given user has permissions to edit server aliases on the given guild."""
 
     # 1: is the user *in* the guild?
-    user_guilds = discord.get_current_user_guilds(discord.discord_token_for(user.id))
+    user_guilds = discord.get_current_user_guilds(user.id)
     the_guild = next((g for g in user_guilds if g['id'] == str(guild_id)), None)
     if the_guild is None:
         raise NeedsServerAliaser("You are not in this server.")

@@ -35,7 +35,7 @@ class RedisIO:
         return self._db.delete(key)
 
     def setex(self, key, value, expiration):
-        return self._db.setex(key, value, expiration)
+        return self._db.setex(key, expiration, value)
 
     def set_dict(self, key, dictionary):
         if len(dictionary) == 0:
