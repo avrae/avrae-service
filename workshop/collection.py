@@ -715,6 +715,10 @@ class WorkshopAlias(WorkshopCollectableObject):
         return self._parent
 
     @property
+    def has_parent(self):
+        return self._parent_id is not None
+
+    @property
     def subcommands(self):
         if self._subcommands is None:
             self.load_subcommands()

@@ -247,7 +247,7 @@ def edit_alias(user, body, alias_id):
         return error(400, "Alias must have a name")
     if ' ' in body['name']:
         return error(400, "Alias names cannot contain spaces")
-    if body['name'] in current_app.rdb.jget("default_commands", []):
+    if not alias.has_parent and body['name'] in current_app.rdb.jget("default_commands", []):
         return error(409, f"{body['name']} is already a built-in command")
 
     alias.update_info(body['name'], body['docs'])
