@@ -84,7 +84,7 @@ class ValidationError(Exception):
 
 
 REQUIRED_ATTACK_KEYS = {"name", "automation", "_v"}
-OPTIONAL_ATTACK_KEYS = {"proper", "verb"}
+OPTIONAL_ATTACK_KEYS = {"proper", "verb", "criton", "phrase", "thumb", "extra_crit_damage"}
 
 
 def _validate_attacks(the_attacks):
