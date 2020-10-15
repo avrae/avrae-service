@@ -94,7 +94,7 @@ def check_ieffect(effect):
     assert isinstance(effect['effects'], str), "IEffect effects must be string"
     if 'end' in effect:
         assert isinstance(effect['end'], bool), "IEffect end must be bool"
-    if 'desc' in effect:
+    if 'desc' in effect and effect['desc'] is not None:
         assert isinstance(effect['desc'], str), "IEffect desc must be string"
 
 
