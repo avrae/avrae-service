@@ -44,6 +44,15 @@ def get_collectable_with_editor_check(cls, collectable_id, user):
     return collectable
 
 
+def get_collection_with_private_check(coll_id, user):
+    coll = WorkshopCollection.from_id(coll_id)
+    if coll.publish_state == PublicationState.PRIVATE \
+            and (user is None
+                 or not (coll.is_owner(int(user.id)) or coll.is_editor(int(user.id)))):
+        raise Error(403, "This collection is private.")
+    return coll
+
+
 # ==== routes ====
 # ---- collection operations ----
 @workshop.route("collection", methods=["POST"])
@@ -57,18 +66,14 @@ def create_collection(user, body):
 @workshop.route("collection/<coll_id>", methods=["GET"])
 @maybe_auth
 def get_collection(user, coll_id):
-    coll = WorkshopCollection.from_id(coll_id)
-    if coll.publish_state == PublicationState.PRIVATE and (user is None or not coll.is_owner(int(user.id))):
-        return error(403, "This collection is private.")
+    coll = get_collection_with_private_check(coll_id, user)
     return success(coll.to_dict(js=True), 200)
 
 
 @workshop.route("collection/<coll_id>/full", methods=["GET"])
 @maybe_auth
 def get_collection_full(user, coll_id):
-    coll = WorkshopCollection.from_id(coll_id)
-    if coll.publish_state == PublicationState.PRIVATE and (user is None or not coll.is_owner(int(user.id))):
-        return error(403, "This collection is private.")
+    coll = get_collection_with_private_check(coll_id, user)
     out = coll.to_dict(js=True)
 
     def dictify(alias):
@@ -96,9 +101,7 @@ def get_collection_batch(user):
     collections = []
     try:
         for coll_id in map(ObjectId, request.args.get('c').split(',')):
-            coll = WorkshopCollection.from_id(coll_id)
-            if coll.publish_state == PublicationState.PRIVATE and (user is None or not coll.is_owner(int(user.id))):
-                return error(403, "This collection is private.")
+            coll = get_collection_with_private_check(coll_id, user)
             collections.append(coll.to_dict(js=True))
     except InvalidId:
         return error(400, "invalid collection ID")
