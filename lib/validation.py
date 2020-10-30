@@ -135,7 +135,7 @@ def check_condition(effect):
     assert 'condition' in effect, "Condition effect must have condition"
     assert isinstance(effect['condition'], str), "Condition value must be string"
     assert 'onTrue' in effect, "Condition effect must have onTrue"
-    assert 'onFalse' in effect, "Condition effect must have onTrue"
+    assert 'onFalse' in effect, "Condition effect must have onFalse"
     for effect_ in effect['onTrue']:
         check_effect(effect_)
     for effect_ in effect['onFalse']:
