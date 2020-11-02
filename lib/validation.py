@@ -119,6 +119,31 @@ def check_text(effect):
     assert isinstance(effect['text'], str), "Text text must be string"
 
 
+def check_variable(effect):
+    assert 'name' in effect, "Set Variable effect must have name"
+    assert isinstance(effect['name'], str) and effect['name'].isidentifier(), \
+        "Set Variable name must be a valid identifier"
+    assert 'value' in effect, "Set Variable effect must have value"
+    assert isinstance(effect['value'], str), "Set Variable value must be string"
+    if 'higher' in effect:
+        check_higher(effect['higher'])
+    if 'onError' in effect:
+        assert isinstance(effect['onError'], str), "Set Variable onError must be string"
+
+
+def check_condition(effect):
+    assert 'condition' in effect, "Condition effect must have condition"
+    assert isinstance(effect['condition'], str), "Condition value must be string"
+    assert 'onTrue' in effect, "Condition effect must have onTrue"
+    assert 'onFalse' in effect, "Condition effect must have onFalse"
+    for effect_ in effect['onTrue']:
+        check_effect(effect_)
+    for effect_ in effect['onFalse']:
+        check_effect(effect_)
+    if 'errorBehaviour' in effect:
+        assert effect['errorBehaviour'] in ('true', 'false', 'both', 'neither', 'raise'), "Invalid error behaviour"
+
+
 EFFECT_TYPES = {
     "target": check_target,
     "attack": check_attack,
@@ -127,7 +152,9 @@ EFFECT_TYPES = {
     "temphp": check_temphp,
     "ieffect": check_ieffect,
     "roll": check_roll,
-    "text": check_text
+    "text": check_text,
+    "variable": check_variable,
+    "condition": check_condition
 }
 
 
