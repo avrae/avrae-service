@@ -1495,7 +1495,8 @@
                 "type": "ieffect",
                 "name": "Chill Touch",
                 "duration": 2,
-                "effects": "Target can't regain hit points until the start of {{caster.name}}'s next turn.\n - If target is undead, it also has disadvantage on attack rolls against {{caster.name}} until the end of {{caster.name}}'s next turn."
+                "effects": "",
+                "desc": "Target can't regain hit points until the start of {{caster.name}}'s next turn.\n - If target is undead, it also has disadvantage on attack rolls against {{caster.name}} until the end of {{caster.name}}'s next turn."
               }
             ],
             "miss": []
