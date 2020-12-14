@@ -20,7 +20,7 @@ def requires_auth(func):
         try:
             the_jwt = request.headers['Authorization']
         except KeyError:
-            return error(403, "missing credentials")
+            return error(401, "missing credentials")
 
         try:
             uinfo = jwt.decode(the_jwt, config.JWT_SECRET, algorithms='HS256', issuer='avrae.io', audience='avrae.io',
