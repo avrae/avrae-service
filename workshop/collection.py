@@ -259,7 +259,8 @@ class WorkshopCollection(SubscriberMixin, GuildActiveMixin, EditorMixin):
         self.update_elasticsearch()
 
     def create_alias(self, name, docs):
-        code = "echo Hello world!"
+        code = f"echo The `{name}` alias does not have an active code version. Please contact the collection author, " \
+               f"or if you are the author, create or select an active code version on the Alias Workshop."
         # noinspection PyTypeChecker
         # id is None until inserted
         inst = WorkshopAlias(None, name, code, [], docs, [], self.id, [], None, collection=self)
@@ -291,7 +292,8 @@ class WorkshopCollection(SubscriberMixin, GuildActiveMixin, EditorMixin):
         return inst
 
     def create_snippet(self, name, docs):
-        code = '-phrase "Hello world!"'
+        code = f'-phrase "The `{name}` snippet does not have an active code version. Please contact the collection ' \
+               f'author, or if you are the author, create or select an active code version on the Alias Workshop."'
         # noinspection PyTypeChecker
         # id is None until inserted
         inst = WorkshopSnippet(None, name, code, [], docs, [], self.id, collection=self)
@@ -766,7 +768,8 @@ class WorkshopAlias(WorkshopCollectableObject):
 
     # database touchers
     def create_subalias(self, name, docs):
-        code = "echo Hello world!"
+        code = f"echo The `{name}` alias does not have an active code version. Please contact the collection author, " \
+               f"or if you are the author, create or select an active code version on the Alias Workshop."
         # noinspection PyTypeChecker
         inst = WorkshopAlias(None, name, code, [], docs, [], self.collection.id, [], self.id, parent=self)
         result = self.mdb_coll().insert_one(inst.to_dict())
