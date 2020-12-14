@@ -191,16 +191,17 @@ class WorkshopCollection(SubscriberMixin, GuildActiveMixin, EditorMixin):
         self.last_edited = datetime.datetime.now()
         self.update_elasticsearch()
 
-    def delete(self):
-        # do not allow deletion of published collections
-        if self.publish_state == PublicationState.PUBLISHED:
-            raise NotAllowed("You cannot delete a published collection.")
+    def delete(self, run_checks=True):
+        if run_checks:
+            # do not allow deletion of published collections
+            if self.publish_state == PublicationState.PUBLISHED:
+                raise NotAllowed("You cannot delete a published collection.")
 
         # delete all children
         for alias in self.aliases:
-            alias.delete()
+            alias.delete(run_checks)
         for snippet in self.snippets:
-            snippet.delete()
+            snippet.delete(run_checks)
 
         # delete from db
         current_app.mdb.workshop_collections.delete_one(
@@ -222,11 +223,12 @@ class WorkshopCollection(SubscriberMixin, GuildActiveMixin, EditorMixin):
         if update_es:
             self.update_elasticsearch()
 
-    def set_state(self, new_state):
+    def set_state(self, new_state, run_checks=True):
         """
         Updates the collection's publication state, running checks as necessary.
 
         :type new_state: str or PublicationState
+        :param bool run_checks: Whether or not to run the publication state checks (bypass for moderation).
         """
         if isinstance(new_state, str):
             new_state = PublicationState(new_state.upper())
@@ -234,18 +236,19 @@ class WorkshopCollection(SubscriberMixin, GuildActiveMixin, EditorMixin):
         if new_state == self.publish_state:  # we don't need to do anything
             return
 
-        # cannot unpublish
-        if self.publish_state == PublicationState.PUBLISHED:
-            raise NotAllowed("You cannot unpublish a collection after it has been published")
+        if run_checks:
+            # cannot unpublish
+            if self.publish_state == PublicationState.PUBLISHED:
+                raise NotAllowed("You cannot unpublish a collection after it has been published")
 
-        # prepublish check: name and description are present, at least one alias/snippet
-        if new_state == PublicationState.PUBLISHED:
-            if not self.name:
-                raise NotAllowed("A name must be present to publish this collection")
-            if not self.description:
-                raise NotAllowed("A description must be present to publish this collection")
-            if len(self.alias_ids) == 0 and len(self.snippet_ids) == 0:
-                raise NotAllowed("At least one alias or snippet must be present to publish this collection")
+            # prepublish check: name and description are present, at least one alias/snippet
+            if new_state == PublicationState.PUBLISHED:
+                if not self.name:
+                    raise NotAllowed("A name must be present to publish this collection")
+                if not self.description:
+                    raise NotAllowed("A description must be present to publish this collection")
+                if len(self.alias_ids) == 0 and len(self.snippet_ids) == 0:
+                    raise NotAllowed("At least one alias or snippet must be present to publish this collection")
 
         current_app.mdb.workshop_collections.update_one(
             {"_id": self.id},
@@ -667,17 +670,18 @@ class WorkshopCollectableObject(abc.ABC):
         self.entitlements.append(re)
         return [e.to_dict() for e in self.entitlements]
 
-    def remove_entitlement(self, sourced_entity):
+    def remove_entitlement(self, sourced_entity, ignore_required=False):
         """
         Removes a required entitlement from this collectable.
 
         :type sourced_entity: gamedata.shared.Sourced
+        :param bool ignore_required: Whether to allow removing moderator-required entitlements.
         """
         existing = next((e for e in self.entitlements if
                          (e.entity_type, e.entity_id) == (sourced_entity.entity_type, sourced_entity.entity_id)), None)
         if existing is None:
             raise NotAllowed("This collectable does not require this entitlement.")
-        if existing.required:
+        if existing.required and not ignore_required:
             raise NotAllowed("This entitlement is required.")
         # add to database
         self.mdb_coll().update_one(
@@ -787,12 +791,13 @@ class WorkshopAlias(WorkshopCollectableObject):
         self.collection.update_edit_time()
         return inst
 
-    def delete(self):
+    def delete(self, run_checks=True):
         """Deletes the alias from the collection."""
 
-        # do not allow deletion of top-level aliases
-        if self.collection.publish_state == PublicationState.PUBLISHED and self._parent_id is None:
-            raise NotAllowed("You cannot delete a top-level alias from a published collection.")
+        if run_checks:
+            # do not allow deletion of top-level aliases
+            if self.collection.publish_state == PublicationState.PUBLISHED and self._parent_id is None:
+                raise NotAllowed("You cannot delete a top-level alias from a published collection.")
 
         if self._parent_id is None:
             # clear all bindings
@@ -818,7 +823,7 @@ class WorkshopAlias(WorkshopCollectableObject):
 
         # delete all children
         for child in self.subcommands:
-            child.delete()
+            child.delete(run_checks)
 
         self.collection.update_edit_time()
 
@@ -848,12 +853,13 @@ class WorkshopSnippet(WorkshopCollectableObject):
         return current_app.mdb.workshop_snippets
 
     # database touchers
-    def delete(self):
+    def delete(self, run_checks=True):
         """Deletes the snippet from the collection."""
 
-        # do not allow deletion of top-level aliases
-        if self.collection.publish_state == PublicationState.PUBLISHED:
-            raise NotAllowed("You cannot delete a top-level snippet from a published collection.")
+        if run_checks:
+            # do not allow deletion of top-level aliases
+            if self.collection.publish_state == PublicationState.PUBLISHED:
+                raise NotAllowed("You cannot delete a top-level snippet from a published collection.")
 
         # clear all bindings
         self.collection.sub_coll(current_app.mdb).update_many(

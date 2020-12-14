@@ -3,7 +3,7 @@ from bson.errors import InvalidId
 from flask import Blueprint, current_app, request
 
 from gamedata.compendium import compendium
-from lib.auth import maybe_auth, requires_auth
+from lib.auth import maybe_auth, requires_auth, requires_user_permissions
 from lib.discord import fetch_user_info
 from lib.errors import Error, NotAllowed
 from lib.utils import error, expect_json, maybe_json, nullable, success
@@ -293,18 +293,18 @@ def set_active_alias_code_version(user, body, alias_id):
     return success(alias.to_dict(js=True), 200)
 
 
-def _add_entitlement_to_collectable(collectable, entity_type: str, entity_id: int):
+def _add_entitlement_to_collectable(collectable, entity_type: str, entity_id: int, required: bool = False):
     sourced = compendium.lookup_by_entitlement(entity_type, entity_id)
     if sourced is None:
         return error(404, "Entitlement entity not found")
-    return collectable.add_entitlement(sourced)
+    return collectable.add_entitlement(sourced, required)
 
 
-def _remove_entitlement_from_collectable(collectable, entity_type: str, entity_id: int):
+def _remove_entitlement_from_collectable(collectable, entity_type: str, entity_id: int, ignore_required: bool = False):
     sourced = compendium.lookup_by_entitlement(entity_type, entity_id)
     if sourced is None:
         return error(404, "Entitlement entity not found")
-    return collectable.remove_entitlement(sourced)
+    return collectable.remove_entitlement(sourced, ignore_required)
 
 
 @workshop.route("alias/<alias_id>/entitlement", methods=["POST"])
@@ -608,3 +608,62 @@ def do_guild_permissions_check(user):
     except NeedsServerAliaser as e:
         return success({"can_edit": False, "message": str(e)})
     return success({"can_edit": result, "message": None})
+
+
+# ---- moderator endpoints ----
+@workshop.route("moderator/collection/<coll_id>/state", methods=["PATCH"])
+@expect_json(state=str)  # PRIVATE, UNLISTED, PUBLISHED
+@requires_user_permissions('moderator')
+def moderator_set_collection_state(_, body, coll_id):
+    coll = WorkshopCollection.from_id(coll_id)
+
+    try:
+        coll.set_state(body['state'], run_checks=False)
+    except ValueError as e:  # invalid publication state
+        return error(400, str(e))
+
+    return success(coll.to_dict(js=True), 200)
+
+
+@workshop.route("moderator/collection/<coll_id>", methods=["DELETE"])
+@requires_user_permissions('moderator')
+def moderator_delete_collection(_, coll_id):
+    coll = WorkshopCollection.from_id(coll_id)
+    coll.delete(run_checks=False)
+    return success(f"Deleted {coll.name}", 200)
+
+
+@workshop.route("moderator/alias/<alias_id>/entitlement", methods=["POST"])
+@expect_json(entity_type=str, entity_id=(str, int), required=bool, optional=['required'])
+@requires_user_permissions('moderator')
+def moderator_add_alias_entitlement(_, body, alias_id):
+    alias = WorkshopAlias.from_id(alias_id)
+    return success(_add_entitlement_to_collectable(alias, body['entity_type'], int(body['entity_id']), required=True))
+
+
+@workshop.route("moderator/alias/<alias_id>/entitlement", methods=["DELETE"])
+@expect_json(entity_type=str, entity_id=(str, int))
+@requires_user_permissions('moderator')
+def moderator_delete_alias_entitlement(_, body, alias_id):
+    alias = WorkshopAlias.from_id(alias_id)
+    result = _remove_entitlement_from_collectable(alias, body['entity_type'], int(body['entity_id']),
+                                                  ignore_required=True)
+    return success(result)
+
+
+@workshop.route("moderator/snippet/<snippet_id>/entitlement", methods=["POST"])
+@expect_json(entity_type=str, entity_id=(str, int), required=bool, optional=['required'])
+@requires_user_permissions('moderator')
+def moderator_add_snippet_entitlement(_, body, snippet_id):
+    snippet = WorkshopSnippet.from_id(snippet_id)
+    return success(_add_entitlement_to_collectable(snippet, body['entity_type'], int(body['entity_id']), required=True))
+
+
+@workshop.route("moderator/snippet/<snippet_id>/entitlement", methods=["DELETE"])
+@expect_json(entity_type=str, entity_id=(str, int))
+@requires_user_permissions('moderator')
+def moderator_delete_snippet_entitlement(_, body, snippet_id):
+    snippet = WorkshopSnippet.from_id(snippet_id)
+    result = _remove_entitlement_from_collectable(snippet, body['entity_type'], int(body['entity_id']),
+                                                  ignore_required=True)
+    return success(result)
