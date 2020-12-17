@@ -140,6 +140,11 @@
     "name": "Aboleth - Legendary Action: Psychic Drain",
     "automation": [
       {
+        "type": "variable",
+        "name": "lastDamage",
+        "value": "0"
+      },
+      {
         "type": "roll",
         "dice": "3d6",
         "name": "damage"
@@ -161,7 +166,7 @@
         "effects": [
           {
             "type": "damage",
-            "damage": "-({damage})"
+            "damage": "-({lastDamage}) [heal]"
           }
         ]
       },
@@ -6691,7 +6696,8 @@
         "text": "*Melee Weapon Attack:* +14 to hit, reach 10 ft., one target. *Hit:* 21 (3d8 + 8) slashing damage plus 13 (3d8) lightning damage. If the balor scores a critical hit, it rolls damage dice three times, instead of twice."
       }
     ],
-    "_v": 2
+    "_v": 2,
+    "extra_crit_damage": "3d8 [magical slashing] + 3d8 [lighting]"
   },
   {
     "name": "Balor - Whip",
@@ -22496,11 +22502,6 @@
     "name": "Vampire - Bite",
     "automation": [
       {
-        "type": "roll",
-        "dice": "3d6",
-        "name": "drain"
-      },
-      {
         "type": "target",
         "target": "each",
         "effects": [
@@ -22509,7 +22510,16 @@
             "hit": [
               {
                 "type": "damage",
-                "damage": "1d6 + 4 [piercing] + {drain} [necrotic]"
+                "damage": "1d6 + 4 [piercing]"
+              },
+              {
+                "type": "variable",
+                "name": "lastDamage",
+                "value": "0"
+              },
+              {
+                "type": "damage",
+                "damage": "3d6 [necrotic]"
               },
               {
                 "type": "ieffect",
@@ -22530,7 +22540,7 @@
         "effects": [
           {
             "type": "damage",
-            "damage": "-({drain}) [healing]"
+            "damage": "-({lastDamage}) [heal]"
           }
         ]
       },
@@ -22657,11 +22667,6 @@
     "name": "Vampire Spawn - Bite",
     "automation": [
       {
-        "type": "roll",
-        "dice": "2d6",
-        "name": "drain"
-      },
-      {
         "type": "target",
         "target": "each",
         "effects": [
@@ -22670,7 +22675,16 @@
             "hit": [
               {
                 "type": "damage",
-                "damage": "1d6 + 3 [piercing] + {drain} [necrotic]"
+                "damage": "1d6 + 3 [piercing]"
+              },
+              {
+                "type": "variable",
+                "name": "lastDamage",
+                "value": "0"
+              },
+              {
+                "type": "damage",
+                "damage": "2d6 [necrotic]"
               },
               {
                 "type": "ieffect",
@@ -22691,7 +22705,7 @@
         "effects": [
           {
             "type": "damage",
-            "damage": "-({drain}) [healing]"
+            "damage": "-({lastDamage}) [heal]"
           }
         ]
       },
