@@ -101,8 +101,13 @@ def get_collection_batch(user):
     collections = []
     try:
         for coll_id in map(ObjectId, request.args.get('c').split(',')):
-            coll = get_collection_with_private_check(coll_id, user)
-            collections.append(coll.to_dict(js=True))
+            try:
+                coll = get_collection_with_private_check(coll_id, user)
+            except Error as e:
+                if e.code != 403:  # don't return private collections
+                    raise
+            else:
+                collections.append(coll.to_dict(js=True))
     except InvalidId:
         return error(400, "invalid collection ID")
     return success(collections, 200)
