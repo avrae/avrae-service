@@ -1,4 +1,4 @@
-# avrae [![Build Status](https://travis-ci.org/avrae/avrae-service.svg?branch=master)](https://travis-ci.org/avrae/avrae-service)
+# avrae ![Build Status](https://github.com/avrae/avrae-service/workflows/Build/badge.svg)
 
 Avrae is a bot to facilitate running Dungeons & Dragons 5e online over Discord. This project is the web api... thing FIXME
 
