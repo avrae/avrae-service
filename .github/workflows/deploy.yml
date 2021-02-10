@@ -47,7 +47,7 @@ jobs:
       with:
         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-region: $REGION
+        aws-region: ${{ env.REGION }}
 
     - name: Login to Amazon ECR
       id: login-ecr
@@ -76,6 +76,6 @@ jobs:
 #      uses: aws-actions/amazon-ecs-deploy-task-definition@v1
 #      with:
 #        task-definition: task-definition.json
-#        service: $SERVICE_NAME
-#        cluster: $CLUSTER_NAME-$DEPLOY_ENV
+#        service: ${{ env.SERVICE_NAME }}
+#        cluster: ${{ env.CLUSTER_NAME }}-${{ env.DEPLOY_ENV }}
 #        force-new-deployment: true
