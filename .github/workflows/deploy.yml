@@ -71,8 +71,8 @@ jobs:
         echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
 
     - name: Download task definition
-        run: |
-          aws ecs describe-task-definition --task-definition $SERVICE_NAME-ecs-task-definition --query taskDefinition > task-definition.json
+      run: |
+        aws ecs describe-task-definition --task-definition $SERVICE_NAME-ecs-task-definition --query taskDefinition > task-definition.json
 
     - name: Deploy Amazon ECS task definition
       uses: aws-actions/amazon-ecs-deploy-task-definition@v1
