@@ -68,14 +68,15 @@ jobs:
         docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
         echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
 
+    # our task definition is managed by terraform, so we download whatever it is right now
     - name: Download task definition
       run: |
         aws ecs describe-task-definition --task-definition $SERVICE_NAME-ecs-task-definition --query taskDefinition > task-definition.json
 
-#    - name: Deploy Amazon ECS task definition
-#      uses: aws-actions/amazon-ecs-deploy-task-definition@v1
-#      with:
-#        task-definition: task-definition.json
-#        service: ${{ env.SERVICE_NAME }}
-#        cluster: ${{ env.CLUSTER_NAME }}-${{ env.DEPLOY_ENV }}
-#        force-new-deployment: true
+    - name: Deploy Amazon ECS task definition
+      uses: aws-actions/amazon-ecs-deploy-task-definition@v1
+      with:
+        task-definition: task-definition.json
+        service: ${{ env.SERVICE_NAME }}
+        cluster: ${{ env.CLUSTER_NAME }}-${{ env.DEPLOY_ENV }}
+        force-new-deployment: true
