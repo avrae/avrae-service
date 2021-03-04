@@ -11,7 +11,7 @@ def ensure_spell_keys(spell):
 def is_valid_automation(automation):
     try:
         check_automation(automation)
-    except AssertionError as e:
+    except (AssertionError, ValidationError) as e:
         return False, str(e)
     return True, None
 
@@ -144,6 +144,17 @@ def check_condition(effect):
         assert effect['errorBehaviour'] in ('true', 'false', 'both', 'neither', 'raise'), "Invalid error behaviour"
 
 
+def check_counter(effect):
+    assert 'counter' in effect, "Use Counter effect must have counter"
+    check_usecounter_counter(effect['counter'])
+    assert 'amount' in effect, "Use Counter effect must have amount"
+    assert isinstance(effect['amount'], str), "Use Counter amount must be str"
+    if 'allowOverflow' in effect:
+        assert isinstance(effect['allowOverflow'], bool), "Use Counter allowOverflow must be bool"
+    if 'errorBehaviour' in effect:
+        assert effect['errorBehaviour'] in (None, 'warn', 'raise'), "Invalid error behaviour in Use Counter"
+
+
 EFFECT_TYPES = {
     "target": check_target,
     "attack": check_attack,
@@ -154,7 +165,8 @@ EFFECT_TYPES = {
     "roll": check_roll,
     "text": check_text,
     "variable": check_variable,
-    "condition": check_condition
+    "condition": check_condition,
+    "counter": check_counter
 }
 
 
@@ -165,6 +177,17 @@ def check_higher(higher):
         assert isinstance(k, (str, int)), "Higher level key must be int or string"
         assert isinstance(v, str), "Higher level value must be string"
         assert 0 <= int(k) <= 9, "Higher level key must be [0..9]"
+
+
+def check_usecounter_counter(counter):
+    if isinstance(counter, str):
+        return
+    assert isinstance(counter, dict), "Use Counter counter must be str or dict"
+    if 'slot' in counter:
+        assert isinstance(counter['slot'], int), "SpellSlotReference slot must be int"
+        assert 1 <= counter['slot'] <= 9, "SpellSlotReference slot must be [1..9]"
+    else:
+        raise ValidationError("Invalid counter in Use Counter")
 
 
 class ValidationError(Exception):
