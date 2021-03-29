@@ -2,6 +2,7 @@ import os
 
 os.environ['TESTING'] = 'yup'
 TESTING = True
+ENVIRONMENT = 'Development'
 
 # Default to `avrae` docker-compose hosts, allow override via environment variables
 MONGO_URL = os.getenv('MONGO_URL', 'mongodb://root:topsecret@localhost:58017/avrae')

@@ -1,7 +1,7 @@
 import os
 
 TESTING = True if os.environ.get("TESTING") else False
-ENVIRONMENT = 'Production'
+ENVIRONMENT = 'Staging'
 
 MONGO_URL = os.environ['MONGO_URL']
 REDIS_URL = os.environ['REDIS_URL']

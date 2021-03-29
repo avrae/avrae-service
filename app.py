@@ -26,7 +26,7 @@ from lib.utils import jsonify
 if config.SENTRY_DSN is not None:
     sentry_sdk.init(
         dsn=config.SENTRY_DSN,
-        environment='Development' if config.TESTING else 'Production',
+        environment=config.ENVIRONMENT,
         integrations=[FlaskIntegration()]
     )
 
