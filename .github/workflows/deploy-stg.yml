@@ -41,7 +41,7 @@ jobs:
           # Build a docker container and
           # push it to ECR so that it can
           # be deployed to ECS.
-          docker build -t $SERVICE_NAME .
+          docker build --build-arg ENVIRONMENT=staging -t $SERVICE_NAME .
           docker tag $SERVICE_NAME $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
           docker tag $SERVICE_NAME $ECR_REGISTRY/$ECR_REPOSITORY:live
           docker tag $SERVICE_NAME $ECR_REGISTRY/$ECR_REPOSITORY:$DEPLOY_ENV
