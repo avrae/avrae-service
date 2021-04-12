@@ -81,4 +81,4 @@ def handle_auth(data):
         },
         config.JWT_SECRET, algorithm='HS256')
 
-    return success({'jwt': token.decode()})  # token is str
+    return success({'jwt': token})

@@ -23,8 +23,9 @@ def requires_auth(func):
             return error(401, "missing credentials")
 
         try:
-            uinfo = jwt.decode(the_jwt, config.JWT_SECRET, algorithms='HS256', issuer='avrae.io', audience='avrae.io',
-                               verify=True)
+            uinfo = jwt.decode(the_jwt, config.JWT_SECRET, algorithms=['HS256'],
+                               options={'verify_aud': True, 'verify_iss': True},
+                               issuer='avrae.io', audience=['avrae.io'])
         except jwt.InvalidTokenError:
             return error(403, "invalid credentials")
 
