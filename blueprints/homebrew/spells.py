@@ -1,5 +1,5 @@
 import json
-from typing import List, Literal, Optional, Union
+from typing import List, Optional, Union
 
 from bson import ObjectId
 from flask import Blueprint, current_app, request
@@ -7,7 +7,7 @@ from pydantic import BaseModel, HttpUrl, ValidationError, conint, constr
 
 from lib.auth import maybe_auth, requires_auth
 from lib.utils import jsonify
-from lib.validation import Automation, str255, str4096
+from lib.validation import Automation, str1024, str255, str4096
 from .helpers import user_can_edit, user_can_view, user_editable, user_is_owner
 
 spells = Blueprint('homebrew/spells', __name__)
@@ -155,7 +155,7 @@ class Spell(BaseModel):
     duration: Optional[str255]
     ritual: Optional[bool]
     description: Optional[str4096]
-    higherlevels: Optional[str4096]
+    higherlevels: Optional[str1024]
     concentration: Optional[bool]
     image: Optional[Union[HttpUrl, constr(max_length=0)]]  # image might be an empty string
 

@@ -6,7 +6,7 @@ from __future__ import annotations
 import abc
 from typing import Dict, List, Literal, Optional, Union
 
-from pydantic import BaseModel, conint, constr, validator
+from pydantic import BaseModel, ValidationError, conint, constr, validator
 
 # ==== automation ====
 str255 = constr(max_length=255, strip_whitespace=True)
@@ -156,12 +156,7 @@ EFFECT_TYPES = {
 
 def is_valid_automation(automation):
     try:
-        check_automation(automation)
-    except (AssertionError, ValidationError) as e:
+        Automation.parse_obj(automation)
+    except ValidationError as e:
         return False, str(e)
     return True, None
-
-
-def check_automation(automation):
-    for effect in automation:
-        check_effect(effect)
