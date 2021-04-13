@@ -1,11 +1,157 @@
-REQUIRED_SPELL_PROPS = ('name', 'level', 'school', 'automation')
-SPELL_SCHOOLS = ('A', 'V', 'E', 'I', 'D', 'N', 'T', 'C')
+"""
+Pydantic automation validation.
+"""
+from __future__ import annotations
+
+import abc
+from typing import Dict, List, Literal, Optional, Union
+
+from pydantic import BaseModel, conint, constr, validator
+
+# ==== automation ====
+str255 = constr(max_length=255, strip_whitespace=True)
+str1024 = constr(max_length=1024, strip_whitespace=True)
+str4096 = constr(max_length=4096, strip_whitespace=True)
 
 
-def ensure_spell_keys(spell):
-    assert all(p in spell for p in REQUIRED_SPELL_PROPS), "Spell missing properties"
-    assert isinstance(spell['name'], str), "Spell name must be string"
-    assert isinstance(spell['automation'], list) or spell['automation'] is None, "Invalid spell automation"
+# ---- Helper Models ----
+class HigherLevels(BaseModel):
+    __root__: Dict[constr(regex=r'[0-9]'), str255]
+
+
+class SpellSlotReference(BaseModel):
+    slot: conint(ge=1, le=9)
+
+
+# ---- effects ----
+class Effect(BaseModel, abc.ABC):
+    type: str
+    meta: Optional[List[Effect]]
+
+    @classmethod
+    def __get_validators__(cls):
+        yield cls.return_effect
+
+    @classmethod
+    def return_effect(cls, values):  # https://github.com/samuelcolvin/pydantic/issues/619#issuecomment-713508861
+        try:
+            etype = values["type"]
+        except KeyError:
+            raise ValueError("missing 'type' key")
+        try:
+            return EFFECT_TYPES[etype](**values)
+        except KeyError:
+            raise ValueError(f"{etype} is not a valid effect type")
+
+
+Effect.update_forward_refs()
+
+
+class Target(Effect):
+    type: Literal['target']
+    target: Union[Literal['all', 'each', 'self'], conint(ge=1)]
+    effects: List[Effect]
+
+
+class Attack(Effect):
+    type: Literal['attack']
+    hit: List[Effect]
+    miss: List[Effect]
+    attackBonus: Optional[str255]
+
+
+class Save(Effect):
+    type: Literal['save']
+    stat: Literal['str', 'dex', 'con', 'int', 'wis', 'cha']
+    fail: List[Effect]
+    success: List[Effect]
+    dc: Optional[str255]
+
+
+class Damage(Effect):
+    type: Literal['damage']
+    damage: str255
+    overheal: Optional[bool]
+    higher: Optional[HigherLevels]
+    cantripScale: Optional[bool]
+
+
+class TempHP(Effect):
+    type: Literal['temphp']
+    amount: str255
+    higher: Optional[HigherLevels]
+    cantripScale: Optional[bool]
+
+
+class IEffect(Effect):
+    type: Literal['ieffect']
+    name: str255
+    duration: Union[int, str255]
+    effects: str1024
+    end: Optional[bool]
+    conc: Optional[bool]
+    desc: Optional[str4096]
+
+
+class Roll(Effect):
+    type: Literal['roll']
+    dice: str255
+    name: str255
+    higher: Optional[HigherLevels]
+    cantripScale: Optional[bool]
+    hidden: Optional[bool]
+
+
+class Text(Effect):
+    type: Literal['text']
+    text: str4096
+
+
+class SetVariable(Effect):
+    type: Literal['variable']
+    name: str255
+    value: str255
+    higher: Optional[HigherLevels]
+    onError: Optional[str255]
+
+    @validator('name', allow_reuse=True)
+    def name_should_be_identifier(cls, v: str):
+        assert v.isidentifier(), "must be a valid identifier"
+        return v
+
+
+class Condition(Effect):
+    type: Literal['condition']
+    condition: str255
+    onTrue: List[Effect]
+    onFalse: List[Effect]
+    errorBehaviour: Optional[Literal['true', 'false', 'both', 'neither', 'raise']]
+
+
+class UseCounter(Effect):
+    type: Literal['counter']
+    counter: Union[SpellSlotReference, str255]
+    amount: str255
+    allowOverflow: Optional[bool]
+    errorBehaviour: Optional[Literal['warn', 'raise']]
+
+
+class Automation(BaseModel):
+    __root__: List[Effect]
+
+
+EFFECT_TYPES = {
+    "target": Target,
+    "attack": Attack,
+    "save": Save,
+    "damage": Damage,
+    "temphp": TempHP,
+    "ieffect": IEffect,
+    "roll": Roll,
+    "text": Text,
+    "variable": SetVariable,
+    "condition": Condition
+}
 
 
 def is_valid_automation(automation):
@@ -19,176 +165,3 @@ def is_valid_automation(automation):
 def check_automation(automation):
     for effect in automation:
         check_effect(effect)
-
-
-def check_effect(effect):
-    assert isinstance(effect, dict), "Effect must be object"
-    assert "type" in effect, "Effect must have type"
-    assert effect['type'] in EFFECT_TYPES, "Effect has invalid type"
-    EFFECT_TYPES[effect['type']](effect)
-    if 'meta' in effect:
-        for metaeffect in effect['meta']:
-            check_effect(metaeffect)
-
-
-def check_target(effect):
-    assert 'target' in effect, "Target effect must have target"
-    assert effect['target'] in ("all", "each", "self") or (
-            isinstance(effect['target'], int) and effect['target'] > 0), "Invalid target"
-    assert 'effects' in effect, "Target effect must have effects"
-    for effect_ in effect['effects']:
-        check_effect(effect_)
-
-
-def check_attack(effect):
-    assert 'hit' in effect, "Attack effect must have hit"
-    assert 'miss' in effect, "Attack effect must have miss"
-    for effect_ in effect['hit']:
-        check_effect(effect_)
-    for effect_ in effect['miss']:
-        check_effect(effect_)
-    if 'attackBonus' in effect:
-        assert isinstance(effect['attackBonus'], str), "AttackBonus must be str"
-
-
-def check_save(effect):
-    assert 'stat' in effect, "Save effect must have stat"
-    assert effect['stat'] in ('str', 'dex', 'con', 'int', 'wis', 'cha'), "Invalid save type"
-    assert 'fail' in effect, "Save effect must have fail"
-    assert 'success' in effect, "Save effect must have success"
-    for effect_ in effect['fail']:
-        check_effect(effect_)
-    for effect_ in effect['success']:
-        check_effect(effect_)
-    if 'dc' in effect:
-        assert isinstance(effect['dc'], str), "DC must be str"
-
-
-def check_damage(effect):
-    assert 'damage' in effect, "Damage effect must have damage"
-    if 'overheal' in effect:
-        assert isinstance(effect['overheal'], bool) or effect['overheal'] is None, \
-            "Overheal must be boolean"
-    if 'higher' in effect:
-        check_higher(effect['higher'])
-    if 'cantripScale' in effect:
-        assert isinstance(effect['cantripScale'], bool) or effect['cantripScale'] is None, \
-            "CantripScale must be boolean"
-
-
-def check_temphp(effect):
-    assert 'amount' in effect, "TempHP effect must have amount"
-    if 'higher' in effect:
-        check_higher(effect['higher'])
-    if 'cantripScale' in effect:
-        assert isinstance(effect['cantripScale'], bool) or effect['cantripScale'] is None, \
-            "CantripScale must be boolean"
-
-
-def check_ieffect(effect):
-    assert 'name' in effect, "IEffect effect must have name"
-    assert 'duration' in effect, "IEffect effect must have duration"
-    assert 'effects' in effect, "IEffect effect must have effects"
-    assert isinstance(effect['name'], str), "IEffect name must be string"
-    assert isinstance(effect['duration'], (int, str)), "IEffect duration must be int or string"
-    assert isinstance(effect['effects'], str), "IEffect effects must be string"
-    if 'end' in effect:
-        assert isinstance(effect['end'], bool), "IEffect end must be bool"
-    if 'conc' in effect:
-        assert isinstance(effect['conc'], bool), "IEffect conc must be bool"
-    if 'desc' in effect and effect['desc'] is not None:
-        assert isinstance(effect['desc'], str), "IEffect desc must be string"
-
-
-def check_roll(effect):
-    assert 'dice' in effect, "Roll effect must have dice"
-    assert 'name' in effect, "Roll effect must have name"
-    assert isinstance(effect['dice'], str), "Roll dice must be string"
-    assert isinstance(effect['name'], str), "Roll name must be string"
-    if 'higher' in effect:
-        check_higher(effect['higher'])
-    if 'cantripScale' in effect:
-        assert isinstance(effect['cantripScale'], bool) or effect['cantripScale'] is None, \
-            "CantripScale must be boolean"
-    if 'hidden' in effect:
-        assert isinstance(effect['hidden'], bool), "Hidden must be boolean"
-
-
-def check_text(effect):
-    assert 'text' in effect, "Text effect must have text"
-    assert isinstance(effect['text'], str), "Text text must be string"
-
-
-def check_variable(effect):
-    assert 'name' in effect, "Set Variable effect must have name"
-    assert isinstance(effect['name'], str) and effect['name'].isidentifier(), \
-        "Set Variable name must be a valid identifier"
-    assert 'value' in effect, "Set Variable effect must have value"
-    assert isinstance(effect['value'], str), "Set Variable value must be string"
-    if 'higher' in effect:
-        check_higher(effect['higher'])
-    if 'onError' in effect:
-        assert isinstance(effect['onError'], str), "Set Variable onError must be string"
-
-
-def check_condition(effect):
-    assert 'condition' in effect, "Condition effect must have condition"
-    assert isinstance(effect['condition'], str), "Condition value must be string"
-    assert 'onTrue' in effect, "Condition effect must have onTrue"
-    assert 'onFalse' in effect, "Condition effect must have onFalse"
-    for effect_ in effect['onTrue']:
-        check_effect(effect_)
-    for effect_ in effect['onFalse']:
-        check_effect(effect_)
-    if 'errorBehaviour' in effect:
-        assert effect['errorBehaviour'] in ('true', 'false', 'both', 'neither', 'raise'), "Invalid error behaviour"
-
-
-def check_counter(effect):
-    assert 'counter' in effect, "Use Counter effect must have counter"
-    check_usecounter_counter(effect['counter'])
-    assert 'amount' in effect, "Use Counter effect must have amount"
-    assert isinstance(effect['amount'], str), "Use Counter amount must be str"
-    if 'allowOverflow' in effect:
-        assert isinstance(effect['allowOverflow'], bool), "Use Counter allowOverflow must be bool"
-    if 'errorBehaviour' in effect:
-        assert effect['errorBehaviour'] in (None, 'warn', 'raise'), "Invalid error behaviour in Use Counter"
-
-
-EFFECT_TYPES = {
-    "target": check_target,
-    "attack": check_attack,
-    "save": check_save,
-    "damage": check_damage,
-    "temphp": check_temphp,
-    "ieffect": check_ieffect,
-    "roll": check_roll,
-    "text": check_text,
-    "variable": check_variable,
-    "condition": check_condition,
-    "counter": check_counter
-}
-
-
-def check_higher(higher):
-    if higher is None:
-        return
-    for k, v in higher.items():
-        assert isinstance(k, (str, int)), "Higher level key must be int or string"
-        assert isinstance(v, str), "Higher level value must be string"
-        assert 0 <= int(k) <= 9, "Higher level key must be [0..9]"
-
-
-def check_usecounter_counter(counter):
-    if isinstance(counter, str):
-        return
-    assert isinstance(counter, dict), "Use Counter counter must be str or dict"
-    if 'slot' in counter:
-        assert isinstance(counter['slot'], int), "SpellSlotReference slot must be int"
-        assert 1 <= counter['slot'] <= 9, "SpellSlotReference slot must be [1..9]"
-    else:
-        raise ValidationError("Invalid counter in Use Counter")
-
-
-class ValidationError(Exception):
-    pass
