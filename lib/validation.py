@@ -150,7 +150,8 @@ EFFECT_TYPES = {
     "roll": Roll,
     "text": Text,
     "variable": SetVariable,
-    "condition": Condition
+    "condition": Condition,
+    "counter": UseCounter
 }
 
 
