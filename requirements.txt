@@ -1,26 +1,19 @@
-blinker==1.4
-cachetools==3.1.1
-certifi==2019.9.11
-chardet==3.0.4
-Click==7.0
-d20
-dnspython==1.16.0
-Flask==1.1.1
-Flask-Cors==3.0.8
+# top-level deps
+d20~=1.0.1
+Flask==1.1.2
+Flask-Cors==3.0.10
 Flask-PyMongo==2.3.0
-gunicorn==19.9.0
-idna==2.8
-itsdangerous==1.1.0
-Jinja2==2.10.1
-MarkupSafe==1.1.1
-newrelic==5.2.0.127
-numexpr==2.7.0
-numpy==1.18.1
-PyJWT==1.7.1
-pymongo==3.9.0
+gunicorn==20.1.0
+newrelic==6.2.0.156
+pydantic==1.8.1
+PyJWT==2.0.1
 redis==3.5.3
-requests==2.22.0
-sentry-sdk[flask]==0.12.3
-six==1.12.0
-urllib3==1.25.6
-Werkzeug==0.16.0
+requests==2.25.1
+sentry-sdk[flask]==1.0.0
+
+# transitive deps
+Werkzeug==1.0.1
+
+# build/other deps
+dnspython==2.1.0  # pymongo srv
+wheel==0.36.2  # dep install

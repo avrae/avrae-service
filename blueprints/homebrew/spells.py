@@ -1,21 +1,19 @@
 import json
+from typing import List, Optional, Union
 
 from bson import ObjectId
 from flask import Blueprint, current_app, request
+from pydantic import BaseModel, HttpUrl, ValidationError, conint, constr
 
 from lib.auth import maybe_auth, requires_auth
 from lib.utils import jsonify
-from lib.validation import ValidationError, check_automation, ensure_spell_keys
+from lib.validation import Automation, str1024, str255, str4096
 from .helpers import user_can_edit, user_can_view, user_editable, user_is_owner
 
 spells = Blueprint('homebrew/spells', __name__)
 
-TOME_FIELDS = {"name", "public", "desc", "image", "spells"}
-SPELL_FIELDS = ("name", "level", "school", "classes", "subclasses", "casttime", "range", "components", "duration",
-                "ritual", "description", "higherlevels", "concentration", "automation", "image")
-IGNORED_FIELDS = {"_id", "active", "server_active", "subscribers", "editors", "owner", "numSpells"}
 
-
+# ==== helpers ====
 def _is_owner(user, obj_id):
     return user_is_owner(data_coll=current_app.mdb.tomes, user=user, obj_id=obj_id)
 
@@ -34,6 +32,7 @@ def _editable(user):
     return user_editable(data_coll=current_app.mdb.tomes, sub_coll=current_app.mdb.tome_subscriptions, user=user)
 
 
+# ==== routes ====
 @spells.route('/me', methods=['GET'])
 @requires_auth
 def user_tomes(user):
@@ -85,22 +84,12 @@ def put_tome(user, tome):
     if not _can_edit(user, ObjectId(tome)):
         return "You do not have permission to edit this tome", 403
 
-    for field in IGNORED_FIELDS:
-        if field in reqdata:
-            reqdata.pop(field)
+    try:
+        the_tome = Tome.parse_obj(reqdata)
+    except ValidationError as e:
+        return str(e), 400
 
-    if not all(k in TOME_FIELDS for k in reqdata):
-        return f"Invalid fields: {set(reqdata).difference(TOME_FIELDS)}", 400
-    if "spells" in reqdata:
-        for spell in reqdata['spells']:
-            if not all(k in SPELL_FIELDS for k in spell):
-                return f"Invalid spell field in {spell}", 400
-            try:
-                validate(spell)
-            except ValidationError as e:
-                return str(e), 400
-
-    current_app.mdb.tomes.update_one({"_id": ObjectId(tome)}, {"$set": reqdata})
+    current_app.mdb.tomes.update_one({"_id": ObjectId(tome)}, {"$set": the_tome.dict(exclude_unset=True)})
     return "Tome updated."
 
 
@@ -140,16 +129,40 @@ def validate_import():
         reqdata = [reqdata]
     for spell in reqdata:
         try:
-            validate(spell)
+            Spell.parse_obj(spell)
         except ValidationError as e:
             return str(e), 400
     return jsonify({'success': True, 'result': "OK"})
 
 
-def validate(spell):
-    try:
-        ensure_spell_keys(spell)
-        if spell['automation'] is not None:
-            check_automation(spell['automation'])
-    except AssertionError as e:
-        raise ValidationError(str(e))
+# ==== Validation ====
+class SpellComponents(BaseModel):
+    verbal: bool
+    somatic: bool
+    material: Optional[str255]
+
+
+class Spell(BaseModel):
+    name: str255
+    level: conint(ge=0, le=9)
+    school: str255
+    automation: Optional[Automation]
+    classes: Optional[str255]
+    subclasses: Optional[str255]
+    casttime: Optional[str255]
+    range: Optional[str255]
+    components: Optional[SpellComponents]
+    duration: Optional[str255]
+    ritual: Optional[bool]
+    description: Optional[str4096]
+    higherlevels: Optional[str1024]
+    concentration: Optional[bool]
+    image: Optional[Union[HttpUrl, constr(max_length=0)]]  # image might be an empty string
+
+
+class Tome(BaseModel):
+    name: str255
+    public: bool
+    desc: str4096
+    image: Optional[Union[HttpUrl, constr(max_length=0)]]
+    spells: List[Spell]

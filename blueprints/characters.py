@@ -3,7 +3,7 @@ import json
 from flask import Blueprint, current_app, request
 
 from lib.auth import requires_auth
-from lib.utils import jsonify
+from lib.utils import error, jsonify, success
 from lib.validation import is_valid_automation
 
 characters = Blueprint('characters', __name__)
@@ -44,7 +44,7 @@ def put_attacks(user, upstream):
     try:
         _validate_attacks(the_attacks)
     except ValidationError as e:
-        return str(e), 400
+        return error(400, str(e))
 
     # write
     response = current_app.mdb.characters.update_one(
@@ -54,8 +54,8 @@ def put_attacks(user, upstream):
 
     # respond
     if not response.matched_count:
-        return "Character not found", 404
-    return "Attacks updated."
+        return error(404, "Character not found")
+    return success("Attacks updated")
 
 
 @characters.route('/attacks/validate', methods=["POST"])
@@ -67,9 +67,9 @@ def validate_attacks():
     try:
         _validate_attacks(reqdata)
     except ValidationError as e:
-        return str(e), 400
+        return error(400, str(e))
 
-    return jsonify({'success': True, 'result': "OK"})
+    return success("OK")
 
 
 @characters.route('/attacks/srd', methods=['GET'])

@@ -1,19 +1,19 @@
 import json
+from typing import List, Optional, Union
 
 from bson import ObjectId
 from flask import Blueprint, current_app, request
+from pydantic import BaseModel, HttpUrl, ValidationError, constr
 
 from lib.auth import maybe_auth, requires_auth
 from lib.utils import jsonify
+from lib.validation import str1024, str255, str4096
 from .helpers import user_can_edit, user_can_view, user_editable, user_is_owner
 
 items = Blueprint('homebrew/items', __name__)
 
-PACK_FIELDS = {"name", "public", "desc", "image", "items"}
-ITEM_FIELDS = ("name", "meta", "desc", "image")
-IGNORED_FIELDS = {"_id", "active", "server_active", "subscribers", "editors", "owner", "numItems"}
 
-
+# ==== helpers ====
 def _is_owner(user, obj_id):
     return user_is_owner(data_coll=current_app.mdb.packs, user=user, obj_id=obj_id)
 
@@ -32,6 +32,7 @@ def _editable(user):
     return user_editable(data_coll=current_app.mdb.packs, sub_coll=current_app.mdb.pack_subscriptions, user=user)
 
 
+# ==== routes ====
 @items.route('/me', methods=['GET'])
 @requires_auth
 def user_packs(user):
@@ -83,18 +84,12 @@ def put_pack(user, pack):
     if not _can_edit(user=user, obj_id=ObjectId(pack)):
         return "You do not have permission to edit this pack", 403
 
-    for field in IGNORED_FIELDS:
-        if field in reqdata:
-            reqdata.pop(field)
+    try:
+        the_pack = Pack.parse_obj(reqdata)
+    except ValidationError as e:
+        return str(e), 400
 
-    if not all(k in PACK_FIELDS for k in reqdata):
-        return "Invalid field", 400
-    if "items" in reqdata:
-        for item in reqdata['items']:
-            if not all(k in ITEM_FIELDS for k in item):
-                return f"Invalid item field in {item}", 400
-
-    current_app.mdb.packs.update_one({"_id": ObjectId(pack)}, {"$set": reqdata})
+    current_app.mdb.packs.update_one({"_id": ObjectId(pack)}, {"$set": the_pack.dict(exclude_unset=True)})
     return "Pack updated."
 
 
@@ -125,3 +120,19 @@ def srd_items():
     with open('static/template-items.json') as f:
         _items = json.load(f)
     return jsonify(_items)
+
+
+# ==== validation ====
+class Item(BaseModel):
+    name: str255
+    meta: str1024
+    desc: str4096
+    image: Optional[Union[HttpUrl, constr(max_length=0)]]
+
+
+class Pack(BaseModel):
+    name: str255
+    public: bool
+    desc: str4096
+    image: Optional[Union[HttpUrl, constr(max_length=0)]]
+    items: List[Item]
