@@ -20,6 +20,7 @@ class Compendium:
         self.raw_races = []  # type: list[dict]
         self.raw_subraces = []  # type: list[dict]
         self.raw_spells = []  # type: list[dict]
+        self.raw_limiteduse = []  # type: list[dict]
 
         # models
         self.backgrounds = []  # type: list[Sourced]
@@ -55,6 +56,7 @@ class Compendium:
         self.raw_races = lookup.get('races', [])
         self.raw_subraces = lookup.get('subraces', [])
         self.raw_spells = lookup.get('spells', [])
+        self.raw_limiteduse = lookup.get('limiteduse', [])
 
     def load_common(self):
         self.entitlement_lookup = {}
