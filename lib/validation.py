@@ -23,6 +23,11 @@ class SpellSlotReference(BaseModel):
     slot: conint(ge=1, le=9)
 
 
+class AbilityReference(BaseModel):
+    id: int
+    typeId: int
+
+
 # ---- effects ----
 class Effect(BaseModel, abc.ABC):
     type: str
@@ -130,7 +135,7 @@ class Condition(Effect):
 
 class UseCounter(Effect):
     type: Literal['counter']
-    counter: Union[SpellSlotReference, str255]
+    counter: Union[SpellSlotReference, AbilityReference, str255]
     amount: str255
     allowOverflow: Optional[bool]
     errorBehaviour: Optional[Literal['warn', 'raise']]
