@@ -530,19 +530,6 @@ def get_guild_subscriptions(guild_id):
 
 
 # ---- other ----
-@workshop.route("entitlements", methods=["GET"])
-def get_entitlements():
-    """
-    Gets a dict of all valid entitlements.
-    Query: free: bool - include free entities?
-    {type-id -> entitlement}
-    """
-    if 'free' in request.args:
-        return success({f"{t}-{i}": sourced.to_dict() for (t, i), sourced in compendium.entitlement_lookup.items()})
-    return success({f"{t}-{i}": sourced.to_dict() for (t, i), sourced in compendium.entitlement_lookup.items() if
-                    not sourced.is_free})
-
-
 @workshop.route("tags", methods=["GET"])
 def get_tags():
     tags = current_app.mdb.workshop_tags.find()
