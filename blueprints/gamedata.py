@@ -10,7 +10,7 @@ gamedata = Blueprint('gamedata', __name__)
 
 
 @gamedata.route("entitlements", methods=["GET"])
-def get_entitlements():  # duplicated from workshop - todo remove the workshop endpoint after updating client
+def get_entitlements():
     """
     Gets a dict of all valid entitlements.
     Query: free: bool - include free entities?
