@@ -13,6 +13,7 @@ from blueprints.bot import bot
 from blueprints.characters import characters
 from blueprints.customizations import customizations
 from blueprints.discord import discord
+from blueprints.gamedata import gamedata
 from blueprints.homebrew.items import items
 from blueprints.homebrew.spells import spells
 from blueprints.workshop import workshop
@@ -97,6 +98,7 @@ app.register_blueprint(characters, url_prefix="/characters")
 app.register_blueprint(customizations, url_prefix="/customizations")
 app.register_blueprint(bot, url_prefix="/bot")
 app.register_blueprint(discord, url_prefix="/discord")
+app.register_blueprint(gamedata, url_prefix="/gamedata")
 app.register_blueprint(items, url_prefix="/homebrew/items")
 app.register_blueprint(spells, url_prefix="/homebrew/spells")
 app.register_blueprint(workshop, url_prefix="/workshop")
