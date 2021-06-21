@@ -17,9 +17,17 @@ def get_entitlements():
     {type-id -> entitlement}
     """
     if 'free' in request.args:
-        return success({f"{t}-{i}": sourced.to_dict() for (t, i), sourced in compendium.entitlement_lookup.items()})
-    return success({f"{t}-{i}": sourced.to_dict() for (t, i), sourced in compendium.entitlement_lookup.items() if
-                    not sourced.is_free})
+        return success(
+            {f"{t}-{i}": sourced.to_minimal_dict()
+             for (t, i), sourced
+             in compendium.entitlement_lookup.items()}
+        )
+    return success(
+        {f"{t}-{i}": sourced.to_minimal_dict()
+         for (t, i), sourced
+         in compendium.entitlement_lookup.items()
+         if not sourced.is_free}
+    )
 
 
 @gamedata.route("limiteduse", methods=["GET"])
