@@ -9,7 +9,7 @@ from gamedata.klass import Class, ClassFeature, ClassFeatureOption, Subclass
 from gamedata.mixins import LimitedUseGrantorMixin
 from gamedata.monster import Monster
 from gamedata.race import Race, RaceFeature, RaceFeatureOption, SubRace
-from gamedata.shared import Sourced
+from gamedata.shared import LimitedUse, Sourced
 from gamedata.spell import Spell
 
 log = logging.getLogger(__name__)
@@ -53,14 +53,14 @@ class Compendium:
 
         # lookup helpers
         self.entitlement_lookup = {}
-        self._entity_lookup = {}
+        self.entity_lookup = {}
         self._book_lookup = {}
 
     def reload(self, mdb):
         log.info("Reloading data")
         self.load_all_mongodb(mdb)
         self.load_common()
-        log.info(f"Data loading complete - {len(self._entity_lookup)} objects registered")
+        log.info(f"Data loading complete - {len(self.entity_lookup)} objects registered")
 
     def load_all_mongodb(self, mdb):
         lookup = {d['key']: d['object'] for d in mdb.static_data.find({})}
@@ -78,7 +78,7 @@ class Compendium:
 
     # noinspection DuplicatedCode
     def load_common(self):
-        self._entity_lookup = {}
+        self.entity_lookup = {}
         self._book_lookup = {}
         self.entitlement_lookup.clear()
 
@@ -176,17 +176,17 @@ class Compendium:
 
     def _register_entity_lookup(self, entity: Sourced):
         k = (entity.entity_type, entity.entity_id)
-        if k in self._entity_lookup:
-            if entity.name != self._entity_lookup[k].name:
+        if k in self.entity_lookup:
+            if entity.name != self.entity_lookup[k].name:
                 log.info(f"Overwriting existing entity lookup key: {k} "
-                         f"({self._entity_lookup[k].name} -> {entity.name})")
+                         f"({self.entity_lookup[k].name} -> {entity.name})")
             else:
                 log.info(f"Entity lookup key {k} is registered multiple times: "
-                         f"({self._entity_lookup[k].name}, {entity.name})")
+                         f"({self.entity_lookup[k].name}, {entity.name})")
         log.debug(f"Registered entity {k}: {entity!r}")
-        self._entity_lookup[k] = entity
+        self.entity_lookup[k] = entity
         kt = (entity.type_id, entity.entity_id)
-        self._entity_lookup[kt] = entity
+        self.entity_lookup[kt] = entity
 
         # if the entity has granted limited uses, register those too
         if isinstance(entity, LimitedUseGrantorMixin):
@@ -205,7 +205,7 @@ class Compendium:
         if entity.entitlement_entity_id < 0:  # mundane items hack
             return
         # ignored instances
-        if isinstance(entity, (Book, ClassFeatureOption, RaceFeatureOption)):
+        if isinstance(entity, (Book, ClassFeatureOption, RaceFeatureOption, LimitedUse)):
             return
         self.entitlement_lookup[k] = entity
 
@@ -221,7 +221,7 @@ class Compendium:
         :type entity_type: str or int
         :type entity_id: int
         """
-        return self._entity_lookup.get((entity_type, entity_id))
+        return self.entity_lookup.get((entity_type, entity_id))
 
     def book_by_source(self, short_source: str):
         """
