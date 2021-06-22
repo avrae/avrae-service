@@ -109,7 +109,7 @@ class Roll(Effect):
 
 class Text(Effect):
     type: Literal['text']
-    text: str4096
+    text: Union[AbilityReference, str4096]
 
 
 class SetVariable(Effect):
@@ -141,6 +141,15 @@ class UseCounter(Effect):
     errorBehaviour: Optional[Literal['warn', 'raise']]
 
 
+class CastSpell(Effect):
+    type: Literal['spell']
+    id: int
+    level: Optional[int]
+    dc: Optional[str255]
+    attackBonus: Optional[str255]
+    castingMod: Optional[str255]
+
+
 class Automation(BaseModel):
     __root__: List[Effect]
 
@@ -156,7 +165,8 @@ EFFECT_TYPES = {
     "text": Text,
     "variable": SetVariable,
     "condition": Condition,
-    "counter": UseCounter
+    "counter": UseCounter,
+    "spell": CastSpell
 }
 
 

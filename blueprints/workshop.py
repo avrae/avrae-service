@@ -299,14 +299,14 @@ def set_active_alias_code_version(user, body, alias_id):
 
 
 def _add_entitlement_to_collectable(collectable, entity_type: str, entity_id: int, required: bool = False):
-    sourced = compendium.lookup_by_entitlement(entity_type, entity_id)
+    sourced = compendium.lookup_entity(entity_type, entity_id)
     if sourced is None:
         return error(404, "Entitlement entity not found")
     return collectable.add_entitlement(sourced, required)
 
 
 def _remove_entitlement_from_collectable(collectable, entity_type: str, entity_id: int, ignore_required: bool = False):
-    sourced = compendium.lookup_by_entitlement(entity_type, entity_id)
+    sourced = compendium.lookup_entity(entity_type, entity_id)
     if sourced is None:
         return error(404, "Entitlement entity not found")
     return collectable.remove_entitlement(sourced, ignore_required)
