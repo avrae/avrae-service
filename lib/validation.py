@@ -20,7 +20,7 @@ class HigherLevels(BaseModel):
 
 
 class SpellSlotReference(BaseModel):
-    slot: conint(ge=1, le=9)
+    slot: Union[conint(ge=1, le=9), str255]
 
 
 class AbilityReference(BaseModel):
