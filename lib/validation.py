@@ -96,6 +96,7 @@ class IEffect(Effect):
     end: Optional[bool]
     conc: Optional[bool]
     desc: Optional[str4096]
+    stacking: Optional[bool]
 
 
 class Roll(Effect):
