@@ -163,9 +163,9 @@
           },
           {
             "type": "ieffect",
-            "name": "Max HP Increased (Aid)",
-            "duration": -1,
-            "effects": "",
+            "name": "Aid",
+            "duration": 4800,
+            "effects": "-maxhp +{heal}",
             "desc": "Target's hit point maximum and current hit points increase by {{heal}} for the duration."
           }
         ]
@@ -364,7 +364,7 @@
     "level": 5,
     "school": "A",
     "classes": "Druid",
-    "subclasses": "Death Domain, Grave Domain, The Undead (UA)",
+    "subclasses": "Death Domain, Grave Domain, The Undead",
     "casttime": "1 action",
     "range": "Self (10 ft. sphere)",
     "components": {
@@ -475,7 +475,7 @@
       "material": "an eggshell and a snakeskin glove"
     },
     "duration": "Concentration, up to 1 minute",
-    "description": "You create a Large hand of shimmering, translucent force in an unoccupied space that you can see within range. The hand lasts for the spell's duration, and it moves at your command, mimicking the movements of your own hand.\n\nThe hand is an object that has AC 20 and hit points equal to your hit point maximum. If it drops to 0 hit points, the spell ends. It has a Strength of 26 (+8) and a Dexterity of 10 (+0). The hand doesn't fill its space.\nWhen you cast the spell and as a bonus action on your subsequent turns, you can move the hand up to 60 feet and then cause one of the following effects with it.\n\n**Clenched Fist.** The hand strikes one creature or object within 5 feet of it. Make a melee spell attack for the hand using your game statistics. On a hit, the target takes 4d8 force damage.\n\n**Forceful Hand.** The hand attempts to push a creature within 5 feet of it in a direction you choose. Make a check with the hand's Strength contested by the Strength (Athletics) check of the target. If the target is Medium or smaller, you have advantage on the check. If you succeed, the hand pushes the target up to 5 feet plus a number of feet equal to five times your spellcasting ability modifier. The hand moves with the target to remain within 5 feet of it.\n\n**Grasping Hand.** The hand attempts to grapple a Huge or smaller creature within 5 feet of it. You use the hand's Strength score to resolve the grapple. If the target is Medium or smaller, you have advantage on the check. While the hand is grappling the target, you can use a bonus action to have the hand crush it. When you do so, the target takes bludgeoning damage equal to 2d6 + your spellcasting ability modifier.\n\n**Interposing Hand.** The hand interposes itself between you and a creature you choose until you give the hand a different command. The hand moves to stay between you and the target, providing you with half cover against the target. The target can't move through the hand's space if its Strength score is less than or equal to the hand's Strength score. If its Strength score is higher than the hand's Strength score, the target can move toward you through the hand's space, but that space is difficult terrain for the target.",
+    "description": "You create a Large hand of shimmering, translucent force in an unoccupied space that you can see within range. The hand lasts for the spell's duration, and it moves at your command, mimicking the movements of your own hand.\n\nThe hand is an object that has AC 20 and hit points equal to your hit point maximum. If it drops to 0 hit points, the spell ends. It has a Strength of 26 (+8) and a Dexterity of 10 (+0). The hand doesn't fill its space.\n\nWhen you cast the spell and as a bonus action on your subsequent turns, you can move the hand up to 60 feet and then cause one of the following effects with it.\n\n_**Clenched Fist.**_ The hand strikes one creature or object within 5 feet of it. Make a melee spell attack for the hand using your game statistics. On a hit, the target takes 4d8 force damage.\n\n_**Forceful Hand.**_ The hand attempts to push a creature within 5 feet of it in a direction you choose. Make a check with the hand's Strength contested by the Strength (Athletics) check of the target. If the target is Medium or smaller, you have advantage on the check. If you succeed, the hand pushes the target up to 5 feet plus a number of feet equal to five times your spellcasting ability modifier. The hand moves with the target to remain within 5 feet of it.\n\n_**Grasping Hand.**_ The hand attempts to grapple a Huge or smaller creature within 5 feet of it. You use the hand's Strength score to resolve the grapple. If the target is Medium or smaller, you have advantage on the check. While the hand is grappling the target, you can use a bonus action to have the hand crush it. When you do so, the target takes bludgeoning damage equal to 2d6 + your spellcasting ability modifier.\n\n_**Interposing Hand.**_ The hand interposes itself between you and a creature you choose until you give the hand a different command. The hand moves to stay between you and the target, providing you with half cover against the target. The target can't move through the hand's space if its Strength score is less than or equal to the hand's Strength score. If its Strength score is higher than the hand's Strength score, the target can move toward you through the hand's space, but that space is difficult terrain for the target.",
     "ritual": false,
     "higherlevels": "When you cast this spell using a spell slot of 6th level or higher, the damage from the clenched fist option increases by 2d8 and the damage from the grasping hand increases by 2d6 for each slot level above 5th.",
     "concentration": true,
@@ -669,7 +669,7 @@
     "level": 1,
     "school": "E",
     "classes": "Bard, Cleric",
-    "subclasses": "Grave Domain, Oath of Vengeance, The Undead (UA)",
+    "subclasses": "Grave Domain, Oath of Vengeance, The Undead",
     "casttime": "1 action",
     "range": "30 feet",
     "components": {
@@ -844,7 +844,7 @@
       "material": ""
     },
     "duration": "Concentration, up to 1 minute",
-    "description": "You touch a creature, and that creature must succeed on a Wisdom saving throw or become cursed for the duration of the spell. When you cast this spell, choose the nature of the curse from the following options:\n\n- Choose one ability score. While cursed, the target has disadvantage on ability checks and saving throws made with that ability score.\n- While cursed, the target has disadvantage on attack rolls against you.\n- While cursed, the target must make a Wisdom saving throw at the start of each of its turns. If it fails, it wastes its action that turn doing nothing.\n- While the target is cursed, your attacks and spells deal an extra 1d8 necrotic damage to the target.\n\nA **remove curse** spell ends this effect. At the DM's option, you may choose an alternative curse effect, but it should be no more powerful than those described above. The DM has final say on such a curse's effect.",
+    "description": "You touch a creature, and that creature must succeed on a Wisdom saving throw or become cursed for the duration of the spell. When you cast this spell, choose the nature of the curse from the following options:\n\n- Choose one ability score. While cursed, the target has disadvantage on ability checks and saving throws made with that ability score.\n- While cursed, the target has disadvantage on attack rolls against you.\n- While cursed, the target must make a Wisdom saving throw at the start of each of its turns. If it fails, it wastes its action that turn doing nothing.\n- While the target is cursed, your attacks and spells deal an extra 1d8 necrotic damage to the target.\n\nA remove curse spell ends this effect. At the DM's option, you may choose an alternative curse effect, but it should be no more powerful than those described above. The DM has final say on such a curse's effect.",
     "ritual": false,
     "higherlevels": "If you cast this spell using a spell slot of 4th level or higher, the duration is concentration, up to 10 minutes. If you use a spell slot of 5th level or higher, the duration is 8 hours. If you use a spell slot of 7th level or higher, the duration is 24 hours. If you use a 9th level spell slot, the spell lasts until it is dispelled. Using a spell slot of 5th level or higher grants a duration that doesn't require concentration.",
     "concentration": true,
@@ -1095,7 +1095,7 @@
     "level": 2,
     "school": "N",
     "classes": "Bard, Cleric, Sorcerer, Wizard",
-    "subclasses": "Circle of Spores, Death Domain, The Fiend, The Undead (UA), The Undying",
+    "subclasses": "Circle of Spores, Death Domain, The Fiend, The Undead, The Undying",
     "casttime": "1 action",
     "range": "30 feet",
     "components": {
@@ -1607,7 +1607,7 @@
     "level": 5,
     "school": "C",
     "classes": "Sorcerer, Wizard",
-    "subclasses": "Alchemist, Circle of Spores, Circle of the Land (Underdark), Death Domain, Oath of Conquest, The Undead (UA)",
+    "subclasses": "Alchemist, Circle of Spores, Circle of the Land (Underdark), Death Domain, Oath of Conquest, The Undead",
     "casttime": "1 action",
     "range": "120 feet (20 ft. sphere)",
     "components": {
@@ -2126,7 +2126,7 @@
       "material": ""
     },
     "duration": "7 days",
-    "description": "Your touch inflicts disease. Make a melee spell attack against a creature within your reach. On a hit, the target is poisoned.\n\nAt the end of each of the poisoned target's turns, the target must make a Constitution saving throw. If the target succeeds on three of these saves, it is no longer poisoned, and the spell ends. If the target fails three of these saves, the target is no longer poisoned, but choose one of the diseases below. The target is subjected to the chosen disease for the spell's duration.\n\nSince this spell induces a natural disease in its target, any effect that removes a disease or otherwise ameliorates a disease's effects apply to it.\n\n**Blinding Sickness.** Pain grips the creature's mind, and its eyes turn milky white. The creature has disadvantage on Wisdom checks and Wisdom saving throws and is blinded.\n\n**Filth Fever.** A raging fever sweeps through the creature's body. The creature has disadvantage on Strength checks, Strength saving throws, and attack rolls that use Strength.\n\n**Flesh Rot.** The creature's flesh decays. The creature has disadvantage on Charisma checks and vulnerability to all damage.\n\n**Mindfire.** The creature's mind becomes feverish. The creature has disadvantage on Intelligence checks and Intelligence saving throws, and the creature behaves as if under the effects of the confusion spell during combat.\n\n**Seizure.** The creature is overcome with shaking. The creature has disadvantage on Dexterity checks, Dexterity saving throws, and attack rolls that use Dexterity.\n\n**Slimy Doom.** The creature begins to bleed uncontrollably. The creature has disadvantage on Constitution checks and Constitution saving throws. In addition, whenever the creature takes damage, it is stunned until the end of its next turn.",
+    "description": "Your touch inflicts disease. Make a melee spell attack against a creature within your reach. On a hit, the target is poisoned.\n\nAt the end of each of the poisoned target's turns, the target must make a Constitution saving throw. If the target succeeds on three of these saves, it is no longer poisoned, and the spell ends. If the target fails three of these saves, the target is no longer poisoned, but choose one of the diseases below. The target is subjected to the chosen disease for the spell's duration.\n\nSince this spell induces a natural disease in its target, any effect that removes a disease or otherwise ameliorates a disease's effects apply to it.\n\n_**Blinding Sickness.**_ Pain grips the creature's mind, and its eyes turn milky white. The creature has disadvantage on Wisdom checks and Wisdom saving throws and is blinded.\n\n_**Filth Fever.**_ A raging fever sweeps through the creature's body. The creature has disadvantage on Strength checks, Strength saving throws, and attack rolls that use Strength.\n\n_**Flesh Rot.**_ The creature's flesh decays. The creature has disadvantage on Charisma checks and vulnerability to all damage.\n\n_**Mindfire.**_ The creature's mind becomes feverish. The creature has disadvantage on Intelligence checks and Intelligence saving throws, and the creature behaves as if under the effects of the confusion spell during combat.\n\n_**Seizure.**_ The creature is overcome with shaking. The creature has disadvantage on Dexterity checks, Dexterity saving throws, and attack rolls that use Dexterity.\n\n_**Slimy Doom.**_ The creature begins to bleed uncontrollably. The creature has disadvantage on Constitution checks and Constitution saving throws. In addition, whenever the creature takes damage, it is stunned until the end of its next turn.",
     "ritual": false,
     "higherlevels": null,
     "concentration": false,
@@ -2242,7 +2242,7 @@
     "school": "A",
     "classes": "Sorcerer, Warlock, Wizard",
     "subclasses": "Oath of Redemption, Oath of the Watchers",
-    "casttime": "1 reaction, which you take when you see a creature within 60 feet of you casting a spell  ",
+    "casttime": "1 reaction, which you take when you see a creature within 60 feet of you casting a spell",
     "range": "60 feet",
     "components": {
       "verbal": false,
@@ -2483,7 +2483,7 @@
     "level": 4,
     "school": "A",
     "classes": "Cleric, Paladin",
-    "subclasses": "Alchemist, Death Domain, Grave Domain, Life Domain, The Undead (UA), The Undying",
+    "subclasses": "Alchemist, Death Domain, Grave Domain, Life Domain, The Undead, The Undying",
     "casttime": "1 action",
     "range": "Touch",
     "components": {
@@ -2759,7 +2759,7 @@
       "material": "holy water or powdered silver and iron"
     },
     "duration": "Concentration, up to 1 minute",
-    "description": "Shimmering energy surrounds and protects you from fey, undead, and creatures originating from beyond the Material Plane. For the duration, celestials, elementals, fey, fiends, and undead have disadvantage on attack rolls against you.\n\nYou can end the spell early by using either of the following special functions.\n\n**Break Enchantment.** As your action, you touch a creature you can reach that is charmed, frightened, or possessed by a celestial, an elemental, a fey, a fiend, or an undead. The creature you touch is no longer charmed, frightened, or possessed by such creatures.\n\n**Dismissal.** As your action, make a melee spell attack against a celestial, an elemental, a fey, a fiend, or an undead you can reach. On a hit, you attempt to drive the creature back to its home plane. The creature must succeed on a Charisma saving throw or be sent back to its home plane (if it isn't there already). If they aren't on their home plane, undead are sent to the Shadowfell, and fey are sent to the Feywild.",
+    "description": "Shimmering energy surrounds and protects you from fey, undead, and creatures originating from beyond the Material Plane. For the duration, celestials, elementals, fey, fiends, and undead have disadvantage on attack rolls against you.\n\nYou can end the spell early by using either of the following special functions.\n\n_**Break Enchantment.**_ As your action, you touch a creature you can reach that is charmed, frightened, or possessed by a celestial, an elemental, a fey, a fiend, or an undead. The creature you touch is no longer charmed, frightened, or possessed by such creatures.\n\n_**Dismissal.**_ As your action, make a melee spell attack against a celestial, an elemental, a fey, a fiend, or an undead you can reach. On a hit, you attempt to drive the creature back to its home plane. The creature must succeed on a Charisma saving throw or be sent back to its home plane (if it isn't there already). If they aren't on their home plane, undead are sent to the Shadowfell, and fey are sent to the Feywild.",
     "ritual": false,
     "higherlevels": null,
     "concentration": true,
@@ -2932,7 +2932,7 @@
                     "errorBehaviour": "false"
                   }
                 ],
-                "errorBehaviour": "false"
+                "errorBehaviour": "neither"
               }
             ],
             "success": []
@@ -3669,7 +3669,7 @@
     "level": 1,
     "school": "N",
     "classes": "Artificer, Sorcerer, Wizard",
-    "subclasses": "Death Domain, Grave Domain, The Undead (UA), The Undying",
+    "subclasses": "Death Domain, Grave Domain, The Undead, The Undying",
     "casttime": "1 action",
     "range": "Self",
     "components": {
@@ -4428,17 +4428,39 @@
     "concentration": true,
     "automation": [
       {
-        "type": "target",
-        "target": "all",
-        "effects": [
+        "type": "condition",
+        "condition": "any(targets)",
+        "onTrue": [
           {
-            "type": "ieffect",
-            "name": "Flight",
-            "duration": 100,
-            "effects": "",
-            "desc": "The target gains a flying speed of 60 feet for the duration.\n - When the spell ends, the target falls if it is still aloft, unless it can stop the fall."
+            "type": "target",
+            "target": "all",
+            "effects": [
+              {
+                "type": "ieffect",
+                "name": "Flight",
+                "duration": 100,
+                "effects": "",
+                "desc": "The target gains a flying speed of 60 feet for the duration.\n - When the spell ends, the target falls if it is still aloft, unless it can stop the fall."
+              }
+            ]
           }
-        ]
+        ],
+        "onFalse": [
+          {
+            "type": "target",
+            "target": "self",
+            "effects": [
+              {
+                "type": "ieffect",
+                "name": "Flight",
+                "duration": 100,
+                "effects": "",
+                "desc": "The target gains a flying speed of 60 feet for the duration.\n - When the spell ends, the target falls if it is still aloft, unless it can stop the fall."
+              }
+            ]
+          }
+        ],
+        "errorBehaviour": "false"
       },
       {
         "type": "text",
@@ -4582,17 +4604,39 @@
     "concentration": false,
     "automation": [
       {
-        "type": "target",
-        "target": "all",
-        "effects": [
+        "type": "condition",
+        "condition": "any(targets)",
+        "onTrue": [
           {
-            "type": "ieffect",
-            "name": "Freedom of Movement",
-            "duration": 600,
-            "effects": "",
-            "desc": "The target's movement is unaffected by difficult terrain, and spells and other magical effects can neither reduce the target's speed nor cause the target to be paralyzed or restrained.\n - Can spend 5 feet of movement to automatically escape from nonmagical restraints.\n - Being underwater imposes no penalties on the target's movement or attacks."
+            "type": "target",
+            "target": "each",
+            "effects": [
+              {
+                "type": "ieffect",
+                "name": "Freedom of Movement",
+                "duration": 600,
+                "effects": "",
+                "desc": "The target's movement is unaffected by difficult terrain, and spells and other magical effects can neither reduce the target's speed nor cause the target to be paralyzed or restrained.\n - Can spend 5 feet of movement to automatically escape from nonmagical restraints.\n - Being underwater imposes no penalties on the target's movement or attacks."
+              }
+            ]
           }
-        ]
+        ],
+        "onFalse": [
+          {
+            "type": "target",
+            "target": "self",
+            "effects": [
+              {
+                "type": "ieffect",
+                "name": "Freedom of Movement",
+                "duration": 600,
+                "effects": "",
+                "desc": "The target's movement is unaffected by difficult terrain, and spells and other magical effects can neither reduce the target's speed nor cause the target to be paralyzed or restrained.\n - Can spend 5 feet of movement to automatically escape from nonmagical restraints.\n - Being underwater imposes no penalties on the target's movement or attacks."
+              }
+            ]
+          }
+        ],
+        "errorBehaviour": "false"
       },
       {
         "type": "text",
@@ -4677,17 +4721,39 @@
     "concentration": true,
     "automation": [
       {
-        "type": "target",
-        "target": "each",
-        "effects": [
+        "type": "condition",
+        "condition": "any(targets)",
+        "onTrue": [
           {
-            "type": "ieffect",
-            "name": "Gaseous Formed",
-            "duration": 600,
-            "effects": "",
-            "desc": "While in this form, the target's only method of movement is a flying speed of 10 feet.\n - The target has resistance to nonmagical damage, and it has advantage on Strength, Dexterity, and Constitution saving throws.\n - The target can't attack or cast spells."
+            "type": "target",
+            "target": "each",
+            "effects": [
+              {
+                "type": "ieffect",
+                "name": "Gaseous Formed",
+                "duration": 600,
+                "effects": "",
+                "desc": "While in this form, the target's only method of movement is a flying speed of 10 feet.\n - The target has resistance to nonmagical damage, and it has advantage on Strength, Dexterity, and Constitution saving throws.\n - The target can't attack or cast spells."
+              }
+            ]
           }
-        ]
+        ],
+        "onFalse": [
+          {
+            "type": "target",
+            "target": "self",
+            "effects": [
+              {
+                "type": "ieffect",
+                "name": "Gaseous Formed",
+                "duration": 600,
+                "effects": "",
+                "desc": "While in this form, the target's only method of movement is a flying speed of 10 feet.\n - The target has resistance to nonmagical damage, and it has advantage on Strength, Dexterity, and Constitution saving throws.\n - The target can't attack or cast spells."
+              }
+            ]
+          }
+        ],
+        "errorBehaviour": "false"
       },
       {
         "type": "text",
@@ -4983,7 +5049,7 @@
     "level": 4,
     "school": "I",
     "classes": "Bard, Sorcerer, Wizard",
-    "subclasses": "Armorer, Circle of the Land (Underdark), The Archfey, The Genie, The Undead (UA), Twilight Domain",
+    "subclasses": "Armorer, Circle of the Land (Underdark), The Archfey, The Genie, The Undead, Twilight Domain",
     "casttime": "1 action",
     "range": "Touch",
     "components": {
@@ -5115,7 +5181,7 @@
       "material": ""
     },
     "duration": "24 hours",
-    "description": "You create a ward that protects up to 2,500 square feet of floor space (an area 50 feet square, or one hundred 5-foot squares or twenty-five 10-foot squares). The warded area can be up to 20 feet tall, and shaped as you desire. You can ward several stories of a stronghold by dividing the area among them, as long as you can walk into each contiguous area while you are casting the spell.\n\nWhen you cast this spell, you can specify individuals that are unaffected by any or all of the effects that you choose. You can also specify a password that, when spoken aloud, makes the speaker immune to these effects.\n\n**Guards and wards** creates the following effects within the warded area.\n\n**Corridors.** Fog fills all the warded corridors, making them heavily obscured. In addition, at each intersection or branching passage offering a choice of direction, there is a 50 percent chance that a creature other than you will believe it is going in the opposite direction from the one it chooses.\n\n**Doors.** All doors in the warded area are magically locked, as if sealed by an **arcane lock** spell. In addition, you can cover up to ten doors with an illusion (equivalent to the illusory object function of the **minor illusion** spell) to make them appear as plain sections of wall.\n\n**Stairs.** Webs fill all stairs in the warded area from top to bottom, as the **web** spell. These strands regrow in 10 minutes if they are burned or torn away while **guards and wards** lasts.\n\n**Other Spell Effect.** You can place your choice of one of the following magical effects within the warded area of the stronghold.\n\n- Place **dancing lights** in four corridors. You can designate a simple program that the lights repeat as long as **guards and wards** lasts.\n- Place **magic mouth** in two locations.\n- Place **stinking cloud** in two locations. The vapors appear in the places you designate; they return within 10 minutes if dispersed by wind while **guards and wards** lasts.\n- Place a constant** gust of wind** in one corridor or room.\n- Place a **suggestion** in one location. You select an area of up to 5 feet square, and any creature that enters or passes through the area receives the suggestion mentally.\n\nThe whole warded area radiates magic. A **dispel magic** cast on a specific effect, if successful, removes only that effect.\n\nYou can create a permanently guarded and warded structure by casting this spell there every day for one year.",
+    "description": "You create a ward that protects up to 2,500 square feet of floor space (an area 50 feet square, or one hundred 5-foot squares or twenty-five 10-foot squares). The warded area can be up to 20 feet tall, and shaped as you desire. You can ward several stories of a stronghold by dividing the area among them, as long as you can walk into each contiguous area while you are casting the spell.\n\nWhen you cast this spell, you can specify individuals that are unaffected by any or all of the effects that you choose. You can also specify a password that, when spoken aloud, makes the speaker immune to these effects.\n\n_Guards and wards_ creates the following effects within the warded area.\n\n_**Corridors.**_ Fog fills all the warded corridors, making them heavily obscured. In addition, at each intersection or branching passage offering a choice of direction, there is a 50 percent chance that a creature other than you will believe it is going in the opposite direction from the one it chooses.\n\n_**Doors.**_ All doors in the warded area are magically locked, as if sealed by an arcane lock spell. In addition, you can cover up to ten doors with an illusion (equivalent to the illusory object function of the minor illusion spell) to make them appear as plain sections of wall.\n\n_**Stairs.**_ Webs fill all stairs in the warded area from top to bottom, as the web spell. These strands regrow in 10 minutes if they are burned or torn away while guards and wards lasts.\n\n_**Other Spell Effect.**_ You can place your choice of one of the following magical effects within the warded area of the stronghold.\n\n- Place dancing lights in four corridors. You can designate a simple program that the lights repeat as long as _guards and wards_ lasts.\n- Place magic mouth in two locations.\n- Place stinking cloud in two locations. The vapors appear in the places you designate; they return within 10 minutes if dispersed by wind while _guards and wards_ lasts.\n- Place a constant gust of wind in one corridor or room.\n- Place a suggestion in one location. You select an area of up to 5 feet square, and any creature that enters or passes through the area receives the suggestion mentally.\n\nThe whole warded area radiates magic. A dispel magic cast on a specific effect, if successful, removes only that effect.\n\nYou can create a permanently guarded and warded structure by casting this spell there every day for one year.",
     "ritual": false,
     "higherlevels": null,
     "concentration": false,
@@ -5184,7 +5250,7 @@
               {
                 "type": "ieffect",
                 "name": "Guiding Bolt",
-                "duration": 1,
+                "duration": 2,
                 "effects": "",
                 "desc": "The next attack roll made against this target before the end of {{caster.name}}'s' next turn has advantage"
               }
@@ -5313,11 +5379,25 @@
                 "damage": "{damage}"
               },
               {
-                "type": "ieffect",
-                "name": "Max HP Reduced (Harm)",
-                "duration": 600,
-                "effects": "",
-                "desc": "Reduced by {{min((-1+target.hp)+lastDamage, lastDamage)}}"
+                "type": "condition",
+                "condition": "target.hp",
+                "onTrue": [
+                  {
+                    "type": "ieffect",
+                    "name": "Harm",
+                    "duration": 600,
+                    "effects": "-maxhp -{{min((-1+target.hp)+lastDamage, lastDamage)}}"
+                  }
+                ],
+                "onFalse": [
+                  {
+                    "type": "ieffect",
+                    "name": "Harm",
+                    "duration": 600,
+                    "effects": "-maxhp -{lastDamage}"
+                  }
+                ],
+                "errorBehaviour": "false"
               }
             ],
             "success": [
@@ -5637,18 +5717,22 @@
         "target": "each",
         "effects": [
           {
-            "type": "damage",
-            "damage": "-{heal} [heal]",
-            "overheal": true
-          },
-          {
             "type": "ieffect",
             "name": "Heroes' Feast",
             "duration": 14400,
-            "effects": "",
-            "desc": "The target becomes immune to poison and being frightened, and makes all Wisdom saving throws with advantage.\n - Its hit point maximum also increases by 2d10, and it gains the same number of hit points."
+            "effects": "-maxhp +{heal}",
+            "desc": "The target becomes immune to poison and being frightened, and makes all Wisdom saving throws with advantage"
+          },
+          {
+            "type": "damage",
+            "damage": "-{heal} [heal]",
+            "overheal": true
           }
         ]
+      },
+      {
+        "type": "text",
+        "text": "You bring forth a great feast, including magnificent food and drink. The feast takes 1 hour to consume and disappears at the end of that time, and the beneficial effects don't set in until this hour is over. Up to twelve creatures can partake of the feast.\n\nA creature that partakes of the feast gains several benefits. The creature is cured of all diseases and poison, becomes immune to poison and being frightened, and makes all Wisdom saving throws with advantage. Its hit point maximum also increases by 2d10, and it gains the same number of hit points. These benefits last for 24 hours."
       }
     ]
   },
@@ -6476,24 +6560,53 @@
     "concentration": true,
     "automation": [
       {
-        "type": "target",
-        "target": "all",
-        "effects": [
+        "type": "condition",
+        "condition": "any(targets)",
+        "onTrue": [
           {
-            "type": "save",
-            "stat": "con",
-            "fail": [
+            "type": "target",
+            "target": "each",
+            "effects": [
               {
-                "type": "ieffect",
-                "name": "Levitating",
-                "duration": 100,
-                "effects": "",
-                "desc": "The target can only move by pushing or pulling against a fixed object or surface within reach.\n - {{caster.name}} can change the target's altitude by up to 20 ft. in either direction on their turn.\n - If {{caster.name}} is the target, they can do so using their movement.\n - Otherwise, they can use their action to move the target, which must remain within the spell's range.\n - When the spell ends, the target floats gently to the ground if it is still aloft."
+                "type": "save",
+                "stat": "con",
+                "fail": [
+                  {
+                    "type": "ieffect",
+                    "name": "Levitating",
+                    "duration": 100,
+                    "effects": "",
+                    "desc": "The target can only move by pushing or pulling against a fixed object or surface within reach.\n - {{caster.name}} can change the target's altitude by up to 20 ft. in either direction on their turn.\n - If {{caster.name}} is the target, they can do so using their movement.\n - Otherwise, they can use their action to move the target, which must remain within the spell's range.\n - When the spell ends, the target floats gently to the ground if it is still aloft"
+                  }
+                ],
+                "success": []
               }
-            ],
-            "success": []
+            ]
           }
-        ]
+        ],
+        "onFalse": [
+          {
+            "type": "target",
+            "target": "self",
+            "effects": [
+              {
+                "type": "save",
+                "stat": "con",
+                "fail": [
+                  {
+                    "type": "ieffect",
+                    "name": "Levitating",
+                    "duration": 100,
+                    "effects": "",
+                    "desc": "You can only move by pushing or pulling against a fixed object or surface within reach.\n - You can change your altitude by up to 20 ft. in either direction on their turn using their movement.\n - When the spell ends, you float gently to the ground if it is still aloft"
+                  }
+                ],
+                "success": []
+              }
+            ]
+          }
+        ],
+        "errorBehaviour": "false"
       },
       {
         "type": "text",
@@ -6560,7 +6673,7 @@
       "material": ""
     },
     "duration": "Instantaneous",
-    "description": "A stroke of lightning forming a line 100 feet long and 5 feet wide blasts out from you in a direction you choose. Each creature in the line must make a Dexterity saving throw. A creature takes 8d6 lightning damage on a failed save, or half as much damage on a successful one.\nThe lightning ignites flammable objects in the area that aren't being worn or carried.",
+    "description": "A stroke of lightning forming a line 100 feet long and 5 feet wide blasts out from you in a direction you choose. Each creature in the line must make a Dexterity saving throw. A creature takes 8d6 lightning damage on a failed save, or half as much damage on a successful one.\n\nThe lightning ignites flammable objects in the area that aren't being worn or carried.",
     "ritual": false,
     "higherlevels": "When you cast this spell using a spell slot of 4th level or higher, the damage increases by 1d6 for each slot level above 3rd.",
     "concentration": false,
@@ -6798,7 +6911,7 @@
       "material": ""
     },
     "duration": "1 hour",
-    "description": "You create a 10-foot-radius, 20-foot-tall cylinder of magical energy centered on a point on the ground that you can see within range. Glowing runes appear wherever the cylinder intersects with the floor or other surface.\n\nChoose one or more of the following types of creatures: celestials, elementals, fey, fiends, or undead. The circle affects a creature of the chosen type in the following ways:\n\n- The creature can't willingly enter the cylinder by nonmagical means. If the creature tries to use teleportation or interplanar travel to do so, it must first succeed on a Charisma saving throw.\n- The creature has disadvantage on attack rolls against targets within the cylinder.\n- Targets within the cylinder can't be charmed, frightened, or possessed by the creature.\n\nWhen you cast this spell, you can elect to cause its magic to operate in the reverse direction, preventing a creature of the specified type from leaving the cylinder and protecting targets outside it.",
+    "description": "You create a 10-foot-radius, 20-foot-tall cylinder of magical energy centered on a point on the ground that you can see within range. Glowing runes appear wherever the cylinder intersects with the floor or other surface.\n\nChoose one or more of the following types of creatures: celestials, elementals, fey, fiends, or undead. The circle affects a creature of the chosen type in the following ways:\n\nThe creature can't willingly enter the cylinder by nonmagical means. If the creature tries to use teleportation or interplanar travel to do so, it must first succeed on a Charisma saving throw.\n\n- The creature has disadvantage on attack rolls against targets within the cylinder.\n- Targets within the cylinder can't be charmed, frightened, or possessed by the creature.\n- When you cast this spell, you can elect to cause its magic to operate in the reverse direction, preventing a creature of the specified type from leaving the cylinder and protecting targets outside it.",
     "ritual": false,
     "higherlevels": "When you cast this spell using a spell slot of 4th level or higher, the duration increases by 1 hour for each slot level above 3rd.",
     "concentration": false,
@@ -7771,7 +7884,7 @@
     "level": 3,
     "school": "I",
     "classes": "Wizard",
-    "subclasses": "The Undead (UA)",
+    "subclasses": "The Undead",
     "casttime": "1 minute",
     "range": "30 feet",
     "components": {
@@ -8267,8 +8380,34 @@
                     ],
                     "onFalse": [
                       {
-                        "type": "text",
-                        "text": "{{target.name}} is struck by two rays."
+                        "type": "condition",
+                        "condition": "any(targets)",
+                        "onTrue": [
+                          {
+                            "type": "condition",
+                            "condition": "target.name",
+                            "onTrue": [
+                              {
+                                "type": "text",
+                                "text": "{{target.name}} is struck by two rays."
+                              }
+                            ],
+                            "onFalse": [
+                              {
+                                "type": "text",
+                                "text": "{{target}} is struck by two rays."
+                              }
+                            ],
+                            "errorBehaviour": "false"
+                          }
+                        ],
+                        "onFalse": [
+                          {
+                            "type": "text",
+                            "text": "The target is struck by two rays."
+                          }
+                        ],
+                        "errorBehaviour": "false"
                       }
                     ]
                   }
@@ -8277,6 +8416,14 @@
             ]
           }
         ]
+      },
+      {
+        "type": "text",
+        "text": "Eight multicolored rays of light flash from your hand. Each ray is a different color and has a different power and purpose. Each creature in a 60-foot cone must make a Dexterity saving throw. For each target, roll a d8 to determine which color ray affects it.\n\n1. **Red.** The target takes 10d6 fire damage on a failed save, or half as much damage on a successful one.\n\n2. **Orange.** The target takes 10d6 acid damage on a failed save, or half as much damage on a successful one.\n\n3. **Yellow.** The target takes 10d6 lightning damage on a failed save, or half as much damage on a successful one.\n\n4. **Green.** The target takes 10d6 poison damage on a failed save, or half as much damage on a successful one.\n\n5. **Blue.** The target takes 10d6 cold damage on a failed save, or half as much damage on a successful one."
+      },
+      {
+        "type": "text",
+        "text": "6. **Indigo.** On a failed save, the target is restrained. It must then make a Constitution saving throw at the end of each of its turns. If it successfully saves three times, the spell ends. If it fails its save three times, it permanently turns to stone and is subjected to the petrified condition. The successes and failures don't need to be consecutive; keep track of both until the target collects three of a kind.\n\n7. **Violet.** On a failed save, the target is blinded. It must then make a Wisdom saving throw at the start of your next turn. A successful save ends the blindness. If it fails that save, the creature is transported to another plane of existence of the GM's choosing and is no longer blinded. (Typically, a creature that is on a plane that isn't its home plane is banished home, while other creatures are usually cast into the Astral or Ethereal planes.)\n\n8. **Special.** The target is struck by two rays. Roll twice more, rerolling any 8."
       }
     ]
   },
@@ -8660,7 +8807,7 @@
                 "name": "Slowed (Ray of Frost)",
                 "duration": 1,
                 "effects": "",
-                "desc": "Targets speed is reduced by 10 feet until the start of {{caster.name}}'s next turn."
+                "desc": "Target's speed is reduced by 10 feet until the start of {{caster.name}}'s next turn."
               }
             ],
             "miss": []
@@ -8927,7 +9074,8 @@
                 "damage": "{{target.hp-1}} [revivify]"
               }
             ],
-            "onFalse": []
+            "onFalse": [],
+            "errorBehaviour": "neither"
           }
         ]
       },
@@ -9431,7 +9579,7 @@
               {
                 "type": "ieffect",
                 "name": "Shielded by Faith",
-                "duration": -1,
+                "duration": 100,
                 "effects": "-ac +2"
               }
             ]
@@ -9445,7 +9593,7 @@
               {
                 "type": "ieffect",
                 "name": "Shielded by Faith",
-                "duration": -1,
+                "duration": 100,
                 "effects": "-ac +2"
               }
             ]
@@ -9788,7 +9936,7 @@
     "level": 3,
     "school": "N",
     "classes": "Bard, Cleric",
-    "subclasses": "Knowledge Domain, The Undead (UA), The Undying",
+    "subclasses": "Knowledge Domain, The Undead, The Undying",
     "casttime": "1 action",
     "range": "10 feet",
     "components": {
@@ -10732,7 +10880,7 @@
       "material": ""
     },
     "duration": "Concentration, up to 1 hour",
-    "description": "Choose one creature or nonmagical object that you can see within range. You transform the creature into a different creature, the creature into a nonmagical object, or the object into a creature (the object must be neither worn nor carried by another creature). The spell lasts for the duration, or until the target drops to 0 hit points or dies. If you concentrate on this spell for the full duration, the spell lasts until it is dispelled.\n\nThis spell has no effect on a shapechanger or a creature with 0 hit points. An unwilling creature can make a Wisdom saving throw, and if it succeeds, it isn't affected by this spell.\n\n**Creature into Creature.** If you turn a creature into another kind of creature, the new form can be any kind you choose whose challenge rating is equal to or less than the target's (or its level, if the target doesn't have a challenge rating). The target's game statistics, including mental ability scores, are replaced by the statistics of the new form. It retains its alignment and personality.\n\nThe target assumes the hit points of its new form, and when it reverts to its normal form, the creature returns to the number of hit points it had before it transformed. If it reverts as a result of dropping to 0 hit points, any excess damage carries over to its normal form. As long as the excess damage doesn't reduce the creature's normal form to 0 hit points, it isn't knocked unconscious.\n\nThe creature is limited in the actions it can perform by the nature of its new form, and it can't speak, cast spells, or take any other action that requires hands or speech, unless its new form is capable of such actions.\n\nThe target's gear melds into the new form. The creature can't activate, use, wield, or otherwise benefit from any of its equipment.\n\n**Object into Creature.** You can turn an object into any kind of creature, as long as the creature's size is no larger than the object's size and the creature's challenge rating is 9 or lower. The creature is friendly to you and your companions. It acts on each of your turns. You decide what action it takes and how it moves. The GM has the creature's statistics and resolves all of its actions and movement.\n\nIf the spell becomes permanent, you no longer control the creature. It might remain friendly to you, depending on how you have treated it.\n\n**Creature into Object.** If you turn a creature into an object, it transforms along with whatever it is wearing and carrying into that form, as long as the object's size is no larger than the creature's size. The creature's statistics become those of the object, and the creature has no memory of time spent in this form, after the spell ends and it returns to its normal form.",
+    "description": "Choose one creature or nonmagical object that you can see within range. You transform the creature into a different creature, the creature into a nonmagical object, or the object into a creature (the object must be neither worn nor carried by another creature). The spell lasts for the duration, or until the target drops to 0 hit points or dies. If you concentrate on this spell for the full duration, the spell lasts until it is dispelled.\n\nThis spell has no effect on a shapechanger or a creature with 0 hit points. An unwilling creature can make a Wisdom saving throw, and if it succeeds, it isn't affected by this spell.\n\n_**Creature into Creature.**_ If you turn a creature into another kind of creature, the new form can be any kind you choose whose challenge rating is equal to or less than the target's (or its level, if the target doesn't have a challenge rating). The target's game statistics, including mental ability scores, are replaced by the statistics of the new form. It retains its alignment and personality.\n\nThe target assumes the hit points of its new form, and when it reverts to its normal form, the creature returns to the number of hit points it had before it transformed. If it reverts as a result of dropping to 0 hit points, any excess damage carries over to its normal form. As long as the excess damage doesn't reduce the creature's normal form to 0 hit points, it isn't knocked unconscious.\n\nThe creature is limited in the actions it can perform by the nature of its new form, and it can't speak, cast spells, or take any other action that requires hands or speech, unless its new form is capable of such actions.\n\nThe target's gear melds into the new form. The creature can't activate, use, wield, or otherwise benefit from any of its equipment.\n\n_**Object into Creature.**_ You can turn an object into any kind of creature, as long as the creature's size is no larger than the object's size and the creature's challenge rating is 9 or lower. The creature is friendly to you and your companions. It acts on each of your turns. You decide what action it takes and how it moves. The GM has the creature's statistics and resolves all of its actions and movement.\n\nIf the spell becomes permanent, you no longer control the creature. It might remain friendly to you, depending on how you have treated it.\n\n_**Creature into Object.**_ If you turn a creature into an object, it transforms along with whatever it is wearing and carrying into that form, as long as the object's size is no larger than the creature's size. The creature's statistics become those of the object, and the creature has no memory of time spent in this form, after the spell ends and it returns to its normal form.",
     "ritual": false,
     "higherlevels": null,
     "concentration": true,
@@ -11317,7 +11465,7 @@
             "name": "Water Breathing",
             "duration": 14400,
             "effects": "",
-            "desc": "The target is able to breath underwater.\n - They also retain their normal mode of respiration."
+            "desc": "The target is able to breathe underwater.\n - They also retain their normal mode of respiration."
           }
         ]
       },
@@ -11905,7 +12053,7 @@
     "classes": "Druid",
     "subclasses": "",
     "casttime": "1 action",
-    "range": "120 feet (30 ft. cylinder)",
+    "range": "120 feet (5 ft. cylinder)",
     "components": {
       "verbal": true,
       "somatic": true,
@@ -12862,17 +13010,39 @@
     "concentration": false,
     "automation": [
       {
-        "type": "target",
-        "target": "each",
-        "effects": [
+        "type": "condition",
+        "condition": "any(targets)",
+        "onTrue": [
           {
-            "type": "ieffect",
-            "name": "Magic Stones",
-            "duration": 10,
-            "effects": "-attack \"{spell+proficiencyBonus}|1d6 + {spell} [magical bludgeoning]|If thrown, it has a range of 60 feet. If someone else attacks with the pebble, that attacker adds your spellcasting ability modifier, not the attacker's, to the attack roll. On a hit, the target takes bludgeoning damage equal to 1d6 + your spellcasting ability modifier. Hit or miss, the spell then ends on the stone.\"",
-            "desc": "If thrown, it has a range of 60 feet.\n - If someone else attacks with the pebble, that attacker adds your spellcasting ability modifier, not the attacker's, to the attack roll.\n - On a hit, the target takes bludgeoning damage equal to 1d6 + your spellcasting ability modifier.\n - Hit or miss, the spell then ends on the stone."
+            "type": "target",
+            "target": "each",
+            "effects": [
+              {
+                "type": "ieffect",
+                "name": "Magic Stone",
+                "duration": 10,
+                "effects": "-attack \"{spell+proficiencyBonus}|1d6 + {spell} [magical bludgeoning]|If thrown, it has a range of 60 feet. If someone else attacks with the pebble, that attacker adds your spellcasting ability modifier, not the attacker's, to the attack roll. On a hit, the target takes bludgeoning damage equal to 1d6 + your spellcasting ability modifier. Hit or miss, the spell then ends on the stone.\"",
+                "desc": "If thrown, it has a range of 60 feet.\n - If someone else attacks with the pebble, that attacker adds your spellcasting ability modifier, not the attacker's, to the attack roll.\n - On a hit, the target takes bludgeoning damage equal to 1d6 + your spellcasting ability modifier.\n - Hit or miss, the spell then ends on the stone."
+              }
+            ]
           }
-        ]
+        ],
+        "onFalse": [
+          {
+            "type": "target",
+            "target": "self",
+            "effects": [
+              {
+                "type": "ieffect",
+                "name": "Magic Stone",
+                "duration": 10,
+                "effects": "-attack \"{spell+proficiencyBonus}|1d6 + {spell} [magical bludgeoning]|If thrown, it has a range of 60 feet. If someone else attacks with the pebble, that attacker adds your spellcasting ability modifier, not the attacker's, to the attack roll. On a hit, the target takes bludgeoning damage equal to 1d6 + your spellcasting ability modifier. Hit or miss, the spell then ends on the stone.\"",
+                "desc": "If thrown, it has a range of 60 feet.\n - If someone else attacks with the pebble, that attacker adds your spellcasting ability modifier, not the attacker's, to the attack roll.\n - On a hit, the target takes bludgeoning damage equal to 1d6 + your spellcasting ability modifier.\n - Hit or miss, the spell then ends on the stone."
+              }
+            ]
+          }
+        ],
+        "errorBehaviour": "false"
       },
       {
         "type": "text",
@@ -13415,7 +13585,7 @@
       "material": "clay and water"
     },
     "duration": "Until Dispelled",
-    "description": "You choose an area of stone or mud that you can see that fits within a 40-foot cube and is within range, and choose one of the following effects.\n\n**Transmute Rock to Mud.** Nonmagical rock of any sort in the area becomes an equal volume of thick, flowing mud that remains for the spell's duration.\n\nThe ground in the spell's area becomes muddy enough that creatures can sink into it. Each foot that a creature moves through the mud costs 4 feet of movement, and any creature on the ground when you cast the spell must make a Strength saving throw. A creature must also make the saving throw when it moves into the area for the first time on a turn or ends its turn there. On a failed save, a creature sinks into the mud and is restrained, though it can use an action to end the restrained condition on itself by pulling itself free of the mud.\n\nIf you cast the spell on a ceiling, the mud falls. Any creature under the mud when it falls must make a Dexterity saving throw. A creature takes 4d8 bludgeoning damage on a failed save, or half as much damage on a successful one.\n\n**Transmute Mud to Rock. **Nonmagical mud or quicksand in the area no more than 10 feet deep transforms into soft stone for the spell's duration. Any creature in the mud when it transforms must make a Dexterity saving throw. On a successful save, a creature is shunted safely to the surface in an unoccupied space. On a failed save, a creature becomes restrained by the rock. A restrained creature, or another creature within reach, can use an action to try to break the rock by succeeding on a DC 20 Strength check or by dealing damage to it. The rock has AC 15 and 25 hit points, and it is immune to poison and psychic damage.",
+    "description": "You choose an area of stone or mud that you can see that fits within a 40-foot cube and is within range, and choose one of the following effects.\n\n**Transmute Rock to Mud.** Nonmagical rock of any sort in the area becomes an equal volume of thick, flowing mud that remains for the spell's duration.\n\nThe ground in the spell's area becomes muddy enough that creatures can sink into it. Each foot that a creature moves through the mud costs 4 feet of movement, and any creature on the ground when you cast the spell must make a Strength saving throw. A creature must also make the saving throw when it moves into the area for the first time on a turn or ends its turn there. On a failed save, a creature sinks into the mud and is restrained, though it can use an action to end the restrained condition on itself by pulling itself free of the mud.\n\nIf you cast the spell on a ceiling, the mud falls. Any creature under the mud when it falls must make a Dexterity saving throw. A creature takes 4d8 bludgeoning damage on a failed save, or half as much damage on a successful one.\n\n**Transmute Mud to Rock.** Nonmagical mud or quicksand in the area no more than 10 feet deep transforms into soft stone for the spell's duration. Any creature in the mud when it transforms must make a Dexterity saving throw. On a successful save, a creature is shunted safely to the surface in an unoccupied space. On a failed save, a creature becomes restrained by the rock. A restrained creature, or another creature within reach, can use an action to try to break the rock by succeeding on a DC 20 Strength check or by dealing damage to it. The rock has AC 15 and 25 hit points, and it is immune to poison and psychic damage.",
     "ritual": false,
     "higherlevels": null,
     "concentration": false,
@@ -13698,11 +13868,18 @@
                 "damage": "{damage}"
               },
               {
-                "type": "ieffect",
-                "name": "Restrained (Whirlwind)",
-                "duration": 10,
-                "effects": "",
-                "desc": "When a restrained creature, the creature is pulled 5 feet higher inside it, unless the creature is at the top.\n - A restrained creature moves with the whirlwind and falls when the spell ends, unless the creature has some means to stay aloft.\n - A restrained creature can use an action to make a Strength or Dexterity check against your spell save DC.\n - If successful, the creature is no longer restrained by the whirlwind and is hurled 3d6 \u00d7 10 feet away in a random direction."
+                "type": "save",
+                "stat": "str",
+                "fail": [
+                  {
+                    "type": "ieffect",
+                    "name": "Restrained (Whirlwind)",
+                    "duration": 10,
+                    "effects": "",
+                    "desc": "When a restrained creature, the creature is pulled 5 feet higher inside it, unless the creature is at the top.\n - A restrained creature moves with the whirlwind and falls when the spell ends, unless the creature has some means to stay aloft.\n - A restrained creature can use an action to make a Strength or Dexterity check against your spell save DC.\n - If successful, the creature is no longer restrained by the whirlwind and is hurled 3d6 \u00d7 10 feet away in a random direction."
+                  }
+                ],
+                "success": []
               }
             ],
             "success": [
