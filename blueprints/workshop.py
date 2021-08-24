@@ -77,13 +77,13 @@ def get_collection_full(user, coll_id):
     out = coll.to_dict(js=True)
 
     def dictify(alias):
-        ad = alias.to_dict(js=True)
+        ad = alias.to_dict(js=True, include_code_versions=False)
         ad['subcommands'] = [dictify(subcommand) for subcommand in alias.subcommands]
         return ad
 
     out.update({
         "aliases": [dictify(alias) for alias in coll.aliases],
-        "snippets": [snippet.to_dict(js=True) for snippet in coll.snippets]
+        "snippets": [snippet.to_dict(js=True, include_code_versions=False) for snippet in coll.snippets]
     })
     return success(out, 200)
 

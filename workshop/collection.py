@@ -587,8 +587,11 @@ class WorkshopCollectableObject(abc.ABC):
             out[ent.entity_type].append(ent.entity_id)
         return out
 
-    def to_dict(self, js=False):
-        versions = [cv.to_dict() for cv in self.versions]
+    def to_dict(self, js=False, include_code_versions=True):
+        if include_code_versions:
+            versions = [cv.to_dict() for cv in self.versions]
+        else:
+            versions = []
         entitlements = [ent.to_dict() for ent in self.entitlements]
         out = {
             "name": self.name, "code": self.code, "versions": versions, "docs": self.docs, "entitlements": entitlements,
@@ -763,8 +766,8 @@ class WorkshopAlias(WorkshopCollectableObject):
             raise CollectableNotFound()
         return cls.from_dict(raw, collection, parent)
 
-    def to_dict(self, js=False):
-        out = super().to_dict(js)
+    def to_dict(self, *args, **kwargs):
+        out = super().to_dict(*args, **kwargs)
         out.update({
             "subcommand_ids": self._subcommand_ids, "parent_id": self._parent_id
         })
