@@ -217,6 +217,8 @@ def create_alias(user, body, coll_id):
 
     if not body['name']:
         return error(400, "Alias must have a name")
+    if not 0 < len(body['name']) < 1024:
+        return error(400, "Alias names must be between 1 and 1024 characters long")
     if ' ' in body['name']:
         return error(400, "Alias names cannot contain spaces")
     if body['name'] in current_app.rdb.jget("default_commands", []):
@@ -236,6 +238,8 @@ def create_subalias(user, body, alias_id):
 
     if not body['name']:
         return error(400, "Alias must have a name")
+    if not 0 < len(body['name']) < 1024:
+        return error(400, "Alias names must be between 1 and 1024 characters long")
     if ' ' in body['name']:
         return error(400, "Alias names cannot contain spaces")
 
@@ -253,6 +257,8 @@ def edit_alias(user, body, alias_id):
 
     if not body['name']:
         return error(400, "Alias must have a name")
+    if not 0 < len(body['name']) < 1024:
+        return error(400, "Alias names must be between 1 and 1024 characters long")
     if ' ' in body['name']:
         return error(400, "Alias names cannot contain spaces")
     if not alias.has_parent and body['name'] in current_app.rdb.jget("default_commands", []):
@@ -336,9 +342,9 @@ def create_snippet(user, body, coll_id):
     coll = get_collection_with_editor_check(coll_id, user)
 
     if ' ' in body['name']:
-        return error(400, "snippet names cannot contain spaces")
-    if len(body['name']) < 2:
-        return error(400, "snippet names must be at least 2 characters")
+        return error(400, "Snippet names cannot contain spaces")
+    if not 1 < len(body['name']) < 1024:
+        return error(400, "Snippet names must be between 2 and 1024 characters long")
 
     snippet = coll.create_snippet(body['name'], body['docs'])
     return success(snippet.to_dict(js=True), 201)
@@ -352,8 +358,8 @@ def edit_snippet(user, body, snippet_id):
 
     if ' ' in body['name']:
         return error(400, "snippet names cannot contain spaces")
-    if len(body['name']) < 2:
-        return error(400, "snippet names must be at least 2 characters")
+    if not 1 < len(body['name']) < 1024:
+        return error(400, "Snippet names must be between 2 and 1024 characters long")
 
     snippet.update_info(body['name'], body['docs'])
     return success(snippet.to_dict(js=True), 200)
