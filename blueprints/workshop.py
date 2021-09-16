@@ -282,6 +282,13 @@ def delete_alias(user, alias_id):
     return success(f"Deleted {alias.name}", 200)
 
 
+@workshop.route("alias/<alias_id>/code", methods=["GET"])
+@requires_auth
+def get_alias_code_versions(user, alias_id):
+    alias = get_collectable_with_editor_check(WorkshopAlias, alias_id, user)
+    return _get_paginated_collectable_code_versions(alias)
+
+
 @workshop.route("alias/<alias_id>/code", methods=["POST"])
 @expect_json(content=str)
 @requires_auth
@@ -316,6 +323,22 @@ def _remove_entitlement_from_collectable(collectable, entity_type: str, entity_i
     if sourced is None:
         return error(404, "Entitlement entity not found")
     return collectable.remove_entitlement(sourced, ignore_required)
+
+
+def _get_paginated_collectable_code_versions(collectable):
+    """Returns the *limit* most recent code versions"""
+    try:
+        limit = request.args.get('limit', 50, type=int)
+        skip = request.args.get('skip', 0, type=int)
+    except ValueError:
+        return error(400, "invalid query")
+    if limit < 1 or skip < 0:
+        return error(400, "invalid query")
+
+    start_idx = -skip - 1
+    end_idx = -skip - 1 - limit
+    code_versions = [v.to_dict() for v in collectable.versions[start_idx:end_idx:-1]]
+    return success(code_versions, 200)
 
 
 @workshop.route("alias/<alias_id>/entitlement", methods=["POST"])
@@ -378,6 +401,13 @@ def delete_snippet(user, snippet_id):
 
     snippet.delete()
     return success(f"Deleted {snippet.name}", 200)
+
+
+@workshop.route("snippet/<snippet_id>/code", methods=["GET"])
+@requires_auth
+def get_snippet_code_versions(user, snippet_id):
+    snippet = get_collectable_with_editor_check(WorkshopSnippet, snippet_id, user)
+    return _get_paginated_collectable_code_versions(snippet)
 
 
 @workshop.route("snippet/<snippet_id>/code", methods=["POST"])
