@@ -6,7 +6,7 @@ from flask import Blueprint, current_app, request
 from pydantic import BaseModel, HttpUrl, ValidationError, constr
 
 from lib.auth import maybe_auth, requires_auth
-from lib.utils import error, success
+from lib.utils import error, expect_json, success
 from lib.validation import str1024, str255, str4096
 from .helpers import user_can_edit, user_can_view, user_editable, user_is_owner
 
@@ -105,6 +105,17 @@ def delete_pack(user, pack):
     current_app.mdb.packs.delete_one({"_id": ObjectId(pack)})
     current_app.mdb.pack_subscriptions.delete_many({"object_id": ObjectId(pack)})
     return success("Pack deleted.")
+
+
+@items.route('/<pack>/sharing', methods=['PATCH'])
+@expect_json(public=bool)
+@requires_auth
+def update_pack_sharing(user, data, pack):
+    if not _can_edit(user, ObjectId(pack)):
+        return error(403, "You do not have permission to edit this pack")
+
+    current_app.mdb.packs.update_one({"_id": ObjectId(pack)}, {"$set": {"public": data['public']}})
+    return success("Tome updated.")
 
 
 @items.route('/<pack>/editors', methods=['GET'])

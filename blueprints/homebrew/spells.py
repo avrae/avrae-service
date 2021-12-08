@@ -6,7 +6,7 @@ from flask import Blueprint, current_app, request
 from pydantic import BaseModel, HttpUrl, ValidationError, conint, constr
 
 from lib.auth import maybe_auth, requires_auth
-from lib.utils import error, success
+from lib.utils import error, expect_json, success
 from lib.validation import Automation, str1024, str255, str4096
 from .helpers import user_can_edit, user_can_view, user_editable, user_is_owner
 
@@ -104,6 +104,17 @@ def delete_tome(user, tome):
         return error(403, "You do not have permission to edit this tome")
     current_app.mdb.tomes.delete_one({"_id": ObjectId(tome)})
     current_app.mdb.tome_subscriptions.delete_many({"object_id": ObjectId(tome)})
+    return success("Tome updated.")
+
+
+@spells.route('/<tome>/sharing', methods=['PATCH'])
+@expect_json(public=bool)
+@requires_auth
+def update_tome_sharing(user, data, tome):
+    if not _can_edit(user, ObjectId(tome)):
+        return error(403, "You do not have permission to edit this tome")
+
+    current_app.mdb.tomes.update_one({"_id": ObjectId(tome)}, {"$set": {"public": data['public']}})
     return success("Tome updated.")
 
 
