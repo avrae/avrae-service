@@ -57,7 +57,7 @@ def put_attacks(user, upstream):
     # write
     response = current_app.mdb.characters.update_one(
         {"owner": user.id, "upstream": upstream},
-        {"$set": {"overrides.attacks": [a.dict(exclude_none=True) for a in validated_attacks]}}
+        {"$set": {"overrides.attacks": [a.dict(exclude_none=True, exclude_defaults=True) for a in validated_attacks]}}
     )
 
     # respond
@@ -93,11 +93,11 @@ class Attack(BaseModel):
     automation: Automation
     v: int = Field(alias="_v")
     proper: Optional[bool]
-    verb: Optional[str255]
+    verb: Optional[str255] = ""  # these empty strings are here for exclude_defaults
     criton: Optional[int]
-    phrase: Optional[str1024]
-    thumb: Optional[str1024]
-    extra_crit_damage: Optional[str255]
+    phrase: Optional[str1024] = ""
+    thumb: Optional[str1024] = ""
+    extra_crit_damage: Optional[str255] = ""
 
     def dict(self, *args, **kwargs):
         return super().dict(*args, by_alias=True, **kwargs)
