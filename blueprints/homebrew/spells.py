@@ -91,7 +91,7 @@ def put_tome(user, tome):
     try:
         the_tome = Tome.parse_obj(reqdata)
     except ValidationError as e:
-        e = parse_validation_error(reqdata, 'spells', e)
+        e = parse_validation_error(reqdata, e)
         return error(400, str(e))
 
     current_app.mdb.tomes.update_one({"_id": ObjectId(tome)}, {"$set": the_tome.dict(exclude_unset=True)})

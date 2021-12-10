@@ -187,30 +187,35 @@ def is_valid_automation(automation):
     return True, None
 
 
-def parse_validation_error(data: Union[Dict, List], data_type: str, the_error: ValidationError) -> str:
+def parse_validation_error(data: Union[Dict, List], the_error: ValidationError) -> str:
     """
     Generates a human-readable HTML snippet detailing the validation error.
     
     :param data: The data that parsing raised an error.
-    :param data_type: The type of data that was being validated. If the data parameter is a dict,
-    this must match the key that contains the list of validated items.
     :param the_error: The raised error.
     """
+    # group errors by the instance
+    error_dict: Dict[str, List[str]] = defaultdict(list)
     errors = the_error.errors()
 
-    # group errors by the instance
-    error_dict = defaultdict(list)
     for error in errors:
-        # attacks are validated on their own
-        if isinstance(data, list):
-            cur_key = data[0]['name']
-            offset = 0
-        # packs and tomes are validated as a whole
-        else:
-            cur_key = data[data_type][error['loc'][1]]['name']
-            offset = 2
-        # map to string to account for indexes
-        error_location = (' -> '.join(map(str, error['loc'][offset:]))).replace('__root__', 'root')
+        inst = data
+        # enter the error's loc until `inst` is a dict with a `name` key
+        for i, key in enumerate(error['loc']):
+            if key == '__root__':  # this is if the model is a custom root - we're at the root already so no change
+                continue
+            inst = inst[key]
+            if isinstance(inst, dict) and 'name' in inst:
+                cur_key = inst['name']
+                break
+        else:  # if there is none, emit the error on the root
+            i = 0
+            cur_key = "root"
+
+        # the location of the error inside `cur_key` is the rest of the `loc`
+        error_location = (' -> '.join(map(str, error['loc'][i + 1:]))).replace('__root__', 'root')
+
+        # add the error to the list of errors on this key
         error_dict[cur_key].append(
             f"""
             <li>
@@ -219,12 +224,12 @@ def parse_validation_error(data: Union[Dict, List], data_type: str, the_error: V
             """
         )
 
-    title = f"{len(errors)} validation errors in {len(error_dict)} {data_type[:-1 if len(error_dict) == 1 else None]}"
+    title = f"{len(errors)} validation errors in {len(error_dict)} object"
 
     error_list = [
         f"""
         <p class='validation-error-item'>
-            <strong>{data_type.capitalize()[:-1]}:</strong> {name[:50]}
+            <strong>{name[:50]}</strong>
         </p>
         <ul class='validation-error-list'>
             {''.join(loc)}

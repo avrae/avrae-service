@@ -52,7 +52,7 @@ def put_attacks(user, upstream):
     try:
         validated_attacks = AttackList.parse_obj(the_attacks)
     except ValidationError as e:
-        e = parse_validation_error(the_attacks, 'attacks', e)
+        e = parse_validation_error(the_attacks, e)
         return error(400, str(e))
 
     # write
@@ -76,7 +76,7 @@ def validate_attacks():
     try:
         AttackList.parse_obj(reqdata)
     except ValidationError as e:
-        e = parse_validation_error(reqdata, 'attacks', e)
+        e = parse_validation_error(reqdata, e)
         return error(400, str(e))
 
     return success("OK")
