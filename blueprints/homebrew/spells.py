@@ -1,5 +1,5 @@
 import json
-from typing import List, Optional, Union
+from typing import List, Optional, Union, Iterator
 
 from bson import ObjectId
 from flask import Blueprint, current_app, request
@@ -7,7 +7,7 @@ from pydantic import BaseModel, HttpUrl, ValidationError, conint, constr
 
 from lib.auth import maybe_auth, requires_auth
 from lib.utils import error, expect_json, success
-from lib.validation import Automation, str1024, str255, str4096
+from lib.validation import Automation, parse_validation_error, str1024, str255, str4096
 from .helpers import user_can_edit, user_can_view, user_editable, user_is_owner
 
 spells = Blueprint('homebrew/spells', __name__)
@@ -91,6 +91,7 @@ def put_tome(user, tome):
     try:
         the_tome = Tome.parse_obj(reqdata)
     except ValidationError as e:
+        e = parse_validation_error(reqdata, e)
         return error(400, str(e))
 
     current_app.mdb.tomes.update_one({"_id": ObjectId(tome)}, {"$set": the_tome.dict(exclude_unset=True)})
@@ -142,11 +143,11 @@ def validate_import():
     reqdata = request.json
     if not isinstance(reqdata, list):
         reqdata = [reqdata]
-    for spell in reqdata:
-        try:
-            Spell.parse_obj(spell)
-        except ValidationError as e:
-            return error(400, str(e))
+    try:
+        SpellList.parse_obj(reqdata)
+    except ValidationError as e:
+        e = parse_validation_error(reqdata, e)
+        return error(400, str(e))
     return success({'result': "OK"})
 
 
@@ -181,3 +182,17 @@ class Tome(BaseModel):
     desc: str4096
     image: Optional[Union[HttpUrl, constr(max_length=0)]]
     spells: List[Spell]
+
+class SpellList(BaseModel):
+    """Helper type used for validation"""
+    __root__: List[Spell]
+
+    def dict(self, *args, **kwargs):
+        return super().dict(*args, by_alias=True, **kwargs)
+
+    # make this a list-like
+    def __iter__(self) -> Iterator[Spell]:
+        return iter(self.__root__)
+
+    def __getitem__(self, item):
+        return self.__root__[item]
