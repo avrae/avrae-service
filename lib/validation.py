@@ -28,6 +28,12 @@ class AbilityReference(BaseModel):
     typeId: int
 
 
+def str_is_identifier(value: str):
+    if not value.isidentifier():
+        raise ValueError("value must be a valid identifier")
+    return value
+
+
 # ---- effects ----
 class Effect(BaseModel, abc.ABC):
     type: str
@@ -97,6 +103,10 @@ class IEffect(Effect):
     conc: Optional[bool]
     desc: Optional[str4096]
     stacking: Optional[bool]
+    save_as: Optional[str255]
+    parent: Optional[str255]
+
+    _save_as_identifier = validator("save_as", allow_reuse=True)(str_is_identifier)
 
 
 class Roll(Effect):
@@ -120,10 +130,7 @@ class SetVariable(Effect):
     higher: Optional[HigherLevels]
     onError: Optional[str255]
 
-    @validator('name', allow_reuse=True)
-    def name_should_be_identifier(cls, v: str):
-        assert v.isidentifier(), "must be a valid identifier"
-        return v
+    _name_identifier = validator("name", allow_reuse=True)(str_is_identifier)
 
 
 class Condition(Effect):

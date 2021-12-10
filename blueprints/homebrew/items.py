@@ -6,7 +6,7 @@ from flask import Blueprint, current_app, request
 from pydantic import BaseModel, HttpUrl, ValidationError, constr
 
 from lib.auth import maybe_auth, requires_auth
-from lib.utils import jsonify
+from lib.utils import error, expect_json, success
 from lib.validation import str1024, str255, str4096
 from .helpers import user_can_edit, user_can_view, user_editable, user_is_owner
 
@@ -19,13 +19,17 @@ def _is_owner(user, obj_id):
 
 
 def _can_view(user, obj_id):
-    return user_can_view(data_coll=current_app.mdb.packs, sub_coll=current_app.mdb.pack_subscriptions, user=user,
-                         obj_id=obj_id)
+    return user_can_view(
+        data_coll=current_app.mdb.packs, sub_coll=current_app.mdb.pack_subscriptions, user=user,
+        obj_id=obj_id
+    )
 
 
 def _can_edit(user, obj_id):
-    return user_can_edit(data_coll=current_app.mdb.packs, sub_coll=current_app.mdb.pack_subscriptions, user=user,
-                         obj_id=obj_id)
+    return user_can_edit(
+        data_coll=current_app.mdb.packs, sub_coll=current_app.mdb.pack_subscriptions, user=user,
+        obj_id=obj_id
+    )
 
 
 def _editable(user):
@@ -41,7 +45,7 @@ def user_packs(user):
         pack['numItems'] = len(pack['items'])
         pack['owner'] = str(pack['owner'])
         del pack['items']
-    return jsonify(data)
+    return success(data)
 
 
 @items.route('', methods=['POST'])
@@ -49,9 +53,9 @@ def user_packs(user):
 def new_pack(user):
     reqdata = request.json
     if reqdata is None:
-        return "No data found", 400
+        return error(400, "No data found")
     if 'name' not in reqdata:
-        return "Missing name field", 400
+        return error(400, "Missing name field")
     pack = {
         'name': reqdata['name'],
         'public': bool(reqdata.get('public', False)),
@@ -61,8 +65,8 @@ def new_pack(user):
         'items': []
     }
     result = current_app.mdb.packs.insert_one(pack)
-    data = {"success": True, "packId": str(result.inserted_id)}
-    return jsonify(data)
+    data = {"packId": str(result.inserted_id)}
+    return success(data)
 
 
 @items.route('/<pack>', methods=['GET'])
@@ -70,11 +74,11 @@ def new_pack(user):
 def get_pack(user, pack):
     data = current_app.mdb.packs.find_one({"_id": ObjectId(pack)})
     if data is None:
-        return "Pack not found", 404
+        return error(404, "Pack not found")
     if not _can_view(user, ObjectId(pack)):
-        return "You do not have permission to view this pack", 403
+        return error(403, "You do not have permission to view this pack")
     data['owner'] = str(data['owner'])
-    return jsonify(data)
+    return success(data)
 
 
 @items.route('/<pack>', methods=['PUT'])
@@ -82,44 +86,55 @@ def get_pack(user, pack):
 def put_pack(user, pack):
     reqdata = request.json
     if not _can_edit(user=user, obj_id=ObjectId(pack)):
-        return "You do not have permission to edit this pack", 403
+        return error(403, "You do not have permission to edit this pack")
 
     try:
         the_pack = Pack.parse_obj(reqdata)
     except ValidationError as e:
-        return str(e), 400
+        return error(400, str(e))
 
     current_app.mdb.packs.update_one({"_id": ObjectId(pack)}, {"$set": the_pack.dict(exclude_unset=True)})
-    return "Pack updated."
+    return success("Pack updated.")
 
 
 @items.route('/<pack>', methods=['DELETE'])
 @requires_auth
 def delete_pack(user, pack):
     if not _is_owner(user, ObjectId(pack)):
-        return "You do not have permission to delete this pack", 403
+        return error(403, "You do not have permission to delete this pack")
     current_app.mdb.packs.delete_one({"_id": ObjectId(pack)})
     current_app.mdb.pack_subscriptions.delete_many({"object_id": ObjectId(pack)})
-    return "Pack deleted."
+    return success("Pack deleted.")
+
+
+@items.route('/<pack>/sharing', methods=['PATCH'])
+@expect_json(public=bool)
+@requires_auth
+def update_pack_sharing(user, data, pack):
+    if not _can_edit(user, ObjectId(pack)):
+        return error(403, "You do not have permission to edit this pack")
+
+    current_app.mdb.packs.update_one({"_id": ObjectId(pack)}, {"$set": {"public": data['public']}})
+    return success("Tome updated.")
 
 
 @items.route('/<pack>/editors', methods=['GET'])
 @requires_auth
 def get_pack_editors(user, pack):
     if not _can_view(user, ObjectId(pack)):
-        return "You do not have permission to view this pack", 403
+        return error(403, "You do not have permission to view this pack")
 
     data = [str(sd['subscriber_id']) for sd in
             current_app.mdb.pack_subscriptions.find({"type": "editor", "object_id": ObjectId(pack)})]
 
-    return jsonify(data)
+    return success(data)
 
 
 @items.route('/srd', methods=['GET'])
 def srd_items():
     with open('static/template-items.json') as f:
         _items = json.load(f)
-    return jsonify(_items)
+    return success(_items)
 
 
 # ==== validation ====

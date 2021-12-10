@@ -1,10 +1,12 @@
 import json
+from typing import Optional
 
 from flask import Blueprint, current_app, request
+from pydantic import BaseModel, Field, ValidationError, constr
 
 from lib.auth import requires_auth
 from lib.utils import error, jsonify, success
-from lib.validation import is_valid_automation
+from lib.validation import Automation, str1024, str255
 
 characters = Blueprint('characters', __name__)
 
@@ -19,9 +21,13 @@ def character_list(user):
 @characters.route('/meta', methods=["GET"])
 @requires_auth
 def meta(user):
-    data = list(current_app.mdb.characters.find({"owner": user.id},
-                                                ["upstream", "active", "name", "description", "image", "levels",
-                                                 "import_version", "overrides"]))
+    data = list(
+        current_app.mdb.characters.find(
+            {"owner": user.id},
+            ["upstream", "active", "name", "description", "image", "levels",
+             "import_version", "overrides"]
+        )
+    )
     return jsonify(data)
 
 
@@ -29,8 +35,10 @@ def meta(user):
 @requires_auth
 def attacks(user, upstream):
     """Returns a character's overriden attacks."""
-    data = current_app.mdb.characters.find_one({"owner": user.id, "upstream": upstream},
-                                               ["overrides"])
+    data = current_app.mdb.characters.find_one(
+        {"owner": user.id, "upstream": upstream},
+        ["overrides"]
+    )
     return jsonify(data['overrides']['attacks'])
 
 
@@ -42,14 +50,14 @@ def put_attacks(user, upstream):
 
     # validation
     try:
-        _validate_attacks(the_attacks)
+        validated_attacks = [Attack.parse_obj(a) for a in the_attacks]
     except ValidationError as e:
         return error(400, str(e))
 
     # write
     response = current_app.mdb.characters.update_one(
         {"owner": user.id, "upstream": upstream},
-        {"$set": {"overrides.attacks": the_attacks}}
+        {"$set": {"overrides.attacks": [a.dict(exclude_none=True, exclude_defaults=True) for a in validated_attacks]}}
     )
 
     # respond
@@ -65,7 +73,7 @@ def validate_attacks():
         reqdata = [reqdata]
 
     try:
-        _validate_attacks(reqdata)
+        [Attack.parse_obj(a) for a in reqdata]
     except ValidationError as e:
         return error(400, str(e))
 
@@ -80,28 +88,16 @@ def srd_attacks():
 
 
 # ==== helpers ====
-class ValidationError(Exception):
-    pass
+class Attack(BaseModel):
+    name: constr(strip_whitespace=True, min_length=1, max_length=255)
+    automation: Automation
+    v: int = Field(alias="_v")
+    proper: Optional[bool]
+    verb: Optional[str255] = ""  # these empty strings are here for exclude_defaults
+    criton: Optional[int]
+    phrase: Optional[str1024] = ""
+    thumb: Optional[str1024] = ""
+    extra_crit_damage: Optional[str255] = ""
 
-
-REQUIRED_ATTACK_KEYS = {"name", "automation", "_v"}
-OPTIONAL_ATTACK_KEYS = {"proper", "verb", "criton", "phrase", "thumb", "extra_crit_damage"}
-
-
-def _validate_attacks(the_attacks):
-    if not isinstance(the_attacks, list):
-        raise ValidationError("Attacks must be a list")
-
-    template = "Invalid attack ({0}): {1}"
-
-    for i, attack in enumerate(the_attacks):
-        if not isinstance(attack, dict):
-            raise ValidationError(template.format(i, "attack is not an object"))
-
-        keys = set(attack.keys())
-        if not (keys.issuperset(REQUIRED_ATTACK_KEYS) and keys.issubset(REQUIRED_ATTACK_KEYS | OPTIONAL_ATTACK_KEYS)):
-            raise ValidationError(template.format(i, "attack object missing keys"))
-
-        valid, why = is_valid_automation(attack['automation'])
-        if not valid:
-            raise ValidationError(template.format(i, f"invalid automation: {why}"))
+    def dict(self, *args, **kwargs):
+        return super().dict(*args, by_alias=True, **kwargs)
