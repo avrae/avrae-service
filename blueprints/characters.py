@@ -76,7 +76,7 @@ def validate_attacks():
     try:
         [Attack.parse_obj(a) for a in reqdata]
     except ValidationError as e:
-        e = parse_validation_error(the_attacks, 'attacks', json.loads(e.json()))
+        e = parse_validation_error(the_attacks, 'attacks', e)
         return error(400, str(e))
 
     return success("OK")
