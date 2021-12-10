@@ -7,7 +7,7 @@ from pydantic import BaseModel, HttpUrl, ValidationError, conint, constr
 
 from lib.auth import maybe_auth, requires_auth
 from lib.utils import error, expect_json, success
-from lib.validation import Automation, str1024, str255, str4096, parse_validation_error
+from lib.validation import Automation, parse_validation_error, str1024, str255, str4096
 from .helpers import user_can_edit, user_can_view, user_editable, user_is_owner
 
 spells = Blueprint('homebrew/spells', __name__)

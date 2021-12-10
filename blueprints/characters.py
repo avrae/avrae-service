@@ -1,12 +1,12 @@
 import json
-from typing import Optional
+from typing import Iterator, List, Optional
 
 from flask import Blueprint, current_app, request
 from pydantic import BaseModel, Field, ValidationError, constr
 
 from lib.auth import requires_auth
 from lib.utils import error, jsonify, success
-from lib.validation import Automation, str1024, str255, parse_validation_error
+from lib.validation import Automation, parse_validation_error, str1024, str255
 
 characters = Blueprint('characters', __name__)
 
@@ -50,7 +50,7 @@ def put_attacks(user, upstream):
 
     # validation
     try:
-        validated_attacks = [Attack.parse_obj(a) for a in the_attacks]
+        validated_attacks = AttackList.parse_obj(the_attacks)
     except ValidationError as e:
         e = parse_validation_error(the_attacks, 'attacks', e)
         return error(400, str(e))
@@ -74,9 +74,9 @@ def validate_attacks():
         reqdata = [reqdata]
 
     try:
-        [Attack.parse_obj(a) for a in reqdata]
+        AttackList.parse_obj(reqdata)
     except ValidationError as e:
-        e = parse_validation_error(the_attacks, 'attacks', e)
+        e = parse_validation_error(reqdata, 'attacks', e)
         return error(400, str(e))
 
     return success("OK")
@@ -103,3 +103,18 @@ class Attack(BaseModel):
 
     def dict(self, *args, **kwargs):
         return super().dict(*args, by_alias=True, **kwargs)
+
+
+class AttackList(BaseModel):
+    """Helper type used for validation"""
+    __root__: List[Attack]
+
+    def dict(self, *args, **kwargs):
+        return super().dict(*args, by_alias=True, **kwargs)
+
+    # make this a list-like
+    def __iter__(self) -> Iterator[Attack]:
+        return iter(self.__root__)
+
+    def __getitem__(self, item):
+        return self.__root__[item]
