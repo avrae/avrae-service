@@ -209,7 +209,7 @@ def parse_validation_error(data: Union[Dict, List], the_error: ValidationError) 
                 cur_key = inst['name']
                 break
         else:  # if there is none, emit the error on the root
-            i = 0
+            i = -1
             cur_key = "root"
 
         # the location of the error inside `cur_key` is the rest of the `loc`
