@@ -187,7 +187,16 @@ def is_valid_automation(automation):
     return True, None
 
 
-def parse_validation_error(data: Union[Dict, List], key: str, errors: List[Dict]) -> str:
+def parse_validation_error(data: Union[Dict, List], data_type: str, the_error: ValidationError) -> str:
+    """
+    Generates a human-readable HTML snippet detailing the validation error.
+    
+    :param data: The data that parsing raised an error.
+    :param data_type: The type of data that was being validated. If the data parameter is a dict,
+    this must match the key that contains the list of validated items.
+    :param the_error: The raised error.
+    """
+    errors = the_error.errors()
     
     # group errors by the instance
     error_dict = defaultdict(list)
@@ -198,7 +207,7 @@ def parse_validation_error(data: Union[Dict, List], key: str, errors: List[Dict]
             offset = 0
         # packs and tomes are validated as a whole
         else:
-            curKey = data[key][error['loc'][1]]['name']
+            curKey = data[data_type][error['loc'][1]]['name']
             offset = 2
         # map to string to account for indexes
         error_location = ' -> '.join(map(str, error['loc'][offset:]))
@@ -208,10 +217,10 @@ def parse_validation_error(data: Union[Dict, List], key: str, errors: List[Dict]
                 </li>""".replace('__root__', 'root'))
 
     title = f"{len(errors)} validation errors in {len(error_dict)} " + \
-            f"{key[:-1 if len(error_dict)==1 else None]}"
+            f"{data_type[:-1 if len(error_dict)==1 else None]}"
 
     error_list = [f"""<p class='validation-error-item'>
-                         <strong>{key.capitalize()[:-1]}:</strong> {name[:50]}
+                         <strong>{data_type.capitalize()[:-1]}:</strong> {name[:50]}
                      </p>
                      <ul class='validation-error-list'>
                          {''.join(loc)}
