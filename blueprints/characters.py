@@ -6,7 +6,7 @@ from pydantic import BaseModel, Field, ValidationError, constr
 
 from lib.auth import requires_auth
 from lib.utils import error, jsonify, success
-from lib.validation import Automation, str1024, str255
+from lib.validation import Automation, str1024, str255, parse_validation_error
 
 characters = Blueprint('characters', __name__)
 
@@ -52,6 +52,7 @@ def put_attacks(user, upstream):
     try:
         validated_attacks = [Attack.parse_obj(a) for a in the_attacks]
     except ValidationError as e:
+        e = parse_validation_error(the_attacks, 'attacks', json.loads(e.json()))
         return error(400, str(e))
 
     # write
@@ -75,6 +76,7 @@ def validate_attacks():
     try:
         [Attack.parse_obj(a) for a in reqdata]
     except ValidationError as e:
+        e = parse_validation_error(the_attacks, 'attacks', json.loads(e.json()))
         return error(400, str(e))
 
     return success("OK")

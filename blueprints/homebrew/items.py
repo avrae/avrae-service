@@ -7,7 +7,7 @@ from pydantic import BaseModel, HttpUrl, ValidationError, constr
 
 from lib.auth import maybe_auth, requires_auth
 from lib.utils import error, expect_json, success
-from lib.validation import str1024, str255, str4096
+from lib.validation import str1024, str255, str4096, parse_validation_error
 from .helpers import user_can_edit, user_can_view, user_editable, user_is_owner
 
 items = Blueprint('homebrew/items', __name__)
@@ -91,6 +91,7 @@ def put_pack(user, pack):
     try:
         the_pack = Pack.parse_obj(reqdata)
     except ValidationError as e:
+        e = parse_validation_error(reqdata, 'items', json.loads(e.json()))
         return error(400, str(e))
 
     current_app.mdb.packs.update_one({"_id": ObjectId(pack)}, {"$set": the_pack.dict(exclude_unset=True)})
