@@ -204,13 +204,18 @@ def parse_validation_error(data: Union[Dict, List], the_error: ValidationError) 
         for i, key in enumerate(error['loc']):
             if key == '__root__':  # this is if the model is a custom root - we're at the root already so no change
                 continue
-            inst = inst[key]
+            try:
+                inst = inst[key]
+            except (KeyError, IndexError):
+                i = -1
+                cur_key = the_error.model.__name__
+                break
             if isinstance(inst, dict) and 'name' in inst:
-                cur_key = inst['name']
+                cur_key = str(inst['name'])
                 break
         else:  # if there is none, emit the error on the root
             i = -1
-            cur_key = "root"
+            cur_key = the_error.model.__name__
 
         # the location of the error inside `cur_key` is the rest of the `loc`
         error_location = (' -> '.join(map(str, error['loc'][i + 1:]))).replace('__root__', 'root')
