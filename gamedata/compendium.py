@@ -205,7 +205,7 @@ class Compendium:
         if entity.entitlement_entity_id < 0:  # mundane items hack
             return
         # ignored instances
-        if isinstance(entity, (Book, ClassFeatureOption, RaceFeatureOption, LimitedUse)):
+        if isinstance(entity, (ClassFeatureOption, RaceFeatureOption, LimitedUse)):
             return
         self.entitlement_lookup[k] = entity
 
