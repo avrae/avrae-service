@@ -165,12 +165,12 @@ class Spell(BaseModel):
     automation: Optional[Automation]
     classes: Optional[str255]
     subclasses: Optional[str255]
-    casttime: Optional[str255]
-    range: Optional[str255]
-    components: Optional[SpellComponents]
-    duration: Optional[str255]
+    casttime: str255
+    range: str255
+    components: SpellComponents
+    duration: str255
     ritual: Optional[bool]
-    description: Optional[str4096]
+    description: str4096
     higherlevels: Optional[str1024]
     concentration: Optional[bool]
     image: Optional[Union[HttpUrl, constr(max_length=0)]]  # image might be an empty string
@@ -182,6 +182,7 @@ class Tome(BaseModel):
     desc: str4096
     image: Optional[Union[HttpUrl, constr(max_length=0)]]
     spells: List[Spell]
+
 
 class SpellList(BaseModel):
     """Helper type used for validation"""
