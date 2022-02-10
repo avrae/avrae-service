@@ -54,6 +54,11 @@ Workshop endpoints might have undefined behaviour.
 
 The service should now be accessible at http://localhost:5000.
 
+
+Should you have authentication errors and DB not loading locally, you can update line 38 in app.py to the below.
+
+```app.mdb = mdb = PyMongo(app, config.MONGO_URL).cx["avrae"]```
+
 ### Running locally with Docker
 
 1. Build the Docker image: `docker build -t avrae-service:latest --build-arg ENVIRONMENT=development .`.
