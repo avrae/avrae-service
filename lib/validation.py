@@ -57,6 +57,7 @@ class Target(Effect):
     type: Literal['target']
     target: Union[Literal['all', 'each', 'self'], conint(ge=1)]
     effects: List[Effect]
+    sortBy: Optional[Literal['hp_asc', 'hp_desc']]
 
 
 class Attack(Effect):
