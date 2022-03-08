@@ -7,7 +7,7 @@ You can join the Avrae Development Discord [here](https://discord.gg/pQbd4s6)!
 
 ## Requirements
 
-- Python 3.6+
+- Python 3.10+
 - MongoDB server
 - Redis server
 
@@ -23,8 +23,8 @@ Compose.
 1. Copy `docker/config-development.py` to `config.py`.
 2. The dev config should point to the services exposed by the Avrae docker-compose file. If necessary, set the
    environment variables `MONGO_URL` and `REDIS_URL` to override connection strings.
-3. Set the `DISCORD_CLIENT_ID`, `DISCORD_CLIENT_SECRET`, and `DISCORD_BOT_TOKEN` environment variables to the values
-   for your application, found in the [Discord Developer Portal](https://discord.com/developers/applications).
+3. Set the `DISCORD_CLIENT_ID`, `DISCORD_CLIENT_SECRET`, and `DISCORD_BOT_TOKEN` environment variables to the values for
+   your application, found in the [Discord Developer Portal](https://discord.com/developers/applications).
 4. Set the `JWT_SECRET` env var to any value of your choice.
 
 **Env Var Overview**
@@ -53,7 +53,6 @@ Workshop endpoints might have undefined behaviour.
 4. Run the app: `python -m flask run`.
 
 The service should now be accessible at http://localhost:5000.
-
 
 Should you have authentication errors and DB not loading locally, you can update line 38 in app.py to the below.
 

@@ -13,6 +13,7 @@ sentry-sdk[flask]==1.0.0
 
 # transitive deps
 Werkzeug==1.0.1
+itsdangerous==2.0.1
 
 # build/other deps
 dnspython==2.1.0  # pymongo srv
