@@ -65,6 +65,7 @@ class Attack(Effect):
     hit: List[Effect]
     miss: List[Effect]
     attackBonus: Optional[str255]
+    adv: Optional[Literal[-1, 0, 1, 2]]
 
 
 class Save(Effect):
