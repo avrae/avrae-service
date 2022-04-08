@@ -4,13 +4,13 @@ from flask import Blueprint, abort, current_app, request
 
 from lib.utils import jsonify
 
-bot = Blueprint('bot', __name__)
+bot = Blueprint("bot", __name__)
 
 
 def requires_secret(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
-        app_3pp_secret = request.headers.get('authorization')
+        app_3pp_secret = request.headers.get("authorization")
         if current_app.mdb.api_apps.find_one({"key": app_3pp_secret}) is None:
             return abort(403)
         return f(*args, **kwargs)

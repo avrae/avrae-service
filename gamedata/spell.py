@@ -7,20 +7,36 @@ log = logging.getLogger(__name__)
 
 
 class Spell(AutomatibleMixin, DescribableMixin, Sourced):
-    entity_type = 'spell'
+    entity_type = "spell"
     type_id = 1118725998
 
-    def __init__(self, name: str, level: int, school: str, casttime: str, range_: str, components: str, duration: str,
-                 description: str, homebrew: bool, classes=None, subclasses=None, ritual: bool = False,
-                 higherlevels: str = None, concentration: bool = False, image: str = None, **kwargs):
+    def __init__(
+        self,
+        name: str,
+        level: int,
+        school: str,
+        casttime: str,
+        range_: str,
+        components: str,
+        duration: str,
+        description: str,
+        homebrew: bool,
+        classes=None,
+        subclasses=None,
+        ritual: bool = False,
+        higherlevels: str = None,
+        concentration: bool = False,
+        image: str = None,
+        **kwargs,
+    ):
         if classes is None:
             classes = []
         if isinstance(classes, str):
-            classes = [cls.strip() for cls in classes.split(',') if cls.strip()]
+            classes = [cls.strip() for cls in classes.split(",") if cls.strip()]
         if subclasses is None:
             subclasses = []
         if isinstance(subclasses, str):
-            subclasses = [cls.strip() for cls in subclasses.split(',') if cls.strip()]
+            subclasses = [cls.strip() for cls in subclasses.split(",") if cls.strip()]
 
         super().__init__(homebrew=homebrew, **kwargs)
 
@@ -39,22 +55,36 @@ class Spell(AutomatibleMixin, DescribableMixin, Sourced):
         self.concentration = concentration
         self.image = image
 
-        if self.concentration and 'Concentration' not in self.duration:
+        if self.concentration and "Concentration" not in self.duration:
             self.duration = f"Concentration, up to {self.duration}"
 
     @classmethod
     def from_data(cls, d):  # local JSON
         return cls(
-            d['name'], d['level'], d['school'], d['casttime'], d['range'], d['components'], d['duration'],
-            d['description'],
-            homebrew=False, classes=d['classes'], subclasses=d['subclasses'], ritual=d['ritual'],
-            higherlevels=d['higherlevels'], concentration=d['concentration'],
-            source=d['source'], entity_id=d['id'], page=d['page'], url=d['url'], is_free=d['isFree']
+            d["name"],
+            d["level"],
+            d["school"],
+            d["casttime"],
+            d["range"],
+            d["components"],
+            d["duration"],
+            d["description"],
+            homebrew=False,
+            classes=d["classes"],
+            subclasses=d["subclasses"],
+            ritual=d["ritual"],
+            higherlevels=d["higherlevels"],
+            concentration=d["concentration"],
+            source=d["source"],
+            entity_id=d["id"],
+            page=d["page"],
+            url=d["url"],
+            is_free=d["isFree"],
         ).initialize_automation(d)
 
     @classmethod
     def from_homebrew(cls, data, source):  # homebrew spells
-        data['components'] = parse_homebrew_components(data['components'])
+        data["components"] = parse_homebrew_components(data["components"])
         data["range_"] = data.pop("range")
         return cls(homebrew=True, source=source, **data).initialize_automation(data)
 
@@ -67,7 +97,7 @@ class Spell(AutomatibleMixin, DescribableMixin, Sourced):
             "D": "Divination",
             "N": "Necromancy",
             "T": "Transmutation",
-            "C": "Conjuration"
+            "C": "Conjuration",
         }.get(self.school, self.school)
 
     def get_level(self):
@@ -83,9 +113,9 @@ class Spell(AutomatibleMixin, DescribableMixin, Sourced):
 
 
 def parse_homebrew_components(components):
-    v = components.get('verbal')
-    s = components.get('somatic')
-    m = components.get('material')
+    v = components.get("verbal")
+    s = components.get("somatic")
+    m = components.get("material")
     if isinstance(m, bool):
         parsedm = "M"
     else:
@@ -98,4 +128,4 @@ def parse_homebrew_components(components):
         comps.append("S")
     if m:
         comps.append(parsedm)
-    return ', '.join(comps)
+    return ", ".join(comps)

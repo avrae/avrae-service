@@ -18,14 +18,19 @@ def requires_auth(func):
     @functools.wraps(func)
     def inner(*args, **kwargs):
         try:
-            the_jwt = request.headers['Authorization']
+            the_jwt = request.headers["Authorization"]
         except KeyError:
             return error(401, "missing credentials")
 
         try:
-            uinfo = jwt.decode(the_jwt, config.JWT_SECRET, algorithms=['HS256'],
-                               options={'verify_aud': True, 'verify_iss': True},
-                               issuer='avrae.io', audience=['avrae.io'])
+            uinfo = jwt.decode(
+                the_jwt,
+                config.JWT_SECRET,
+                algorithms=["HS256"],
+                options={"verify_aud": True, "verify_iss": True},
+                issuer="avrae.io",
+                audience=["avrae.io"],
+            )
         except jwt.InvalidTokenError:
             return error(403, "invalid credentials")
 
@@ -49,7 +54,7 @@ def maybe_auth(func):
 
     @functools.wraps(func)
     def inner(*args, **kwargs):
-        if 'Authorization' not in request.headers:
+        if "Authorization" not in request.headers:
             return func(None, *args, **kwargs)
         return requires_auth(func)(*args, **kwargs)
 

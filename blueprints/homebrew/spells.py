@@ -10,7 +10,7 @@ from lib.utils import error, expect_json, success
 from lib.validation import Automation, parse_validation_error, str1024, str255, str4096
 from .helpers import user_can_edit, user_can_view, user_editable, user_is_owner
 
-spells = Blueprint('homebrew/spells', __name__)
+spells = Blueprint("homebrew/spells", __name__)
 
 
 # ==== helpers ====
@@ -20,15 +20,13 @@ def _is_owner(user, obj_id):
 
 def _can_view(user, obj_id):
     return user_can_view(
-        data_coll=current_app.mdb.tomes, sub_coll=current_app.mdb.tome_subscriptions, user=user,
-        obj_id=obj_id
+        data_coll=current_app.mdb.tomes, sub_coll=current_app.mdb.tome_subscriptions, user=user, obj_id=obj_id
     )
 
 
 def _can_edit(user, obj_id):
     return user_can_edit(
-        data_coll=current_app.mdb.tomes, sub_coll=current_app.mdb.tome_subscriptions, user=user,
-        obj_id=obj_id
+        data_coll=current_app.mdb.tomes, sub_coll=current_app.mdb.tome_subscriptions, user=user, obj_id=obj_id
     )
 
 
@@ -37,39 +35,39 @@ def _editable(user):
 
 
 # ==== routes ====
-@spells.route('/me', methods=['GET'])
+@spells.route("/me", methods=["GET"])
 @requires_auth
 def user_tomes(user):
     data = list(_editable(user))
     for tome in data:
-        tome['numSpells'] = len(tome['spells'])
-        tome['owner'] = str(tome['owner'])
-        del tome['spells']
+        tome["numSpells"] = len(tome["spells"])
+        tome["owner"] = str(tome["owner"])
+        del tome["spells"]
     return success(data)
 
 
-@spells.route('', methods=['POST'])
+@spells.route("", methods=["POST"])
 @requires_auth
 def new_tome(user):
     reqdata = request.json
     if reqdata is None:
         return error(400, "No data found")
-    if 'name' not in reqdata:
+    if "name" not in reqdata:
         return error(400, "missing name field")
     tome = {
-        'name': reqdata['name'],
-        'public': bool(reqdata.get('public', False)),
-        'desc': reqdata.get('desc', ''),
-        'image': reqdata.get('image', ''),
-        'owner': int(user.id),
-        'spells': []
+        "name": reqdata["name"],
+        "public": bool(reqdata.get("public", False)),
+        "desc": reqdata.get("desc", ""),
+        "image": reqdata.get("image", ""),
+        "owner": int(user.id),
+        "spells": [],
     }
     result = current_app.mdb.tomes.insert_one(tome)
     data = {"tomeId": str(result.inserted_id)}
     return success(data)
 
 
-@spells.route('/<tome>', methods=['GET'])
+@spells.route("/<tome>", methods=["GET"])
 @maybe_auth
 def get_tome(user, tome):
     data = current_app.mdb.tomes.find_one({"_id": ObjectId(tome)})
@@ -77,11 +75,11 @@ def get_tome(user, tome):
         return error(404, "Tome not found")
     if not _can_view(user, ObjectId(tome)):
         return error(403, "You do not have permission to view this tome")
-    data['owner'] = str(data['owner'])
+    data["owner"] = str(data["owner"])
     return success(data)
 
 
-@spells.route('/<tome>', methods=['PUT'])
+@spells.route("/<tome>", methods=["PUT"])
 @requires_auth
 def put_tome(user, tome):
     reqdata = request.json
@@ -98,7 +96,7 @@ def put_tome(user, tome):
     return success("Tome updated.")
 
 
-@spells.route('/<tome>', methods=['DELETE'])
+@spells.route("/<tome>", methods=["DELETE"])
 @requires_auth
 def delete_tome(user, tome):
     if not _is_owner(user, ObjectId(tome)):
@@ -108,37 +106,39 @@ def delete_tome(user, tome):
     return success("Tome updated.")
 
 
-@spells.route('/<tome>/sharing', methods=['PATCH'])
+@spells.route("/<tome>/sharing", methods=["PATCH"])
 @expect_json(public=bool)
 @requires_auth
 def update_tome_sharing(user, data, tome):
     if not _can_edit(user, ObjectId(tome)):
         return error(403, "You do not have permission to edit this tome")
 
-    current_app.mdb.tomes.update_one({"_id": ObjectId(tome)}, {"$set": {"public": data['public']}})
+    current_app.mdb.tomes.update_one({"_id": ObjectId(tome)}, {"$set": {"public": data["public"]}})
     return success("Tome updated.")
 
 
-@spells.route('/<tome>/editors', methods=['GET'])
+@spells.route("/<tome>/editors", methods=["GET"])
 @requires_auth
 def get_tome_editors(user, tome):
     if not _can_view(user, ObjectId(tome)):
         return error(403, "You do not have permission to view this tome")
 
-    data = [str(sd['subscriber_id']) for sd in
-            current_app.mdb.tome_subscriptions.find({"type": "editor", "object_id": ObjectId(tome)})]
+    data = [
+        str(sd["subscriber_id"])
+        for sd in current_app.mdb.tome_subscriptions.find({"type": "editor", "object_id": ObjectId(tome)})
+    ]
 
     return success(data)
 
 
-@spells.route('/srd', methods=['GET'])
+@spells.route("/srd", methods=["GET"])
 def srd_spells():
-    with open('static/template-spells.json') as f:
+    with open("static/template-spells.json") as f:
         _spells = json.load(f)
     return success(_spells)
 
 
-@spells.route('/validate', methods=['POST'])
+@spells.route("/validate", methods=["POST"])
 def validate_import():
     reqdata = request.json
     if not isinstance(reqdata, list):
@@ -148,7 +148,7 @@ def validate_import():
     except ValidationError as e:
         e = parse_validation_error(reqdata, e)
         return error(400, str(e))
-    return success({'result': "OK"})
+    return success({"result": "OK"})
 
 
 # ==== Validation ====
@@ -186,6 +186,7 @@ class Tome(BaseModel):
 
 class SpellList(BaseModel):
     """Helper type used for validation"""
+
     __root__: List[Spell]
 
     def dict(self, *args, **kwargs):

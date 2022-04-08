@@ -25,11 +25,7 @@ from lib.redisIO import RedisIO
 from lib.utils import jsonify
 
 if config.SENTRY_DSN is not None:
-    sentry_sdk.init(
-        dsn=config.SENTRY_DSN,
-        environment=config.ENVIRONMENT,
-        integrations=[FlaskIntegration()]
-    )
+    sentry_sdk.init(dsn=config.SENTRY_DSN, environment=config.ENVIRONMENT, integrations=[FlaskIntegration()])
 
 # app init
 app = Flask(__name__)
@@ -39,7 +35,7 @@ app.mdb = mdb = PyMongo(app, config.MONGO_URL).db
 CORS(app)
 
 # logging init
-log_formatter = logging.Formatter('%(levelname)s:%(name)s: %(message)s')
+log_formatter = logging.Formatter("%(levelname)s:%(name)s: %(message)s")
 handler = logging.StreamHandler(sys.stdout)
 handler.setFormatter(log_formatter)
 logger = logging.getLogger()
@@ -48,12 +44,12 @@ logger.addHandler(handler)
 
 
 # routes
-@app.route('/', methods=["GET"])
+@app.route("/", methods=["GET"])
 def hello_world():
-    return 'Hello World!'
+    return "Hello World!"
 
 
-@app.route('/user', methods=["GET"])
+@app.route("/user", methods=["GET"])
 @requires_auth
 def user(the_user):
     info = get_user_info(discord_token_for(the_user.id))
@@ -61,34 +57,41 @@ def user(the_user):
         "username": info.username,
         "discriminator": info.discriminator,
         "id": info.id,
-        "avatarUrl": info.get_avatar_url()
+        "avatarUrl": info.get_avatar_url(),
     }
     return jsonify(data)
 
 
-@app.route('/userStats', methods=["GET"])
+@app.route("/userStats", methods=["GET"])
 @requires_auth
 def user_stats(the_user):
     data = {
         "numCharacters": app.mdb.characters.count_documents({"owner": the_user.id}),
-        "numCustomizations": sum((app.mdb.aliases.count_documents({"owner": the_user.id}),
-                                  app.mdb.snippets.count_documents({"owner": the_user.id})))
+        "numCustomizations": sum(
+            (
+                app.mdb.aliases.count_documents({"owner": the_user.id}),
+                app.mdb.snippets.count_documents({"owner": the_user.id}),
+            )
+        ),
     }
     return jsonify(data)
 
 
-@app.route('/roll', methods=['GET'])
+@app.route("/roll", methods=["GET"])
 def roll():
-    to_roll = request.args.get('dice') or '1d20'
-    adv = request.args.get('adv', 0)
+    to_roll = request.args.get("dice") or "1d20"
+    adv = request.args.get("adv", 0)
     try:
         rolled = d20.roll(to_roll, advantage=adv)
     except Exception as e:
-        result = {'success': False, 'error': str(e)}
+        result = {"success": False, "error": str(e)}
     else:
         result = {
-            'success': True, 'total': rolled.total, 'result': rolled.result, 'is_crit': rolled.crit,
-            'repr': repr(rolled)
+            "success": True,
+            "total": rolled.total,
+            "result": rolled.result,
+            "is_crit": rolled.crit,
+            "repr": repr(rolled),
         }
 
     return jsonify(result)
@@ -108,5 +111,5 @@ errors.register_error_handlers(app)
 compendium.reload(mdb)
 elasticsearch.init()
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     app.run()

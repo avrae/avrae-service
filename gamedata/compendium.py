@@ -63,18 +63,18 @@ class Compendium:
         log.info(f"Data loading complete - {len(self.entity_lookup)} objects registered")
 
     def load_all_mongodb(self, mdb):
-        lookup = {d['key']: d['object'] for d in mdb.static_data.find({})}
+        lookup = {d["key"]: d["object"] for d in mdb.static_data.find({})}
 
-        self.raw_classes = lookup.get('classes', [])
-        self.raw_feats = lookup.get('feats', [])
-        self.raw_monsters = lookup.get('monsters', [])
-        self.raw_backgrounds = lookup.get('backgrounds', [])
-        self.raw_items = lookup.get('items', [])
-        self.raw_races = lookup.get('races', [])
-        self.raw_subraces = lookup.get('subraces', [])
-        self.raw_spells = lookup.get('spells', [])
-        self.raw_books = lookup.get('books', [])
-        self.raw_limiteduse = lookup.get('limiteduse', [])
+        self.raw_classes = lookup.get("classes", [])
+        self.raw_feats = lookup.get("feats", [])
+        self.raw_monsters = lookup.get("monsters", [])
+        self.raw_backgrounds = lookup.get("backgrounds", [])
+        self.raw_items = lookup.get("items", [])
+        self.raw_races = lookup.get("races", [])
+        self.raw_subraces = lookup.get("subraces", [])
+        self.raw_spells = lookup.get("spells", [])
+        self.raw_books = lookup.get("books", [])
+        self.raw_limiteduse = lookup.get("limiteduse", [])
 
     # noinspection DuplicatedCode
     def load_common(self):
@@ -178,11 +178,11 @@ class Compendium:
         k = (entity.entity_type, entity.entity_id)
         if k in self.entity_lookup:
             if entity.name != self.entity_lookup[k].name:
-                log.info(f"Overwriting existing entity lookup key: {k} "
-                         f"({self.entity_lookup[k].name} -> {entity.name})")
+                log.info(f"Overwriting existing entity lookup key: {k} ({self.entity_lookup[k].name} -> {entity.name})")
             else:
-                log.info(f"Entity lookup key {k} is registered multiple times: "
-                         f"({self.entity_lookup[k].name}, {entity.name})")
+                log.info(
+                    f"Entity lookup key {k} is registered multiple times: ({self.entity_lookup[k].name}, {entity.name})"
+                )
         log.debug(f"Registered entity {k}: {entity!r}")
         self.entity_lookup[k] = entity
         kt = (entity.type_id, entity.entity_id)

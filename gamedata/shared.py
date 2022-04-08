@@ -1,19 +1,26 @@
 import abc
 
-__all__ = (
-    "Sourced", "Trait", "LimitedUse"
-)
+__all__ = ("Sourced", "Trait", "LimitedUse")
 
 
 class Sourced(abc.ABC):
     """A base class for entities with a source."""
+
     name = ...
     entity_type = ...
     type_id = ...
 
-    def __init__(self, homebrew: bool, source: str, entity_id: int = None,
-                 page: int = None, url: str = None,
-                 is_free: bool = False, entitlement_entity_type: str = None, entitlement_entity_id: int = None):
+    def __init__(
+        self,
+        homebrew: bool,
+        source: str,
+        entity_id: int = None,
+        page: int = None,
+        url: str = None,
+        is_free: bool = False,
+        entitlement_entity_type: str = None,
+        entitlement_entity_id: int = None,
+    ):
         """
         :param homebrew: Whether or not this entity is homebrew.
         :param source: The abbreviated source this entity comes from.
@@ -37,6 +44,7 @@ class Sourced(abc.ABC):
     def lookup(cls, entity_id: int):
         """Utility method to look up an instance of this class from the compendium."""
         from gamedata.compendium import compendium
+
         return compendium.lookup_entity(cls.entity_type, entity_id)
 
     def source_str(self):
@@ -46,11 +54,17 @@ class Sourced(abc.ABC):
 
     def to_minimal_dict(self):
         return {
-            "name": self.name, "source": self.source,
-            "entity_type": self.entity_type, "entity_id": self.entity_id, "type_id": self.type_id,
+            "name": self.name,
+            "source": self.source,
+            "entity_type": self.entity_type,
+            "entity_id": self.entity_id,
+            "type_id": self.type_id,
             "entitlement_entity_type": self.entitlement_entity_type,
             "entitlement_entity_id": self.entitlement_entity_id,
-            "page": self.page, "is_free": self.is_free, "url": self.url, "marketplace_url": self.marketplace_url
+            "page": self.page,
+            "is_free": self.is_free,
+            "url": self.url,
+            "marketplace_url": self.marketplace_url,
         }
 
     @property
@@ -72,8 +86,10 @@ class Sourced(abc.ABC):
         return self._url
 
     def __repr__(self):
-        return f"<{type(self).__name__} name={self.name!r} entity_id={self.entity_id!r} " \
-               f"entity_type={self.entity_type!r} url={self._url!r}>"
+        return (
+            f"<{type(self).__name__} name={self.name!r} entity_id={self.entity_id!r} "
+            f"entity_type={self.entity_type!r} url={self._url!r}>"
+        )
 
 
 class Trait:
@@ -83,7 +99,7 @@ class Trait:
 
     @classmethod
     def from_dict(cls, d):
-        return cls(d['name'], d['text'])
+        return cls(d["name"], d["text"])
 
 
 class LimitedUse(Sourced):
@@ -98,8 +114,13 @@ class LimitedUse(Sourced):
     @classmethod
     def from_dict(cls, d, parent):
         return cls(
-            d['name'], parent=parent, entity_id=d['id'],
-            page=parent.page, source=parent.source, is_free=parent.is_free,
-            url=parent.raw_url, entitlement_entity_id=parent.entitlement_entity_id,
-            entitlement_entity_type=parent.entitlement_entity_type
+            d["name"],
+            parent=parent,
+            entity_id=d["id"],
+            page=parent.page,
+            source=parent.source,
+            is_free=parent.is_free,
+            url=parent.raw_url,
+            entitlement_entity_id=parent.entitlement_entity_id,
+            entitlement_entity_type=parent.entitlement_entity_type,
         )

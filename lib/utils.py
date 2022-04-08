@@ -18,7 +18,7 @@ class HelperEncoder(json.JSONEncoder):
         if isinstance(o, datetime.datetime):
             dt = o.isoformat()
             if o.utcoffset() is None:  # BSON returns utc timestamps, without tzinfo
-                dt += 'Z'
+                dt += "Z"
             return dt
         return super().default(o)
 
@@ -34,17 +34,11 @@ def new_jsonify(data, status=200):
 
 
 def success(data, status=200):
-    return new_jsonify({
-        "success": True,
-        "data": data
-    }, status)
+    return new_jsonify({"success": True, "data": data}, status)
 
 
 def error(status: int, message: str = None):
-    return new_jsonify({
-        "success": False,
-        "error": message
-    }, status)
+    return new_jsonify({"success": False, "error": message}, status)
 
 
 def expect_json(*, strict=False, optional=None, **fields):
