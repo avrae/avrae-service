@@ -7,63 +7,61 @@ import config
 
 DISCORD_API = "https://discord.com/api/v6"
 DISCORD_CDN = "https://cdn.discordapp.com"
-HEADERS = {
-    "User-Agent": "DiscordBot (https://github.com/avrae/avrae.io, 1)"
-}
+HEADERS = {"User-Agent": "DiscordBot (https://github.com/avrae/avrae.io, 1)"}
 USER_GUILD_TTL = 60 * 5  # 5m
 
 
 # oauth
 def exchange_code(code):
     data = {
-        'client_id': config.DISCORD_CLIENT_ID,
-        'client_secret': config.DISCORD_CLIENT_SECRET,
-        'grant_type': 'authorization_code',
-        'code': code,
-        'redirect_uri': config.OAUTH_REDIRECT_URI,
-        'scope': config.OAUTH_SCOPE
+        "client_id": config.DISCORD_CLIENT_ID,
+        "client_secret": config.DISCORD_CLIENT_SECRET,
+        "grant_type": "authorization_code",
+        "code": code,
+        "redirect_uri": config.OAUTH_REDIRECT_URI,
+        "scope": config.OAUTH_SCOPE,
     }
-    headers = {
-        'Content-Type': 'application/x-www-form-urlencoded'
-    }
-    r = requests.post(f'{DISCORD_API}/oauth2/token', data=data, headers=headers)
+    headers = {"Content-Type": "application/x-www-form-urlencoded"}
+    r = requests.post(f"{DISCORD_API}/oauth2/token", data=data, headers=headers)
     r.raise_for_status()
     return r.json()
 
 
 def refresh_token(ref_token):
     data = {
-        'client_id': config.DISCORD_CLIENT_ID,
-        'client_secret': config.DISCORD_CLIENT_SECRET,
-        'grant_type': 'refresh_token',
-        'refresh_token': ref_token,
-        'redirect_uri': config.OAUTH_REDIRECT_URI,
-        'scope': config.OAUTH_SCOPE
+        "client_id": config.DISCORD_CLIENT_ID,
+        "client_secret": config.DISCORD_CLIENT_SECRET,
+        "grant_type": "refresh_token",
+        "refresh_token": ref_token,
+        "redirect_uri": config.OAUTH_REDIRECT_URI,
+        "scope": config.OAUTH_SCOPE,
     }
-    headers = {
-        'Content-Type': 'application/x-www-form-urlencoded'
-    }
-    r = requests.post(f'{DISCORD_API}/oauth2/token', data=data, headers=headers)
+    headers = {"Content-Type": "application/x-www-form-urlencoded"}
+    r = requests.post(f"{DISCORD_API}/oauth2/token", data=data, headers=headers)
     r.raise_for_status()
     return r.json()
 
 
 def handle_token_response(access_token_resp):
-    access_token = access_token_resp['access_token']
-    ref_token = access_token_resp['refresh_token']
-    expiry = datetime.datetime.now() + datetime.timedelta(seconds=access_token_resp['expires_in'])
+    access_token = access_token_resp["access_token"]
+    ref_token = access_token_resp["refresh_token"]
+    expiry = datetime.datetime.now() + datetime.timedelta(
+        seconds=access_token_resp["expires_in"]
+    )
 
     r = get("/users/@me", access_token)
     r.raise_for_status()
 
     user = r.json()
-    user['discord_auth'] = {"access_token": access_token, "expiry": expiry, "refresh_token": ref_token}
+    user["discord_auth"] = {
+        "access_token": access_token,
+        "expiry": expiry,
+        "refresh_token": ref_token,
+    }
 
     # store user access token
     current_app.mdb.users.update_one(
-        {"id": str(user['id'])},
-        {"$set": user},
-        upsert=True
+        {"id": str(user["id"])}, {"$set": user}, upsert=True
     )
 
     # return current access token and user info
@@ -97,6 +95,11 @@ class UserInfo:
 
     def get_avatar_url(self):
         if self.avatar:
+            # Avrae bot was saving entire url instead of just the key
+            # Putting this 'hack' in place as the bot side fix will take
+            # a long time to propogate - Joseph Keen, 08/04/22
+            if DISCORD_CDN in self.avatar:
+                return self.avatar
             return f"{DISCORD_CDN}/avatars/{self.id}/{self.avatar}.png?size=512"
         else:
             return f"{DISCORD_CDN}/embed/avatars/{int(self.discriminator) % 5}.png?size=512"
