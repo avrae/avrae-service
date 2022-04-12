@@ -87,6 +87,11 @@ class UserInfo:
 
     def get_avatar_url(self):
         if self.avatar:
+            # Avrae bot was saving entire url instead of just the key
+            # Putting this 'hack' in place as the bot side fix will take
+            # a long time to propogate - Joseph Keen, 08/04/22
+            if DISCORD_CDN in self.avatar:
+                return self.avatar
             return f"{DISCORD_CDN}/avatars/{self.id}/{self.avatar}.png?size=512"
         else:
             return f"{DISCORD_CDN}/embed/avatars/{int(self.discriminator) % 5}.png?size=512"
