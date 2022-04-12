@@ -47,7 +47,8 @@ class RedisIO:
 
     def get_whole_dict(self, key, default={}):
         encoded_dict = self._db.hgetall(key)
-        if encoded_dict is None: return default
+        if encoded_dict is None:
+            return default
         out = {}
         for k in encoded_dict.keys():
             out[k.decode()] = encoded_dict[k].decode()

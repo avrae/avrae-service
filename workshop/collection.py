@@ -16,16 +16,28 @@ from workshop.mixins import EditorMixin, GuildActiveMixin, SubscriberMixin
 
 
 class PublicationState(enum.Enum):
-    PRIVATE = 'PRIVATE'
-    UNLISTED = 'UNLISTED'
-    PUBLISHED = 'PUBLISHED'
+    PRIVATE = "PRIVATE"
+    UNLISTED = "UNLISTED"
+    PUBLISHED = "PUBLISHED"
 
 
 class WorkshopCollection(SubscriberMixin, GuildActiveMixin, EditorMixin):
-    def __init__(self,
-                 _id, name, description, image, owner,
-                 alias_ids, snippet_ids,
-                 publish_state, num_subscribers, num_guild_subscribers, last_edited, created_at, tags):
+    def __init__(
+        self,
+        _id,
+        name,
+        description,
+        image,
+        owner,
+        alias_ids,
+        snippet_ids,
+        publish_state,
+        num_subscribers,
+        num_guild_subscribers,
+        last_edited,
+        created_at,
+        tags,
+    ):
         """
         :param _id: The MongoDB ID of this collection.
         :type _id: bson.ObjectId
@@ -109,17 +121,28 @@ class WorkshopCollection(SubscriberMixin, GuildActiveMixin, EditorMixin):
         if raw is None:
             raise CollectionNotFound()
 
-        return cls(raw['_id'], raw['name'], raw['description'], raw['image'], raw['owner'],
-                   raw['alias_ids'], raw['snippet_ids'],
-                   PublicationState(raw['publish_state']), raw['num_subscribers'], raw['num_guild_subscribers'],
-                   raw['last_edited'], raw['created_at'], raw['tags'])
+        return cls(
+            raw["_id"],
+            raw["name"],
+            raw["description"],
+            raw["image"],
+            raw["owner"],
+            raw["alias_ids"],
+            raw["snippet_ids"],
+            PublicationState(raw["publish_state"]),
+            raw["num_subscribers"],
+            raw["num_guild_subscribers"],
+            raw["last_edited"],
+            raw["created_at"],
+            raw["tags"],
+        )
 
     # helpers
     @classmethod
     def user_owned_ids(cls, user_id: int):
         """Returns an iterator of ObjectIds of objects the contextual user owns."""
-        for obj in current_app.mdb.workshop_collections.find({"owner": user_id}, ['_id']):
-            yield obj['_id']
+        for obj in current_app.mdb.workshop_collections.find({"owner": user_id}, ["_id"]):
+            yield obj["_id"]
 
     @classmethod
     def user_subscribed(cls, user_id: int):
@@ -144,15 +167,22 @@ class WorkshopCollection(SubscriberMixin, GuildActiveMixin, EditorMixin):
 
     def to_dict(self, js=False):
         out = {
-            "name": self.name, "description": self.description, "image": self.image, "owner": self.owner,
-            "alias_ids": self.alias_ids, "snippet_ids": self.snippet_ids,
-            "publish_state": self.publish_state.value, "num_subscribers": self.approx_num_subscribers,
-            "num_guild_subscribers": self.approx_num_guild_subscribers, "last_edited": self.last_edited,
-            "created_at": self.created_at, "tags": self.tags
+            "name": self.name,
+            "description": self.description,
+            "image": self.image,
+            "owner": self.owner,
+            "alias_ids": self.alias_ids,
+            "snippet_ids": self.snippet_ids,
+            "publish_state": self.publish_state.value,
+            "num_subscribers": self.approx_num_subscribers,
+            "num_guild_subscribers": self.approx_num_guild_subscribers,
+            "last_edited": self.last_edited,
+            "created_at": self.created_at,
+            "tags": self.tags,
         }
         if js:
-            out['owner'] = str(self.owner)
-            out['_id'] = self.id
+            out["owner"] = str(self.owner)
+            out["_id"] = self.id
         return out
 
     # database operations
@@ -180,10 +210,7 @@ class WorkshopCollection(SubscriberMixin, GuildActiveMixin, EditorMixin):
             raise NotAllowed("Description is required.")
         current_app.mdb.workshop_collections.update_one(
             {"_id": self.id},
-            {
-                "$set": {"name": name, "description": description, "image": image},
-                "$currentDate": {"last_edited": True}
-            }
+            {"$set": {"name": name, "description": description, "image": image}, "$currentDate": {"last_edited": True}},
         )
         self.name = name
         self.description = description
@@ -204,9 +231,7 @@ class WorkshopCollection(SubscriberMixin, GuildActiveMixin, EditorMixin):
             snippet.delete(run_checks)
 
         # delete from db
-        current_app.mdb.workshop_collections.delete_one(
-            {"_id": self.id}
-        )
+        current_app.mdb.workshop_collections.delete_one({"_id": self.id})
 
         # delete subscriptions
         self.sub_coll(current_app.mdb).delete_many({"object_id": self.id})
@@ -215,10 +240,7 @@ class WorkshopCollection(SubscriberMixin, GuildActiveMixin, EditorMixin):
         requests.delete(f"{config.ELASTICSEARCH_ENDPOINT}/workshop_collections/_doc/{str(self.id)}")
 
     def update_edit_time(self, update_es=True):
-        current_app.mdb.workshop_collections.update_one(
-            {"_id": self.id},
-            {"$currentDate": {"last_edited": True}}
-        )
+        current_app.mdb.workshop_collections.update_one({"_id": self.id}, {"$currentDate": {"last_edited": True}})
         self.last_edited = datetime.datetime.now()
         if update_es:
             self.update_elasticsearch()
@@ -251,19 +273,17 @@ class WorkshopCollection(SubscriberMixin, GuildActiveMixin, EditorMixin):
                     raise NotAllowed("At least one alias or snippet must be present to publish this collection")
 
         current_app.mdb.workshop_collections.update_one(
-            {"_id": self.id},
-            {
-                "$set": {"publish_state": new_state.value},
-                "$currentDate": {"last_edited": True}
-            }
+            {"_id": self.id}, {"$set": {"publish_state": new_state.value}, "$currentDate": {"last_edited": True}}
         )
         self.publish_state = new_state
         self.last_edited = datetime.datetime.now()
         self.update_elasticsearch()
 
     def create_alias(self, name, docs):
-        code = f"echo The `{name}` alias does not have an active code version. Please contact the collection author, " \
-               f"or if you are the author, create or select an active code version on the Alias Workshop."
+        code = (
+            f"echo The `{name}` alias does not have an active code version. Please contact the collection author, "
+            "or if you are the author, create or select an active code version on the Alias Workshop."
+        )
         # noinspection PyTypeChecker
         # id is None until inserted
         inst = WorkshopAlias(None, name, code, [], docs, [], self.id, [], None, collection=self)
@@ -274,11 +294,7 @@ class WorkshopCollection(SubscriberMixin, GuildActiveMixin, EditorMixin):
         if self._aliases is not None:
             self._aliases.append(inst)
         current_app.mdb.workshop_collections.update_one(
-            {"_id": self.id},
-            {
-                "$push": {"alias_ids": result.inserted_id},
-                "$currentDate": {"last_edited": True}
-            }
+            {"_id": self.id}, {"$push": {"alias_ids": result.inserted_id}, "$currentDate": {"last_edited": True}}
         )
         self.alias_ids.append(result.inserted_id)
         self.last_edited = datetime.datetime.now()
@@ -287,7 +303,7 @@ class WorkshopCollection(SubscriberMixin, GuildActiveMixin, EditorMixin):
         new_binding = {"name": inst.name, "id": inst.id}
         self.sub_coll(current_app.mdb).update_many(
             {"type": {"$in": ["subscribe", "server_active"]}, "object_id": self.id},
-            {"$push": {"alias_bindings": new_binding}}
+            {"$push": {"alias_bindings": new_binding}},
         )
 
         self.update_elasticsearch()
@@ -295,8 +311,10 @@ class WorkshopCollection(SubscriberMixin, GuildActiveMixin, EditorMixin):
         return inst
 
     def create_snippet(self, name, docs):
-        code = f'-phrase "The `{name}` snippet does not have an active code version. Please contact the collection ' \
-               f'author, or if you are the author, create or select an active code version on the Alias Workshop."'
+        code = (
+            f'-phrase "The `{name}` snippet does not have an active code version. Please contact the collection '
+            'author, or if you are the author, create or select an active code version on the Alias Workshop."'
+        )
         # noinspection PyTypeChecker
         # id is None until inserted
         inst = WorkshopSnippet(None, name, code, [], docs, [], self.id, collection=self)
@@ -307,11 +325,7 @@ class WorkshopCollection(SubscriberMixin, GuildActiveMixin, EditorMixin):
         if self._snippets is not None:
             self._snippets.append(inst)
         current_app.mdb.workshop_collections.update_one(
-            {"_id": self.id},
-            {
-                "$push": {"snippet_ids": result.inserted_id},
-                "$currentDate": {"last_edited": True}
-            }
+            {"_id": self.id}, {"$push": {"snippet_ids": result.inserted_id}, "$currentDate": {"last_edited": True}}
         )
         self.snippet_ids.append(result.inserted_id)
         self.last_edited = datetime.datetime.now()
@@ -320,7 +334,7 @@ class WorkshopCollection(SubscriberMixin, GuildActiveMixin, EditorMixin):
         new_binding = {"name": inst.name, "id": inst.id}
         self.sub_coll(current_app.mdb).update_many(
             {"type": {"$in": ["subscribe", "server_active"]}, "object_id": self.id},
-            {"$push": {"snippet_bindings": new_binding}}
+            {"$push": {"snippet_bindings": new_binding}},
         )
 
         self.update_elasticsearch()
@@ -335,11 +349,7 @@ class WorkshopCollection(SubscriberMixin, GuildActiveMixin, EditorMixin):
             return  # we already have the tag, do a no-op
 
         current_app.mdb.workshop_collections.update_one(
-            {"_id": self.id},
-            {
-                "$push": {"tags": tag},
-                "$currentDate": {"last_edited": True}
-            }
+            {"_id": self.id}, {"$push": {"tags": tag}, "$currentDate": {"last_edited": True}}
         )
         self.tags.append(tag)
         self.last_edited = datetime.datetime.now()
@@ -351,11 +361,7 @@ class WorkshopCollection(SubscriberMixin, GuildActiveMixin, EditorMixin):
             return  # we already don't have the tag, do a no-op
 
         current_app.mdb.workshop_collections.update_one(
-            {"_id": self.id},
-            {
-                "$pull": {"tags": tag},
-                "$currentDate": {"last_edited": True}
-            }
+            {"_id": self.id}, {"$pull": {"tags": tag}, "$currentDate": {"last_edited": True}}
         )
         self.tags.remove(tag)
         self.last_edited = datetime.datetime.now()
@@ -376,7 +382,7 @@ class WorkshopCollection(SubscriberMixin, GuildActiveMixin, EditorMixin):
 
     def _bindings_sanity_check(self, the_ids, the_bindings, binding_cls):
         # sanity check: ensure all aliases are in the bindings
-        binding_ids = {b['id'] for b in the_bindings}
+        binding_ids = {b["id"] for b in the_bindings}
         missing_ids = set(the_ids).difference(binding_ids)
         for missing in missing_ids:
             obj = binding_cls.from_id(missing, collection=self)
@@ -384,19 +390,19 @@ class WorkshopCollection(SubscriberMixin, GuildActiveMixin, EditorMixin):
 
         # sanity check: ensure all names are valid
         for binding in the_bindings:
-            if ' ' in binding['name']:
+            if " " in binding["name"]:
                 raise NotAllowed("Spaces are not allowed in bindings.")
             # alias-only checks
             if binding_cls is WorkshopAlias:
-                if binding['name'] in current_app.rdb.jget("default_commands", []):
+                if binding["name"] in current_app.rdb.jget("default_commands", []):
                     raise NotAllowed(f"{binding['name']} is already a built-in command.")
             # snippet-only checks
             if binding_cls is WorkshopSnippet:
-                if len(binding['name']) < 2:
+                if len(binding["name"]) < 2:
                     raise NotAllowed("Snippet names must be at least 2 characters.")
 
         # sanity check: ensure there is no binding to anything deleted
-        return [b for b in the_bindings if b['id'] in the_ids]
+        return [b for b in the_bindings if b["id"] in the_ids]
 
     # implementations
     @staticmethod
@@ -423,31 +429,28 @@ class WorkshopCollection(SubscriberMixin, GuildActiveMixin, EditorMixin):
         result = self.sub_coll(current_app.mdb).update_one(
             {"type": "subscribe", "subscriber_id": user_id, "object_id": self.id},
             {"$set": {"alias_bindings": alias_bindings, "snippet_bindings": snippet_bindings}},
-            upsert=True
+            upsert=True,
         )
 
         if result.upserted_id is not None:
             # increase subscription count
-            current_app.mdb.workshop_collections.update_one(
-                {"_id": self.id},
-                {"$inc": {"num_subscribers": 1}}
-            )
+            current_app.mdb.workshop_collections.update_one({"_id": self.id}, {"$inc": {"num_subscribers": 1}})
             # log subscribe event
             self.log_event(
                 {"type": "subscribe", "object_id": self.id, "timestamp": datetime.datetime.utcnow(), "user_id": user_id}
             )
 
-        return {"alias_bindings": alias_bindings, "snippet_bindings": snippet_bindings,
-                "new_subscription": result.upserted_id is not None}
+        return {
+            "alias_bindings": alias_bindings,
+            "snippet_bindings": snippet_bindings,
+            "new_subscription": result.upserted_id is not None,
+        }
 
     def unsubscribe(self, user_id: int):
         # remove sub doc
         super().unsubscribe(user_id)
         # decr sub count
-        current_app.mdb.workshop_collections.update_one(
-            {"_id": self.id},
-            {"$inc": {"num_subscribers": -1}}
-        )
+        current_app.mdb.workshop_collections.update_one({"_id": self.id}, {"$inc": {"num_subscribers": -1}})
         # log unsub event
         self.log_event(
             {"type": "unsubscribe", "object_id": self.id, "timestamp": datetime.datetime.utcnow(), "user_id": user_id}
@@ -455,8 +458,9 @@ class WorkshopCollection(SubscriberMixin, GuildActiveMixin, EditorMixin):
 
     def set_server_active(self, guild_id: int, alias_bindings=None, snippet_bindings=None, invoker_id: int = None):
         """Sets the object as active for the contextual guild, with given name bindings."""
-        if self.publish_state == PublicationState.PRIVATE \
-                and not (self.is_owner(invoker_id) or self.is_editor(invoker_id)):
+        if self.publish_state == PublicationState.PRIVATE and not (
+            self.is_owner(invoker_id) or self.is_editor(invoker_id)
+        ):
             raise NotAllowed("This collection is private.")
 
         # generate default bindings
@@ -474,36 +478,41 @@ class WorkshopCollection(SubscriberMixin, GuildActiveMixin, EditorMixin):
         result = self.sub_coll(current_app.mdb).update_one(
             {"type": "server_active", "subscriber_id": guild_id, "object_id": self.id},
             {"$set": {"alias_bindings": alias_bindings, "snippet_bindings": snippet_bindings}},
-            upsert=True
+            upsert=True,
         )
 
         if result.upserted_id is not None:
             # incr sub count
-            current_app.mdb.workshop_collections.update_one(
-                {"_id": self.id},
-                {"$inc": {"num_guild_subscribers": 1}}
-            )
+            current_app.mdb.workshop_collections.update_one({"_id": self.id}, {"$inc": {"num_guild_subscribers": 1}})
             # log sub event
             self.log_event(
-                {"type": "server_subscribe", "object_id": self.id, "timestamp": datetime.datetime.utcnow(),
-                 "user_id": invoker_id}
+                {
+                    "type": "server_subscribe",
+                    "object_id": self.id,
+                    "timestamp": datetime.datetime.utcnow(),
+                    "user_id": invoker_id,
+                }
             )
 
-        return {"alias_bindings": alias_bindings, "snippet_bindings": snippet_bindings,
-                "new_subscription": result.upserted_id is not None}
+        return {
+            "alias_bindings": alias_bindings,
+            "snippet_bindings": snippet_bindings,
+            "new_subscription": result.upserted_id is not None,
+        }
 
     def unset_server_active(self, guild_id: int, invoker_id: int = None):
         # remove sub doc
         super().unset_server_active(guild_id)
         # decr sub count
-        current_app.mdb.workshop_collections.update_one(
-            {"_id": self.id},
-            {"$inc": {"num_guild_subscribers": -1}}
-        )
+        current_app.mdb.workshop_collections.update_one({"_id": self.id}, {"$inc": {"num_guild_subscribers": -1}})
         # log unsub event
         self.log_event(
-            {"type": "server_unsubscribe", "object_id": self.id, "timestamp": datetime.datetime.utcnow(),
-             "user_id": invoker_id}
+            {
+                "type": "server_unsubscribe",
+                "object_id": self.id,
+                "timestamp": datetime.datetime.utcnow(),
+                "user_id": invoker_id,
+            }
         )
 
     def update_elasticsearch(self):
@@ -511,7 +520,7 @@ class WorkshopCollection(SubscriberMixin, GuildActiveMixin, EditorMixin):
         requests.post(
             f"{config.ELASTICSEARCH_ENDPOINT}/workshop_collections/_doc/{str(self.id)}",
             data=json.dumps(self.to_dict(), cls=HelperEncoder),
-            headers={"Content-Type": "application/json"}
+            headers={"Content-Type": "application/json"},
         )
 
     @staticmethod
@@ -521,23 +530,21 @@ class WorkshopCollection(SubscriberMixin, GuildActiveMixin, EditorMixin):
         current_app.mdb.analytics_alias_events.insert_one(event)
 
         # add a sub_score metric
-        es_event['sub_score'] = 0
-        if es_event['type'] in ('subscribe', 'server_subscribe'):
-            es_event['sub_score'] = 1
-        elif es_event['type'] in ('unsubscribe', 'server_unsubscribe'):
-            es_event['sub_score'] = -1
+        es_event["sub_score"] = 0
+        if es_event["type"] in ("subscribe", "server_subscribe"):
+            es_event["sub_score"] = 1
+        elif es_event["type"] in ("unsubscribe", "server_unsubscribe"):
+            es_event["sub_score"] = -1
 
         requests.post(
             f"{config.ELASTICSEARCH_ENDPOINT}/workshop_events/_doc",
             data=json.dumps(es_event, cls=HelperEncoder),
-            headers={"Content-Type": "application/json"}
+            headers={"Content-Type": "application/json"},
         )
 
 
 class WorkshopCollectableObject(abc.ABC):
-    def __init__(self, _id, name,
-                 code, versions, docs, entitlements, collection_id,
-                 collection=None):
+    def __init__(self, _id, name, code, versions, docs, entitlements, collection_id, collection=None):
         """
         :param _id: The MongoDB ID of this object.
         :type _id: bson.ObjectId
@@ -568,7 +575,7 @@ class WorkshopCollectableObject(abc.ABC):
 
     @property
     def short_docs(self):
-        return self.docs.split('\n')[0]
+        return self.docs.split("\n")[0]
 
     @property
     def collection(self):
@@ -594,11 +601,15 @@ class WorkshopCollectableObject(abc.ABC):
             versions = []
         entitlements = [ent.to_dict() for ent in self.entitlements]
         out = {
-            "name": self.name, "code": self.code, "versions": versions, "docs": self.docs, "entitlements": entitlements,
-            "collection_id": self._collection_id
+            "name": self.name,
+            "code": self.code,
+            "versions": versions,
+            "docs": self.docs,
+            "entitlements": entitlements,
+            "collection_id": self._collection_id,
         }
         if js:
-            out['_id'] = self.id
+            out["_id"] = self.id
         return out
 
     @staticmethod
@@ -608,10 +619,7 @@ class WorkshopCollectableObject(abc.ABC):
     # database touchers
     def update_info(self, name: str, docs: str):
         """Updates the alias' information."""
-        self.mdb_coll().update_one(
-            {"_id": self.id},
-            {"$set": {"name": name, "docs": docs}}
-        )
+        self.mdb_coll().update_one({"_id": self.id}, {"$set": {"name": name, "docs": docs}})
         self.name = name
         self.docs = docs
         self.collection.update_edit_time()
@@ -620,10 +628,7 @@ class WorkshopCollectableObject(abc.ABC):
         """Creates a new inactive code version, incrementing version num and setting creation time."""
         version = max((cv.version for cv in self.versions), default=0) + 1
         cv = CodeVersion(version, content, datetime.datetime.now(), False)
-        self.mdb_coll().update_one(
-            {"_id": self.id},
-            {"$push": {"versions": cv.to_dict()}}
-        )
+        self.mdb_coll().update_one({"_id": self.id}, {"$push": {"versions": cv.to_dict()}})
         self.versions.append(cv)
         self.collection.update_edit_time()
         return cv
@@ -636,12 +641,14 @@ class WorkshopCollectableObject(abc.ABC):
         # set correct current version and update code
         self.mdb_coll().update_one(
             {"_id": self.id},
-            {"$set": {
-                "code": cv.content,
-                "versions.$[current].is_current": True,
-                "versions.$[notcurrent].is_current": False
-            }},
-            array_filters=[{"current.version": version}, {"notcurrent.version": {"$ne": version}}]
+            {
+                "$set": {
+                    "code": cv.content,
+                    "versions.$[current].is_current": True,
+                    "versions.$[notcurrent].is_current": False,
+                }
+            },
+            array_filters=[{"current.version": version}, {"notcurrent.version": {"$ne": version}}],
         )
         for old_cv in self.versions:
             old_cv.is_current = False
@@ -659,16 +666,12 @@ class WorkshopCollectableObject(abc.ABC):
         if sourced_entity.is_free:
             raise NotAllowed("This entitlement is for a free object.")
         re = RequiredEntitlement(sourced_entity.entity_type, sourced_entity.entity_id, required)
-        if (re.entity_type, re.entity_id) in ((existing.entity_type, existing.entity_id) for existing in
-                                              self.entitlements):
+        if (re.entity_type, re.entity_id) in (
+            (existing.entity_type, existing.entity_id) for existing in self.entitlements
+        ):
             raise NotAllowed("This collectable already has this entitlement required.")
         # add to database
-        self.mdb_coll().update_one(
-            {"_id": self.id},
-            {"$push": {
-                "entitlements": re.to_dict()
-            }}
-        )
+        self.mdb_coll().update_one({"_id": self.id}, {"$push": {"entitlements": re.to_dict()}})
         self.collection.update_edit_time()
         self.entitlements.append(re)
         return [e.to_dict() for e in self.entitlements]
@@ -680,8 +683,14 @@ class WorkshopCollectableObject(abc.ABC):
         :type sourced_entity: gamedata.shared.Sourced
         :param bool ignore_required: Whether to allow removing moderator-required entitlements.
         """
-        existing = next((e for e in self.entitlements if
-                         (e.entity_type, e.entity_id) == (sourced_entity.entity_type, sourced_entity.entity_id)), None)
+        existing = next(
+            (
+                e
+                for e in self.entitlements
+                if (e.entity_type, e.entity_id) == (sourced_entity.entity_type, sourced_entity.entity_id)
+            ),
+            None,
+        )
         if existing is None:
             raise NotAllowed("This collectable does not require this entitlement.")
         if existing.required and not ignore_required:
@@ -689,9 +698,7 @@ class WorkshopCollectableObject(abc.ABC):
         # add to database
         self.mdb_coll().update_one(
             {"_id": self.id},
-            {"$pull": {
-                "entitlements": {"entity_type": existing.entity_type, "entity_id": existing.entity_id}
-            }}
+            {"$pull": {"entitlements": {"entity_type": existing.entity_type, "entity_id": existing.entity_id}}},
         )
         self.collection.update_edit_time()
         self.entitlements.remove(existing)
@@ -699,16 +706,29 @@ class WorkshopCollectableObject(abc.ABC):
 
 
 class WorkshopAlias(WorkshopCollectableObject):
-    def __init__(self, _id, name, code, versions, docs, entitlements, collection_id, subcommand_ids, parent_id,
-                 collection=None, parent=None):
+    def __init__(
+        self,
+        _id,
+        name,
+        code,
+        versions,
+        docs,
+        entitlements,
+        collection_id,
+        subcommand_ids,
+        parent_id,
+        collection=None,
+        parent=None,
+    ):
         """
         :param subcommand_ids: The alias IDs that are a child of this alias.
         :type subcommand_ids: list[ObjectId]
         :param parent: The alias that is a parent of this alias, if applicable.
         :type parent: WorkshopAlias or None
         """
-        super().__init__(_id, name, code, versions, docs, entitlements,
-                         collection_id=collection_id, collection=collection)
+        super().__init__(
+            _id, name, code, versions, docs, entitlements, collection_id=collection_id, collection=collection
+        )
         self._subcommands = None
         self._parent = parent
         # lazy-load subcommands, collection, parent
@@ -740,8 +760,7 @@ class WorkshopAlias(WorkshopCollectableObject):
     def load_subcommands(self):
         self._subcommands = []
         for subcommand_id in self._subcommand_ids:
-            self._subcommands.append(
-                WorkshopAlias.from_id(subcommand_id, collection=self._collection, parent=self))
+            self._subcommands.append(WorkshopAlias.from_id(subcommand_id, collection=self._collection, parent=self))
         return self._subcommands
 
     @staticmethod
@@ -751,10 +770,21 @@ class WorkshopAlias(WorkshopCollectableObject):
     # constructors
     @classmethod
     def from_dict(cls, raw, collection=None, parent=None):
-        versions = [CodeVersion.from_dict(cv) for cv in raw['versions']]
-        entitlements = [RequiredEntitlement.from_dict(ent) for ent in raw['entitlements']]
-        return cls(raw['_id'], raw['name'], raw['code'], versions, raw['docs'], entitlements, raw['collection_id'],
-                   raw['subcommand_ids'], raw['parent_id'], collection, parent)
+        versions = [CodeVersion.from_dict(cv) for cv in raw["versions"]]
+        entitlements = [RequiredEntitlement.from_dict(ent) for ent in raw["entitlements"]]
+        return cls(
+            raw["_id"],
+            raw["name"],
+            raw["code"],
+            versions,
+            raw["docs"],
+            entitlements,
+            raw["collection_id"],
+            raw["subcommand_ids"],
+            raw["parent_id"],
+            collection,
+            parent,
+        )
 
     @classmethod
     def from_id(cls, _id, collection=None, parent=None):
@@ -768,15 +798,15 @@ class WorkshopAlias(WorkshopCollectableObject):
 
     def to_dict(self, *args, **kwargs):
         out = super().to_dict(*args, **kwargs)
-        out.update({
-            "subcommand_ids": self._subcommand_ids, "parent_id": self._parent_id
-        })
+        out.update({"subcommand_ids": self._subcommand_ids, "parent_id": self._parent_id})
         return out
 
     # database touchers
     def create_subalias(self, name, docs):
-        code = f"echo The `{name}` alias does not have an active code version. Please contact the collection author, " \
-               f"or if you are the author, create or select an active code version on the Alias Workshop."
+        code = (
+            f"echo The `{name}` alias does not have an active code version. Please contact the collection author, "
+            "or if you are the author, create or select an active code version on the Alias Workshop."
+        )
         # noinspection PyTypeChecker
         inst = WorkshopAlias(None, name, code, [], docs, [], self.collection.id, [], self.id, parent=self)
         result = self.mdb_coll().insert_one(inst.to_dict())
@@ -785,10 +815,7 @@ class WorkshopAlias(WorkshopCollectableObject):
         # update alias references
         if self._subcommands is not None:
             self._subcommands.append(inst)
-        self.mdb_coll().update_one(
-            {"_id": self.id},
-            {"$push": {"subcommand_ids": result.inserted_id}}
-        )
+        self.mdb_coll().update_one({"_id": self.id}, {"$push": {"subcommand_ids": result.inserted_id}})
         self._subcommand_ids.append(result.inserted_id)
 
         self.collection.update_edit_time()
@@ -812,16 +839,12 @@ class WorkshopAlias(WorkshopCollectableObject):
 
             # remove reference from collection
             current_app.mdb.workshop_collections.update_one(
-                {"_id": self.collection.id},
-                {"$pull": {"alias_ids": self.id}}
+                {"_id": self.collection.id}, {"$pull": {"alias_ids": self.id}}
             )
             self.collection.alias_ids.remove(self.id)
         else:
             # remove reference from parent
-            self.mdb_coll().update_one(
-                {"_id": self.parent.id},
-                {"$pull": {"subcommand_ids": self.id}}
-            )
+            self.mdb_coll().update_one({"_id": self.parent.id}, {"$pull": {"subcommand_ids": self.id}})
             self.parent._subcommand_ids.remove(self.id)
 
         # delete all children
@@ -831,9 +854,7 @@ class WorkshopAlias(WorkshopCollectableObject):
         self.collection.update_edit_time()
 
         # delete from db
-        self.mdb_coll().delete_one(
-            {"_id": self.id}
-        )
+        self.mdb_coll().delete_one({"_id": self.id})
 
 
 class WorkshopSnippet(WorkshopCollectableObject):
@@ -846,10 +867,11 @@ class WorkshopSnippet(WorkshopCollectableObject):
         if raw is None:
             raise CollectableNotFound()
 
-        versions = [CodeVersion.from_dict(cv) for cv in raw['versions']]
-        entitlements = [RequiredEntitlement.from_dict(ent) for ent in raw['entitlements']]
-        return cls(raw['_id'], raw['name'], raw['code'], versions, raw['docs'], entitlements,
-                   raw['collection_id'], collection)
+        versions = [CodeVersion.from_dict(cv) for cv in raw["versions"]]
+        entitlements = [RequiredEntitlement.from_dict(ent) for ent in raw["entitlements"]]
+        return cls(
+            raw["_id"], raw["name"], raw["code"], versions, raw["docs"], entitlements, raw["collection_id"], collection
+        )
 
     @staticmethod
     def mdb_coll():
@@ -873,16 +895,13 @@ class WorkshopSnippet(WorkshopCollectableObject):
 
         # remove reference from collection
         current_app.mdb.workshop_collections.update_one(
-            {"_id": self.collection.id},
-            {"$pull": {"snippet_ids": self.id}}
+            {"_id": self.collection.id}, {"$pull": {"snippet_ids": self.id}}
         )
         self.collection.snippet_ids.remove(self.id)
         self.collection.update_edit_time()
 
         # delete from db
-        self.mdb_coll().delete_one(
-            {"_id": self.id}
-        )
+        self.mdb_coll().delete_one({"_id": self.id})
 
 
 class CodeVersion:
@@ -908,8 +927,10 @@ class CodeVersion:
 
     def to_dict(self):
         return {
-            "version": self.version, "content": self.content, "created_at": self.created_at,
-            "is_current": self.is_current
+            "version": self.version,
+            "content": self.content,
+            "created_at": self.created_at,
+            "is_current": self.is_current,
         }
 
 
@@ -931,6 +952,4 @@ class RequiredEntitlement:
         return cls(**raw)
 
     def to_dict(self):
-        return {
-            "entity_type": self.entity_type, "entity_id": self.entity_id, "required": self.required
-        }
+        return {"entity_type": self.entity_type, "entity_id": self.entity_id, "required": self.required}

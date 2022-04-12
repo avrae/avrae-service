@@ -19,3 +19,7 @@ itsdangerous==2.0.1
 dnspython==2.1.0  # pymongo srv
 pymongo<4.0.0  # Flask-PyMongo does not specify version and 4.0 has breaking changes
 wheel==0.36.2  # dep install
+
+# pre-commit & formatting deps
+pre-commit==2.17.0
+black==22.1.0

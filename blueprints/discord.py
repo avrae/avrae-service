@@ -6,11 +6,17 @@ from requests import HTTPError
 
 import config
 from lib.auth import requires_auth
-from lib.discord import discord_token_for, exchange_code, fetch_user_info, get_current_user_guilds, \
-    handle_token_response, search_by_username
+from lib.discord import (
+    discord_token_for,
+    exchange_code,
+    fetch_user_info,
+    get_current_user_guilds,
+    handle_token_response,
+    search_by_username,
+)
 from lib.utils import error, expect_json, jsonify, success
 
-discord = Blueprint('discord', __name__)
+discord = Blueprint("discord", __name__)
 
 
 @discord.route("users/<user_id>", methods=["GET"])
@@ -30,12 +36,12 @@ def search_user(_):
     """
     GET /discord/users?username=foo#0000
     """
-    if 'username' not in request.args:
+    if "username" not in request.args:
         return error(400, "username param is required")
-    un = request.args['username']
-    if '#' not in un:
+    un = request.args["username"]
+    if "#" not in un:
         return error(400, "username must be username#discrim")
-    username, discriminator = un.rsplit('#', 1)
+    username, discriminator = un.rsplit("#", 1)
     user = search_by_username(username, discriminator)
     if user is not None:
         return success(user.to_dict(), 200)
@@ -62,7 +68,7 @@ def handle_auth(data):
     {"success": bool, "data": {"jwt": str}, "error": str}
     """
     try:
-        access_token_resp = exchange_code(data['code'])
+        access_token_resp = exchange_code(data["code"])
         _, user = handle_token_response(access_token_resp)
     except HTTPError as e:
         if 400 <= e.response.status_code < 500:
@@ -71,14 +77,16 @@ def handle_auth(data):
 
     token = jwt.encode(
         {
-            'iss': 'avrae.io',
-            'aud': 'avrae.io',
-            'iat': datetime.datetime.now(),
-            'id': str(user.id),
-            'username': user.username,
-            'discriminator': user.discriminator,
-            'avatar': user.avatar
+            "iss": "avrae.io",
+            "aud": "avrae.io",
+            "iat": datetime.datetime.now(),
+            "id": str(user.id),
+            "username": user.username,
+            "discriminator": user.discriminator,
+            "avatar": user.avatar,
         },
-        config.JWT_SECRET, algorithm='HS256')
+        config.JWT_SECRET,
+        algorithm="HS256",
+    )
 
-    return success({'jwt': token})
+    return success({"jwt": token})

@@ -12,7 +12,7 @@ from workshop.constants import ALIAS_SIZE_LIMIT, SNIPPET_SIZE_LIMIT
 from workshop.errors import CollectableNotFound, CollectionNotFound, NeedsServerAliaser
 from workshop.utils import explore_collections, guild_permissions_check
 
-workshop = Blueprint('workshop', __name__)
+workshop = Blueprint("workshop", __name__)
 
 
 # ==== error handlers ====
@@ -46,9 +46,9 @@ def get_collectable_with_editor_check(cls, collectable_id, user):
 
 def get_collection_with_private_check(coll_id, user):
     coll = WorkshopCollection.from_id(coll_id)
-    if coll.publish_state == PublicationState.PRIVATE \
-            and (user is None
-                 or not (coll.is_owner(int(user.id)) or coll.is_editor(int(user.id)))):
+    if coll.publish_state == PublicationState.PRIVATE and (
+        user is None or not (coll.is_owner(int(user.id)) or coll.is_editor(int(user.id)))
+    ):
         raise Error(403, "This collection is private.")
     return coll
 
@@ -59,7 +59,7 @@ def get_collection_with_private_check(coll_id, user):
 @expect_json(name=str, description=str, image=nullable(str))
 @requires_auth
 def create_collection(user, body):
-    new_collection = WorkshopCollection.create_new(int(user.id), body['name'], body['description'], body['image'])
+    new_collection = WorkshopCollection.create_new(int(user.id), body["name"], body["description"], body["image"])
     return success(new_collection.to_dict(js=True), 201)
 
 
@@ -78,13 +78,15 @@ def get_collection_full(user, coll_id):
 
     def dictify(alias):
         ad = alias.to_dict(js=True, include_code_versions=False)
-        ad['subcommands'] = [dictify(subcommand) for subcommand in alias.subcommands]
+        ad["subcommands"] = [dictify(subcommand) for subcommand in alias.subcommands]
         return ad
 
-    out.update({
-        "aliases": [dictify(alias) for alias in coll.aliases],
-        "snippets": [snippet.to_dict(js=True, include_code_versions=False) for snippet in coll.snippets]
-    })
+    out.update(
+        {
+            "aliases": [dictify(alias) for alias in coll.aliases],
+            "snippets": [snippet.to_dict(js=True, include_code_versions=False) for snippet in coll.snippets],
+        }
+    )
     return success(out, 200)
 
 
@@ -96,11 +98,11 @@ def get_collection_batch(user):
 
     GET /workshop/collection/batch?c=1,2,3,4,...
     """
-    if 'c' not in request.args:
+    if "c" not in request.args:
         return error(400, "c is a required query param")
     collections = []
     try:
-        for coll_id in map(ObjectId, request.args.get('c').split(',')):
+        for coll_id in map(ObjectId, request.args.get("c").split(",")):
             try:
                 coll = get_collection_with_private_check(coll_id, user)
             except Error as e:
@@ -118,7 +120,7 @@ def get_collection_batch(user):
 @requires_auth
 def edit_collection(user, body, coll_id):
     coll = get_collection_with_editor_check(coll_id, user)
-    coll.update_info(name=body['name'], description=body['description'], image=body['image'])
+    coll.update_info(name=body["name"], description=body["description"], image=body["image"])
     return success(coll.to_dict(js=True), 200)
 
 
@@ -142,7 +144,7 @@ def set_state(user, body, coll_id):
         return error(403, "you do not have permission to change the state of this collection")
 
     try:
-        coll.set_state(body['state'])
+        coll.set_state(body["state"])
     except ValueError as e:  # invalid publication state
         return error(400, str(e))
 
@@ -195,7 +197,7 @@ def route_get_editors(_, coll_id):
 @requires_auth
 def add_tag(user, body, coll_id):
     coll = get_collection_with_editor_check(coll_id, user)
-    coll.add_tag(body['tag'])
+    coll.add_tag(body["tag"])
     return success(coll.tags, 200)
 
 
@@ -204,7 +206,7 @@ def add_tag(user, body, coll_id):
 @requires_auth
 def remove_tag(user, body, coll_id):
     coll = get_collection_with_editor_check(coll_id, user)
-    coll.remove_tag(body['tag'])
+    coll.remove_tag(body["tag"])
     return success(coll.tags, 200)
 
 
@@ -215,18 +217,18 @@ def remove_tag(user, body, coll_id):
 def create_alias(user, body, coll_id):
     coll = get_collection_with_editor_check(coll_id, user)
 
-    if not body['name']:
+    if not body["name"]:
         return error(400, "Alias must have a name")
-    if not 0 < len(body['name']) < 1024:
+    if not 0 < len(body["name"]) < 1024:
         return error(400, "Alias names must be between 1 and 1024 characters long")
-    if ' ' in body['name']:
+    if " " in body["name"]:
         return error(400, "Alias names cannot contain spaces")
-    if body['name'] in current_app.rdb.jget("default_commands", []):
+    if body["name"] in current_app.rdb.jget("default_commands", []):
         return error(409, f"{body['name']} is already a built-in command")
 
-    alias = coll.create_alias(body['name'], body['docs'])
+    alias = coll.create_alias(body["name"], body["docs"])
     result = alias.to_dict(js=True)
-    result['subcommands'] = []  # return WorkshopAliasFull interface
+    result["subcommands"] = []  # return WorkshopAliasFull interface
     return success(result, 201)
 
 
@@ -236,16 +238,16 @@ def create_alias(user, body, coll_id):
 def create_subalias(user, body, alias_id):
     alias = get_collectable_with_editor_check(WorkshopAlias, alias_id, user)
 
-    if not body['name']:
+    if not body["name"]:
         return error(400, "Alias must have a name")
-    if not 0 < len(body['name']) < 1024:
+    if not 0 < len(body["name"]) < 1024:
         return error(400, "Alias names must be between 1 and 1024 characters long")
-    if ' ' in body['name']:
+    if " " in body["name"]:
         return error(400, "Alias names cannot contain spaces")
 
-    subalias = alias.create_subalias(body['name'], body['docs'])
+    subalias = alias.create_subalias(body["name"], body["docs"])
     result = subalias.to_dict(js=True)
-    result['subcommands'] = []  # return WorkshopAliasFull interface
+    result["subcommands"] = []  # return WorkshopAliasFull interface
     return success(result, 201)
 
 
@@ -255,16 +257,16 @@ def create_subalias(user, body, alias_id):
 def edit_alias(user, body, alias_id):
     alias = get_collectable_with_editor_check(WorkshopAlias, alias_id, user)
 
-    if not body['name']:
+    if not body["name"]:
         return error(400, "Alias must have a name")
-    if not 0 < len(body['name']) < 1024:
+    if not 0 < len(body["name"]) < 1024:
         return error(400, "Alias names must be between 1 and 1024 characters long")
-    if ' ' in body['name']:
+    if " " in body["name"]:
         return error(400, "Alias names cannot contain spaces")
-    if not alias.has_parent and body['name'] in current_app.rdb.jget("default_commands", []):
+    if not alias.has_parent and body["name"] in current_app.rdb.jget("default_commands", []):
         return error(409, f"{body['name']} is already a built-in command")
 
-    alias.update_info(body['name'], body['docs'])
+    alias.update_info(body["name"], body["docs"])
     return success(alias.to_dict(js=True), 200)
 
 
@@ -295,10 +297,10 @@ def get_alias_code_versions(user, alias_id):
 def create_alias_code_version(user, body, alias_id):
     alias = get_collectable_with_editor_check(WorkshopAlias, alias_id, user)
 
-    if len(body['content']) > ALIAS_SIZE_LIMIT:
+    if len(body["content"]) > ALIAS_SIZE_LIMIT:
         return error(400, f"max alias size is {ALIAS_SIZE_LIMIT}")
 
-    cv = alias.create_code_version(body['content'])
+    cv = alias.create_code_version(body["content"])
     return success(cv.to_dict(), 201)
 
 
@@ -307,7 +309,7 @@ def create_alias_code_version(user, body, alias_id):
 @requires_auth
 def set_active_alias_code_version(user, body, alias_id):
     alias = get_collectable_with_editor_check(WorkshopAlias, alias_id, user)
-    alias.set_active_code_version(body['version'])
+    alias.set_active_code_version(body["version"])
     return success(alias.to_dict(js=True), 200)
 
 
@@ -328,8 +330,8 @@ def _remove_entitlement_from_collectable(collectable, entity_type: str, entity_i
 def _get_paginated_collectable_code_versions(collectable):
     """Returns the *limit* most recent code versions"""
     try:
-        limit = request.args.get('limit', 50, type=int)
-        skip = request.args.get('skip', 0, type=int)
+        limit = request.args.get("limit", 50, type=int)
+        skip = request.args.get("skip", 0, type=int)
     except ValueError:
         return error(400, "invalid query")
     if limit < 1 or skip < 0:
@@ -342,11 +344,11 @@ def _get_paginated_collectable_code_versions(collectable):
 
 
 @workshop.route("alias/<alias_id>/entitlement", methods=["POST"])
-@expect_json(entity_type=str, entity_id=(str, int), required=bool, optional=['required'])
+@expect_json(entity_type=str, entity_id=(str, int), required=bool, optional=["required"])
 @requires_auth
 def add_alias_entitlement(user, body, alias_id):
     alias = get_collectable_with_editor_check(WorkshopAlias, alias_id, user)
-    return success(_add_entitlement_to_collectable(alias, body['entity_type'], int(body['entity_id'])))
+    return success(_add_entitlement_to_collectable(alias, body["entity_type"], int(body["entity_id"])))
 
 
 @workshop.route("alias/<alias_id>/entitlement", methods=["DELETE"])
@@ -354,7 +356,7 @@ def add_alias_entitlement(user, body, alias_id):
 @requires_auth
 def delete_alias_entitlement(user, body, alias_id):
     alias = get_collectable_with_editor_check(WorkshopAlias, alias_id, user)
-    return success(_remove_entitlement_from_collectable(alias, body['entity_type'], int(body['entity_id'])))
+    return success(_remove_entitlement_from_collectable(alias, body["entity_type"], int(body["entity_id"])))
 
 
 # ---- snippet operations ----
@@ -364,12 +366,12 @@ def delete_alias_entitlement(user, body, alias_id):
 def create_snippet(user, body, coll_id):
     coll = get_collection_with_editor_check(coll_id, user)
 
-    if ' ' in body['name']:
+    if " " in body["name"]:
         return error(400, "Snippet names cannot contain spaces")
-    if not 1 < len(body['name']) < 1024:
+    if not 1 < len(body["name"]) < 1024:
         return error(400, "Snippet names must be between 2 and 1024 characters long")
 
-    snippet = coll.create_snippet(body['name'], body['docs'])
+    snippet = coll.create_snippet(body["name"], body["docs"])
     return success(snippet.to_dict(js=True), 201)
 
 
@@ -379,12 +381,12 @@ def create_snippet(user, body, coll_id):
 def edit_snippet(user, body, snippet_id):
     snippet = get_collectable_with_editor_check(WorkshopSnippet, snippet_id, user)
 
-    if ' ' in body['name']:
+    if " " in body["name"]:
         return error(400, "snippet names cannot contain spaces")
-    if not 1 < len(body['name']) < 1024:
+    if not 1 < len(body["name"]) < 1024:
         return error(400, "Snippet names must be between 2 and 1024 characters long")
 
-    snippet.update_info(body['name'], body['docs'])
+    snippet.update_info(body["name"], body["docs"])
     return success(snippet.to_dict(js=True), 200)
 
 
@@ -416,10 +418,10 @@ def get_snippet_code_versions(user, snippet_id):
 def create_snippet_code_version(user, body, snippet_id):
     snippet = get_collectable_with_editor_check(WorkshopSnippet, snippet_id, user)
 
-    if len(body['content']) > SNIPPET_SIZE_LIMIT:
+    if len(body["content"]) > SNIPPET_SIZE_LIMIT:
         return error(400, f"max snippet size is {SNIPPET_SIZE_LIMIT}")
 
-    cv = snippet.create_code_version(body['content'])
+    cv = snippet.create_code_version(body["content"])
     return success(cv.to_dict(), 201)
 
 
@@ -428,16 +430,16 @@ def create_snippet_code_version(user, body, snippet_id):
 @requires_auth
 def set_active_snippet_code_version(user, body, snippet_id):
     snippet = get_collectable_with_editor_check(WorkshopSnippet, snippet_id, user)
-    snippet.set_active_code_version(body['version'])
+    snippet.set_active_code_version(body["version"])
     return success(snippet.to_dict(js=True), 200)
 
 
 @workshop.route("snippet/<snippet_id>/entitlement", methods=["POST"])
-@expect_json(entity_type=str, entity_id=(str, int), required=bool, optional=['required'])
+@expect_json(entity_type=str, entity_id=(str, int), required=bool, optional=["required"])
 @requires_auth
 def add_snippet_entitlement(user, body, snippet_id):
     snippet = get_collectable_with_editor_check(WorkshopSnippet, snippet_id, user)
-    return success(_add_entitlement_to_collectable(snippet, body['entity_type'], int(body['entity_id'])))
+    return success(_add_entitlement_to_collectable(snippet, body["entity_type"], int(body["entity_id"])))
 
 
 @workshop.route("snippet/<snippet_id>/entitlement", methods=["DELETE"])
@@ -445,7 +447,7 @@ def add_snippet_entitlement(user, body, snippet_id):
 @requires_auth
 def delete_snippet_entitlement(user, body, snippet_id):
     snippet = get_collectable_with_editor_check(WorkshopSnippet, snippet_id, user)
-    return success(_remove_entitlement_from_collectable(snippet, body['entity_type'], int(body['entity_id'])))
+    return success(_remove_entitlement_from_collectable(snippet, body["entity_type"], int(body["entity_id"])))
 
 
 # ---- subscription operations ----
@@ -460,22 +462,22 @@ def _bindings_check(coll, bindings):
         if set(binding) != {"name", "id"}:
             raise NotAllowed("bindings must be list of {name, id}")
 
-        if not isinstance(binding['name'], str):
+        if not isinstance(binding["name"], str):
             raise NotAllowed("binding name must be str")
 
-        if isinstance(binding['id'], dict):
-            if '$oid' not in binding['id']:
+        if isinstance(binding["id"], dict):
+            if "$oid" not in binding["id"]:
                 raise NotAllowed("binding id must be ObjectId")
-            oid = ObjectId(binding['id']['$oid'])
-        elif isinstance(binding['id'], str):
-            oid = ObjectId(binding['id'])
+            oid = ObjectId(binding["id"]["$oid"])
+        elif isinstance(binding["id"], str):
+            oid = ObjectId(binding["id"])
         else:
             raise NotAllowed("binding id must be ObjectId")
 
         if not (oid in coll.alias_ids or oid in coll.snippet_ids):
             raise NotAllowed("binding must be to object in collection")
 
-        binding['id'] = oid
+        binding["id"] = oid
 
 
 @workshop.route("collection/<coll_id>/subscription/me", methods=["PUT"])
@@ -487,9 +489,9 @@ def personal_subscribe(user, body, coll_id):
     if body is None:
         alias_bindings = snippet_bindings = None
     else:
-        alias_bindings = body['alias_bindings']
+        alias_bindings = body["alias_bindings"]
         _bindings_check(coll, alias_bindings)
-        snippet_bindings = body['snippet_bindings']
+        snippet_bindings = body["snippet_bindings"]
         _bindings_check(coll, snippet_bindings)
 
     bindings = coll.subscribe(int(user.id), alias_bindings, snippet_bindings)
@@ -531,9 +533,9 @@ def guild_subscribe(user, body, coll_id, guild_id):
     if body is None:
         alias_bindings = snippet_bindings = None
     else:
-        alias_bindings = body['alias_bindings']
+        alias_bindings = body["alias_bindings"]
         _bindings_check(coll, alias_bindings)
-        snippet_bindings = body['snippet_bindings']
+        snippet_bindings = body["snippet_bindings"]
         _bindings_check(coll, snippet_bindings)
 
     bindings = coll.set_server_active(guild_id, alias_bindings, snippet_bindings, invoker_id=int(user.id))
@@ -582,19 +584,19 @@ def get_explore_collections():
     :q str q: A search query.
     :q int page: The page of results to return.
     """
-    order = request.args.get('order', 'popular-1w')
-    tags = request.args.get('tags')
+    order = request.args.get("order", "popular-1w")
+    tags = request.args.get("tags")
     if tags:
-        tags = tags.split(',')
+        tags = tags.split(",")
     else:
         tags = []
-    q = request.args.get('q')
-    page = request.args.get('page', 1)
+    q = request.args.get("q")
+    page = request.args.get("page", 1)
     if page:
         try:
             page = int(page)
         except ValueError:
-            return error(400, 'page must be int')
+            return error(400, "page must be int")
 
     try:
         coll_ids = explore_collections(order, tags, q, page)
@@ -623,9 +625,9 @@ def get_editable_collections(user):
 @workshop.route("guild-check", methods=["GET"])
 @requires_auth
 def do_guild_permissions_check(user):
-    if 'g' not in request.args:
+    if "g" not in request.args:
         return error(400, "g is a required query param")
-    guild_id = request.args.get('g')
+    guild_id = request.args.get("g")
     try:
         guild_id = int(guild_id)
     except ValueError:
@@ -641,12 +643,12 @@ def do_guild_permissions_check(user):
 # ---- moderator endpoints ----
 @workshop.route("moderator/collection/<coll_id>/state", methods=["PATCH"])
 @expect_json(state=str)  # PRIVATE, UNLISTED, PUBLISHED
-@requires_user_permissions('moderator')
+@requires_user_permissions("moderator")
 def moderator_set_collection_state(_, body, coll_id):
     coll = WorkshopCollection.from_id(coll_id)
 
     try:
-        coll.set_state(body['state'], run_checks=False)
+        coll.set_state(body["state"], run_checks=False)
     except ValueError as e:  # invalid publication state
         return error(400, str(e))
 
@@ -654,7 +656,7 @@ def moderator_set_collection_state(_, body, coll_id):
 
 
 @workshop.route("moderator/collection/<coll_id>", methods=["DELETE"])
-@requires_user_permissions('moderator')
+@requires_user_permissions("moderator")
 def moderator_delete_collection(_, coll_id):
     coll = WorkshopCollection.from_id(coll_id)
     coll.delete(run_checks=False)
@@ -662,36 +664,38 @@ def moderator_delete_collection(_, coll_id):
 
 
 @workshop.route("moderator/alias/<alias_id>/entitlement", methods=["POST"])
-@expect_json(entity_type=str, entity_id=(str, int), required=bool, optional=['required'])
-@requires_user_permissions('moderator')
+@expect_json(entity_type=str, entity_id=(str, int), required=bool, optional=["required"])
+@requires_user_permissions("moderator")
 def moderator_add_alias_entitlement(_, body, alias_id):
     alias = WorkshopAlias.from_id(alias_id)
-    return success(_add_entitlement_to_collectable(alias, body['entity_type'], int(body['entity_id']), required=True))
+    return success(_add_entitlement_to_collectable(alias, body["entity_type"], int(body["entity_id"]), required=True))
 
 
 @workshop.route("moderator/alias/<alias_id>/entitlement", methods=["DELETE"])
 @expect_json(entity_type=str, entity_id=(str, int))
-@requires_user_permissions('moderator')
+@requires_user_permissions("moderator")
 def moderator_delete_alias_entitlement(_, body, alias_id):
     alias = WorkshopAlias.from_id(alias_id)
-    result = _remove_entitlement_from_collectable(alias, body['entity_type'], int(body['entity_id']),
-                                                  ignore_required=True)
+    result = _remove_entitlement_from_collectable(
+        alias, body["entity_type"], int(body["entity_id"]), ignore_required=True
+    )
     return success(result)
 
 
 @workshop.route("moderator/snippet/<snippet_id>/entitlement", methods=["POST"])
-@expect_json(entity_type=str, entity_id=(str, int), required=bool, optional=['required'])
-@requires_user_permissions('moderator')
+@expect_json(entity_type=str, entity_id=(str, int), required=bool, optional=["required"])
+@requires_user_permissions("moderator")
 def moderator_add_snippet_entitlement(_, body, snippet_id):
     snippet = WorkshopSnippet.from_id(snippet_id)
-    return success(_add_entitlement_to_collectable(snippet, body['entity_type'], int(body['entity_id']), required=True))
+    return success(_add_entitlement_to_collectable(snippet, body["entity_type"], int(body["entity_id"]), required=True))
 
 
 @workshop.route("moderator/snippet/<snippet_id>/entitlement", methods=["DELETE"])
 @expect_json(entity_type=str, entity_id=(str, int))
-@requires_user_permissions('moderator')
+@requires_user_permissions("moderator")
 def moderator_delete_snippet_entitlement(_, body, snippet_id):
     snippet = WorkshopSnippet.from_id(snippet_id)
-    result = _remove_entitlement_from_collectable(snippet, body['entity_type'], int(body['entity_id']),
-                                                  ignore_required=True)
+    result = _remove_entitlement_from_collectable(
+        snippet, body["entity_type"], int(body["entity_id"]), ignore_required=True
+    )
     return success(result)

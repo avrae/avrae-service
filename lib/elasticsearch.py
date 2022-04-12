@@ -14,8 +14,10 @@ def init():
     try:
         ensure_indices_exist()
     except requests.ConnectionError as ce:
-        log.error(f"Got an error connecting to ElasticSearch: {ce}\n"
-                  f"This is fine on dev, but /workshop endpoints may be unhappy")
+        log.error(
+            f"Got an error connecting to ElasticSearch: {ce}\n"
+            "This is fine on dev, but /workshop endpoints may be unhappy"
+        )
 
 
 def ensure_indices_exist():
@@ -32,10 +34,10 @@ def ensure_indices_exist():
                     "num_subscribers": {"type": "integer"},
                     "num_guild_subscribers": {"type": "integer"},
                     "last_edited": {"type": "date"},
-                    "created_at": {"type": "date"}
+                    "created_at": {"type": "date"},
                 }
             }
-        }
+        },
     )
 
     requests.put(
@@ -47,8 +49,8 @@ def ensure_indices_exist():
                     "object_id": {"type": "keyword"},
                     "timestamp": {"type": "date"},
                     "user_id": {"type": "keyword"},
-                    "sub_score": {"type": "integer"}
+                    "sub_score": {"type": "integer"},
                 }
             }
-        }
+        },
     )

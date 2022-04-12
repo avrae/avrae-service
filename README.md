@@ -72,3 +72,20 @@ The service should now be accessible at http://localhost:58000.
 
 The service should now be accessible at http://IP.ADDRESS:8000.
  
+
+### Committing, Formatting, and Linting
+
+Avrae uses [Black](https://black.readthedocs.io/) to format and lint its Python code.
+Black is automatically run on every commit via pre-commit hook, and takes its configuration options from the `pyproject.toml` file.
+
+The pre-commit hook is installed by by running `pre-commit install` from the repo root.
+The hook's configuration is governed by the `.pre-commit-config.yaml` file.
+
+#### Dependencies
+
+In order to run `pre-commit` or `black`, they must be installed.
+These dependencies are contained within the `requirements.txt` file, and can be installed like so:
+
+```bash
+(venv) $ pip install -r requirements.txt
+```
