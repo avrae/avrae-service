@@ -12,7 +12,7 @@ requests==2.25.1
 sentry-sdk[flask]==1.0.0
 
 # transitive deps
-Werkzeug==1.0.1
+Werkzeug==2.0.3
 itsdangerous==2.0.1
 
 # build/other deps
@@ -26,4 +26,3 @@ black==22.1.0
 
 # Fixing for JKinja Requirements
 jinja2<3.1.0
-werkzeug==2.0.3
