@@ -1,13 +1,14 @@
 import json
 from typing import List, Optional, Union
 
+from automation_common.validation.models import str1024, str255, str4096
 from bson import ObjectId
 from flask import Blueprint, current_app, request
 from pydantic import BaseModel, HttpUrl, ValidationError, constr
 
 from lib.auth import maybe_auth, requires_auth
 from lib.utils import error, expect_json, success
-from lib.validation import parse_validation_error, str1024, str255, str4096
+from lib.validation import parse_validation_error
 from .helpers import user_can_edit, user_can_view, user_editable, user_is_owner
 
 items = Blueprint("homebrew/items", __name__)
