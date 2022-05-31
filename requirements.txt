@@ -10,7 +10,7 @@ PyJWT==2.0.1
 redis==3.5.3
 requests==2.25.1
 sentry-sdk[flask]==1.0.0
-git+https://github.com/avrae/automation-common@v3.6.10
+git+https://github.com/avrae/automation-common@v4.1.0
 
 # transitive deps
 Werkzeug==2.0.3
