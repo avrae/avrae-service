@@ -1,13 +1,14 @@
 import json
-from typing import List, Optional, Union, Iterator
+from typing import Iterator, List, Optional, Union
 
+from automation_common.validation.models import ValidatedAutomation, str1024, str255, str4096
 from bson import ObjectId
 from flask import Blueprint, current_app, request
 from pydantic import BaseModel, HttpUrl, ValidationError, conint, constr
 
 from lib.auth import maybe_auth, requires_auth
 from lib.utils import error, expect_json, success
-from lib.validation import Automation, parse_validation_error, str1024, str255, str4096
+from lib.validation import parse_validation_error
 from .helpers import user_can_edit, user_can_view, user_editable, user_is_owner
 
 spells = Blueprint("homebrew/spells", __name__)
@@ -162,7 +163,7 @@ class Spell(BaseModel):
     name: str255
     level: conint(ge=0, le=9)
     school: str255
-    automation: Optional[Automation]
+    automation: Optional[ValidatedAutomation]
     classes: Optional[str255]
     subclasses: Optional[str255]
     casttime: str255

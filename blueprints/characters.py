@@ -1,12 +1,14 @@
 import json
-from typing import Iterator, List, Optional
+from typing import List
 
+import automation_common
+import pydantic
 from flask import Blueprint, current_app, request
-from pydantic import BaseModel, Field, ValidationError, constr
+from pydantic import ValidationError
 
 from lib.auth import requires_auth
 from lib.utils import error, jsonify, success
-from lib.validation import Automation, parse_validation_error, str1024, str255
+from lib.validation import parse_validation_error
 
 characters = Blueprint("characters", __name__)
 
@@ -44,9 +46,11 @@ def put_attacks(user, upstream):
     """Sets a character's attack overrides. Must PUT a list of attacks."""
     the_attacks = request.json
 
-    # validation
+    # validation/normalizae
     try:
-        validated_attacks = AttackList.parse_obj(the_attacks)
+        normalized_obj = pydantic.parse_obj_as(
+            List[automation_common.validation.models.AttackModel], the_attacks, type_name="AttackList"
+        )
     except ValidationError as e:
         e = parse_validation_error(the_attacks, e)
         return error(400, str(e))
@@ -54,7 +58,7 @@ def put_attacks(user, upstream):
     # write
     response = current_app.mdb.characters.update_one(
         {"owner": user.id, "upstream": upstream},
-        {"$set": {"overrides.attacks": [a.dict(exclude_none=True, exclude_defaults=True) for a in validated_attacks]}},
+        {"$set": {"overrides.attacks": [a.dict(exclude_none=True, exclude_defaults=True) for a in normalized_obj]}},
     )
 
     # respond
@@ -70,7 +74,7 @@ def validate_attacks():
         reqdata = [reqdata]
 
     try:
-        AttackList.parse_obj(reqdata)
+        pydantic.parse_obj_as(List[automation_common.validation.models.AttackModel], reqdata, type_name="AttackList")
     except ValidationError as e:
         e = parse_validation_error(reqdata, e)
         return error(400, str(e))
@@ -83,35 +87,3 @@ def srd_attacks():
     with open("static/template-attacks.json") as f:
         _items = json.load(f)
     return jsonify(_items)
-
-
-# ==== helpers ====
-class Attack(BaseModel):
-    name: constr(strip_whitespace=True, min_length=1, max_length=255)
-    automation: Automation
-    v: int = Field(alias="_v")
-    proper: Optional[bool]
-    verb: Optional[str255] = ""  # these empty strings are here for exclude_defaults
-    criton: Optional[int]
-    phrase: Optional[str1024] = ""
-    thumb: Optional[str1024] = ""
-    extra_crit_damage: Optional[str255] = ""
-
-    def dict(self, *args, **kwargs):
-        return super().dict(*args, by_alias=True, **kwargs)
-
-
-class AttackList(BaseModel):
-    """Helper type used for validation"""
-
-    __root__: List[Attack]
-
-    def dict(self, *args, **kwargs):
-        return super().dict(*args, by_alias=True, **kwargs)
-
-    # make this a list-like
-    def __iter__(self) -> Iterator[Attack]:
-        return iter(self.__root__)
-
-    def __getitem__(self, item):
-        return self.__root__[item]
