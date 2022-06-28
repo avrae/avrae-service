@@ -16,4 +16,4 @@ COPY --chown=avraeservice:avraeservice docker/config-${ENVIRONMENT}.py config.py
 # Download AWS pubkey to connect to documentDB
 RUN wget https://s3.amazonaws.com/rds-downloads/rds-combined-ca-bundle.pem
 
-ENTRYPOINT .local/bin/newrelic-admin run-program .local/bin/gunicorn --workers 2 --bind 0:8000 app:app
+ENTRYPOINT .local/bin/gunicorn --workers 2 --bind 0:8000 app:app
