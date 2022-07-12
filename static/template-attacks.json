@@ -84,7 +84,7 @@
                 "name": "Charmed",
                 "duration": -1,
                 "effects": "",
-                "desc": "They can repeat the DC {lastSaveDC} {lastSaveAbility} saving throw whenever it takes damage, ending the effect on a success"
+                "desc": "Charmed by {{caster.name}}\n - They can repeat the DC {lastSaveDC} {lastSaveAbility} saving throw whenever it takes damage, ending the effect on a success"
               }
             ],
             "success": []
@@ -193,11 +193,25 @@
             "dc": "14",
             "fail": [
               {
-                "type": "ieffect",
+                "type": "ieffect2",
                 "name": "Prone",
-                "duration": 1,
-                "effects": "dis",
-                "desc": "A prone creature's only movement option is to crawl, unless it stands up and thereby ends the condition.\n - The creature has disadvantage on attack rolls.\n - An attack roll against the creature has advantage if the attacker is within 5 feet of the creature. Otherwise, the attack roll has disadvantage."
+                "duration": -1,
+                "effects": {
+                  "attack_advantage": -1
+                },
+                "desc": "A prone creature's only movement option is to crawl, unless it stands up and thereby ends the condition",
+                "buttons": [
+                  {
+                    "automation": [
+                      {
+                        "type": "remove_ieffect",
+                        "removeParent": null
+                      }
+                    ],
+                    "label": "Stand Up",
+                    "verb": "stands up"
+                  }
+                ]
               }
             ],
             "success": []
@@ -415,7 +429,7 @@
                 "name": "Frightened",
                 "duration": 10,
                 "effects": "",
-                "desc": "Target can repeat the DC {lastSaveDC} {lastSaveAbility} saving throw at the end of each of its turns, ending the effect on itself on a success"
+                "desc": "Frightened of {{caster.name}}\n - Target can repeat the DC {lastSaveDC} {lastSaveAbility} saving throw at the end of each of its turns, ending the effect on itself on a success"
               }
             ],
             "success": []
@@ -453,11 +467,25 @@
                 "damage": "{damage}"
               },
               {
-                "type": "ieffect",
+                "type": "ieffect2",
                 "name": "Prone",
-                "duration": 1,
-                "effects": "dis",
-                "desc": "A prone creature's only movement option is to crawl, unless it stands up and thereby ends the condition.\n - The creature has disadvantage on attack rolls.\n - An attack roll against the creature has advantage if the attacker is within 5 feet of the creature. Otherwise, the attack roll has disadvantage."
+                "duration": -1,
+                "effects": {
+                  "attack_advantage": -1
+                },
+                "desc": "A prone creature's only movement option is to crawl, unless it stands up and thereby ends the condition",
+                "buttons": [
+                  {
+                    "automation": [
+                      {
+                        "type": "remove_ieffect",
+                        "removeParent": null
+                      }
+                    ],
+                    "label": "Stand Up",
+                    "verb": "stands up"
+                  }
+                ]
               }
             ],
             "success": []
@@ -487,11 +515,25 @@
             "dc": "15",
             "fail": [
               {
-                "type": "ieffect",
+                "type": "ieffect2",
                 "name": "Prone",
-                "duration": 1,
-                "effects": "dis",
-                "desc": "A prone creature's only movement option is to crawl, unless it stands up and thereby ends the condition.\n - The creature has disadvantage on attack rolls.\n - An attack roll against the creature has advantage if the attacker is within 5 feet of the creature. Otherwise, the attack roll has disadvantage."
+                "duration": -1,
+                "effects": {
+                  "attack_advantage": -1
+                },
+                "desc": "A prone creature's only movement option is to crawl, unless it stands up and thereby ends the condition",
+                "buttons": [
+                  {
+                    "automation": [
+                      {
+                        "type": "remove_ieffect",
+                        "removeParent": null
+                      }
+                    ],
+                    "label": "Stand Up",
+                    "verb": "stands up"
+                  }
+                ]
               }
             ],
             "success": []
@@ -687,7 +729,7 @@
                 "name": "Frightened",
                 "duration": 10,
                 "effects": "",
-                "desc": "Target can repeat the DC {lastSaveDC} {lastSaveAbility} saving throw at the end of each of its turns, ending the effect on itself on a success"
+                "desc": "Frightened of {{caster.name}}\n - Target can repeat the DC {lastSaveDC} {lastSaveAbility} saving throw at the end of each of its turns, ending the effect on itself on a success"
               }
             ],
             "success": []
@@ -725,11 +767,25 @@
                 "damage": "{damage}"
               },
               {
-                "type": "ieffect",
+                "type": "ieffect2",
                 "name": "Prone",
-                "duration": 1,
-                "effects": "dis",
-                "desc": "A prone creature's only movement option is to crawl, unless it stands up and thereby ends the condition.\n - The creature has disadvantage on attack rolls.\n - An attack roll against the creature has advantage if the attacker is within 5 feet of the creature. Otherwise, the attack roll has disadvantage."
+                "duration": -1,
+                "effects": {
+                  "attack_advantage": -1
+                },
+                "desc": "A prone creature's only movement option is to crawl, unless it stands up and thereby ends the condition",
+                "buttons": [
+                  {
+                    "automation": [
+                      {
+                        "type": "remove_ieffect",
+                        "removeParent": null
+                      }
+                    ],
+                    "label": "Stand Up",
+                    "verb": "stands up"
+                  }
+                ]
               }
             ],
             "success": []
@@ -1028,7 +1084,7 @@
                 "name": "Frightened",
                 "duration": 10,
                 "effects": "",
-                "desc": "Target can repeat the DC {lastSaveDC} {lastSaveAbility} saving throw at the end of each of its turns, ending the effect on itself on a success"
+                "desc": "Frightened of {{caster.name}}\n - Target can repeat the DC {lastSaveDC} {lastSaveAbility} saving throw at the end of each of its turns, ending the effect on itself on a success"
               }
             ],
             "success": []
@@ -1066,11 +1122,25 @@
                 "damage": "{damage}"
               },
               {
-                "type": "ieffect",
+                "type": "ieffect2",
                 "name": "Prone",
-                "duration": 1,
-                "effects": "dis",
-                "desc": "A prone creature's only movement option is to crawl, unless it stands up and thereby ends the condition.\n - The creature has disadvantage on attack rolls.\n - An attack roll against the creature has advantage if the attacker is within 5 feet of the creature. Otherwise, the attack roll has disadvantage."
+                "duration": -1,
+                "effects": {
+                  "attack_advantage": -1
+                },
+                "desc": "A prone creature's only movement option is to crawl, unless it stands up and thereby ends the condition",
+                "buttons": [
+                  {
+                    "automation": [
+                      {
+                        "type": "remove_ieffect",
+                        "removeParent": null
+                      }
+                    ],
+                    "label": "Stand Up",
+                    "verb": "stands up"
+                  }
+                ]
               }
             ],
             "success": []
@@ -1100,11 +1170,25 @@
             "dc": "15",
             "fail": [
               {
-                "type": "ieffect",
+                "type": "ieffect2",
                 "name": "Prone",
-                "duration": 1,
-                "effects": "dis",
-                "desc": "A prone creature's only movement option is to crawl, unless it stands up and thereby ends the condition.\n - The creature has disadvantage on attack rolls.\n - An attack roll against the creature has advantage if the attacker is within 5 feet of the creature. Otherwise, the attack roll has disadvantage."
+                "duration": -1,
+                "effects": {
+                  "attack_advantage": -1
+                },
+                "desc": "A prone creature's only movement option is to crawl, unless it stands up and thereby ends the condition",
+                "buttons": [
+                  {
+                    "automation": [
+                      {
+                        "type": "remove_ieffect",
+                        "removeParent": null
+                      }
+                    ],
+                    "label": "Stand Up",
+                    "verb": "stands up"
+                  }
+                ]
               }
             ],
             "success": []
@@ -1317,7 +1401,7 @@
                 "name": "Frightened",
                 "duration": 10,
                 "effects": "",
-                "desc": "Target can repeat the DC {lastSaveDC} {lastSaveAbility} saving throw at the end of each of its turns, ending the effect on itself on a success"
+                "desc": "Frightened of {{caster.name}}\n - Target can repeat the DC {lastSaveDC} {lastSaveAbility} saving throw at the end of each of its turns, ending the effect on itself on a success"
               }
             ],
             "success": []
@@ -1355,11 +1439,25 @@
                 "damage": "{damage}"
               },
               {
-                "type": "ieffect",
+                "type": "ieffect2",
                 "name": "Prone",
-                "duration": 1,
-                "effects": "dis",
-                "desc": "A prone creature's only movement option is to crawl, unless it stands up and thereby ends the condition.\n - The creature has disadvantage on attack rolls.\n - An attack roll against the creature has advantage if the attacker is within 5 feet of the creature. Otherwise, the attack roll has disadvantage."
+                "duration": -1,
+                "effects": {
+                  "attack_advantage": -1
+                },
+                "desc": "A prone creature's only movement option is to crawl, unless it stands up and thereby ends the condition",
+                "buttons": [
+                  {
+                    "automation": [
+                      {
+                        "type": "remove_ieffect",
+                        "removeParent": null
+                      }
+                    ],
+                    "label": "Stand Up",
+                    "verb": "stands up"
+                  }
+                ]
               }
             ],
             "success": []
@@ -1590,7 +1688,7 @@
                 "name": "Frightened",
                 "duration": 10,
                 "effects": "",
-                "desc": "Target can repeat the DC {lastSaveDC} {lastSaveAbility} saving throw at the end of each of its turns, ending the effect on itself on a success"
+                "desc": "Frightened of {{caster.name}}\n - Target can repeat the DC {lastSaveDC} {lastSaveAbility} saving throw at the end of each of its turns, ending the effect on itself on a success"
               }
             ],
             "success": []
@@ -1628,11 +1726,25 @@
                 "damage": "{damage}"
               },
               {
-                "type": "ieffect",
+                "type": "ieffect2",
                 "name": "Prone",
-                "duration": 1,
-                "effects": "dis",
-                "desc": "A prone creature's only movement option is to crawl, unless it stands up and thereby ends the condition.\n - The creature has disadvantage on attack rolls.\n - An attack roll against the creature has advantage if the attacker is within 5 feet of the creature. Otherwise, the attack roll has disadvantage."
+                "duration": -1,
+                "effects": {
+                  "attack_advantage": -1
+                },
+                "desc": "A prone creature's only movement option is to crawl, unless it stands up and thereby ends the condition",
+                "buttons": [
+                  {
+                    "automation": [
+                      {
+                        "type": "remove_ieffect",
+                        "removeParent": null
+                      }
+                    ],
+                    "label": "Stand Up",
+                    "verb": "stands up"
+                  }
+                ]
               }
             ],
             "success": []
@@ -1853,7 +1965,7 @@
                 "name": "Frightened",
                 "duration": 10,
                 "effects": "",
-                "desc": "Target can repeat the DC {lastSaveDC} {lastSaveAbility} saving throw at the end of each of its turns, ending the effect on itself on a success"
+                "desc": "Frightened of {{caster.name}}\n - Target can repeat the DC {lastSaveDC} {lastSaveAbility} saving throw at the end of each of its turns, ending the effect on itself on a success"
               }
             ],
             "success": []
@@ -1891,11 +2003,25 @@
                 "damage": "{damage}"
               },
               {
-                "type": "ieffect",
+                "type": "ieffect2",
                 "name": "Prone",
-                "duration": 1,
-                "effects": "dis",
-                "desc": "A prone creature's only movement option is to crawl, unless it stands up and thereby ends the condition.\n - The creature has disadvantage on attack rolls.\n - An attack roll against the creature has advantage if the attacker is within 5 feet of the creature. Otherwise, the attack roll has disadvantage."
+                "duration": -1,
+                "effects": {
+                  "attack_advantage": -1
+                },
+                "desc": "A prone creature's only movement option is to crawl, unless it stands up and thereby ends the condition",
+                "buttons": [
+                  {
+                    "automation": [
+                      {
+                        "type": "remove_ieffect",
+                        "removeParent": null
+                      }
+                    ],
+                    "label": "Stand Up",
+                    "verb": "stands up"
+                  }
+                ]
               }
             ],
             "success": []
@@ -2082,7 +2208,8 @@
                 "type": "ieffect",
                 "name": "Frightened",
                 "duration": 10,
-                "effects": "Target can repeat the DC {lastSaveDC} {lastSaveAbility} saving throw at the end of each of its turns, ending the effect on itself on a success"
+                "effects": "",
+                "desc": "Frightened of {{caster.name}}\n - Target can repeat the DC {lastSaveDC} {lastSaveAbility} saving throw at the end of each of its turns, ending the effect on itself on a success"
               }
             ],
             "success": []
@@ -2120,11 +2247,25 @@
                 "damage": "{damage}"
               },
               {
-                "type": "ieffect",
+                "type": "ieffect2",
                 "name": "Prone",
-                "duration": 1,
-                "effects": "dis",
-                "desc": "A prone creature's only movement option is to crawl, unless it stands up and thereby ends the condition.\n - The creature has disadvantage on attack rolls.\n - An attack roll against the creature has advantage if the attacker is within 5 feet of the creature. Otherwise, the attack roll has disadvantage."
+                "duration": -1,
+                "effects": {
+                  "attack_advantage": -1
+                },
+                "desc": "A prone creature's only movement option is to crawl, unless it stands up and thereby ends the condition",
+                "buttons": [
+                  {
+                    "automation": [
+                      {
+                        "type": "remove_ieffect",
+                        "removeParent": null
+                      }
+                    ],
+                    "label": "Stand Up",
+                    "verb": "stands up"
+                  }
+                ]
               }
             ],
             "success": []
@@ -2225,7 +2366,8 @@
                 "type": "ieffect",
                 "name": "Charmed",
                 "duration": 2,
-                "effects": ""
+                "effects": "",
+                "desc": "Charmed by {{caster.name}}"
               }
             ],
             "success": []
@@ -2379,7 +2521,8 @@
                 "type": "ieffect",
                 "name": "Frightened",
                 "duration": 10,
-                "effects": "Target can repeat the DC {lastSaveDC} {lastSaveAbility} saving throw at the end of each of its turns, ending the effect on itself on a success"
+                "effects": "",
+                "desc": "Frightened of {{caster.name}}\n - Target can repeat the DC {lastSaveDC} {lastSaveAbility} saving throw at the end of each of its turns, ending the effect on itself on a success"
               }
             ],
             "success": []
@@ -2417,11 +2560,25 @@
                 "damage": "{damage}"
               },
               {
-                "type": "ieffect",
+                "type": "ieffect2",
                 "name": "Prone",
-                "duration": 1,
-                "effects": "dis",
-                "desc": "A prone creature's only movement option is to crawl, unless it stands up and thereby ends the condition.\n - The creature has disadvantage on attack rolls.\n - An attack roll against the creature has advantage if the attacker is within 5 feet of the creature. Otherwise, the attack roll has disadvantage."
+                "duration": -1,
+                "effects": {
+                  "attack_advantage": -1
+                },
+                "desc": "A prone creature's only movement option is to crawl, unless it stands up and thereby ends the condition",
+                "buttons": [
+                  {
+                    "automation": [
+                      {
+                        "type": "remove_ieffect",
+                        "removeParent": null
+                      }
+                    ],
+                    "label": "Stand Up",
+                    "verb": "stands up"
+                  }
+                ]
               }
             ],
             "success": []
@@ -2492,11 +2649,25 @@
             "dc": "15",
             "fail": [
               {
-                "type": "ieffect",
+                "type": "ieffect2",
                 "name": "Prone",
-                "duration": 1,
-                "effects": "dis",
-                "desc": "A prone creature's only movement option is to crawl, unless it stands up and thereby ends the condition.\n - The creature has disadvantage on attack rolls.\n - An attack roll against the creature has advantage if the attacker is within 5 feet of the creature. Otherwise, the attack roll has disadvantage."
+                "duration": -1,
+                "effects": {
+                  "attack_advantage": -1
+                },
+                "desc": "A prone creature's only movement option is to crawl, unless it stands up and thereby ends the condition",
+                "buttons": [
+                  {
+                    "automation": [
+                      {
+                        "type": "remove_ieffect",
+                        "removeParent": null
+                      }
+                    ],
+                    "label": "Stand Up",
+                    "verb": "stands up"
+                  }
+                ]
               }
             ],
             "success": []
@@ -2717,7 +2888,8 @@
                 "type": "ieffect",
                 "name": "Frightened",
                 "duration": 10,
-                "effects": ""
+                "effects": "",
+                "desc": "Frightened of {{caster.name}}\n - They can repeat the DC {lastSaveDC} {lastSaveAbility} saving throw at the end of each of its turns, ending the effect on a success"
               }
             ],
             "success": []
@@ -2755,11 +2927,25 @@
                 "damage": "{damage}"
               },
               {
-                "type": "ieffect",
+                "type": "ieffect2",
                 "name": "Prone",
-                "duration": 1,
-                "effects": "dis",
-                "desc": "A prone creature's only movement option is to crawl, unless it stands up and thereby ends the condition.\n - The creature has disadvantage on attack rolls.\n - An attack roll against the creature has advantage if the attacker is within 5 feet of the creature. Otherwise, the attack roll has disadvantage."
+                "duration": -1,
+                "effects": {
+                  "attack_advantage": -1
+                },
+                "desc": "A prone creature's only movement option is to crawl, unless it stands up and thereby ends the condition",
+                "buttons": [
+                  {
+                    "automation": [
+                      {
+                        "type": "remove_ieffect",
+                        "removeParent": null
+                      }
+                    ],
+                    "label": "Stand Up",
+                    "verb": "stands up"
+                  }
+                ]
               }
             ],
             "success": []
@@ -2950,7 +3136,8 @@
                 "type": "ieffect",
                 "name": "Frightened",
                 "duration": 10,
-                "effects": ""
+                "effects": "",
+                "desc": "Frightened of {{caster.name}}\n - They can repeat the DC {lastSaveDC} {lastSaveAbility} saving throw at the end of each of its turns, ending the effect on a success"
               }
             ],
             "success": []
@@ -2988,11 +3175,25 @@
                 "damage": "{damage}"
               },
               {
-                "type": "ieffect",
+                "type": "ieffect2",
                 "name": "Prone",
-                "duration": 1,
-                "effects": "dis",
-                "desc": "A prone creature's only movement option is to crawl, unless it stands up and thereby ends the condition.\n - The creature has disadvantage on attack rolls.\n - An attack roll against the creature has advantage if the attacker is within 5 feet of the creature. Otherwise, the attack roll has disadvantage."
+                "duration": -1,
+                "effects": {
+                  "attack_advantage": -1
+                },
+                "desc": "A prone creature's only movement option is to crawl, unless it stands up and thereby ends the condition",
+                "buttons": [
+                  {
+                    "automation": [
+                      {
+                        "type": "remove_ieffect",
+                        "removeParent": null
+                      }
+                    ],
+                    "label": "Stand Up",
+                    "verb": "stands up"
+                  }
+                ]
               }
             ],
             "success": []
@@ -3128,11 +3329,25 @@
                 "damage": "{damage}"
               },
               {
-                "type": "ieffect",
+                "type": "ieffect2",
                 "name": "Prone",
-                "duration": 1,
-                "effects": "dis",
-                "desc": "A prone creature's only movement option is to crawl, unless it stands up and thereby ends the condition.\n - The creature has disadvantage on attack rolls.\n - An attack roll against the creature has advantage if the attacker is within 5 feet of the creature. Otherwise, the attack roll has disadvantage."
+                "duration": -1,
+                "effects": {
+                  "attack_advantage": -1
+                },
+                "desc": "A prone creature's only movement option is to crawl, unless it stands up and thereby ends the condition",
+                "buttons": [
+                  {
+                    "automation": [
+                      {
+                        "type": "remove_ieffect",
+                        "removeParent": null
+                      }
+                    ],
+                    "label": "Stand Up",
+                    "verb": "stands up"
+                  }
+                ]
               }
             ],
             "success": [
@@ -3310,7 +3525,8 @@
                 "type": "ieffect",
                 "name": "Frightened",
                 "duration": 10,
-                "effects": ""
+                "effects": "",
+                "desc": "Frightened of {{caster.name}}\n - They can repeat the DC {lastSaveDC} {lastSaveAbility} saving throw at the end of each of its turns, ending the effect on a success"
               }
             ],
             "success": []
@@ -3348,11 +3564,25 @@
                 "damage": "{damage}"
               },
               {
-                "type": "ieffect",
+                "type": "ieffect2",
                 "name": "Prone",
-                "duration": 1,
-                "effects": "dis",
-                "desc": "A prone creature's only movement option is to crawl, unless it stands up and thereby ends the condition.\n - The creature has disadvantage on attack rolls.\n - An attack roll against the creature has advantage if the attacker is within 5 feet of the creature. Otherwise, the attack roll has disadvantage."
+                "duration": -1,
+                "effects": {
+                  "attack_advantage": -1
+                },
+                "desc": "A prone creature's only movement option is to crawl, unless it stands up and thereby ends the condition",
+                "buttons": [
+                  {
+                    "automation": [
+                      {
+                        "type": "remove_ieffect",
+                        "removeParent": null
+                      }
+                    ],
+                    "label": "Stand Up",
+                    "verb": "stands up"
+                  }
+                ]
               }
             ],
             "success": []
@@ -3382,11 +3612,25 @@
             "dc": "15",
             "fail": [
               {
-                "type": "ieffect",
+                "type": "ieffect2",
                 "name": "Prone",
-                "duration": 1,
-                "effects": "dis",
-                "desc": "A prone creature's only movement option is to crawl, unless it stands up and thereby ends the condition.\n - The creature has disadvantage on attack rolls.\n - An attack roll against the creature has advantage if the attacker is within 5 feet of the creature. Otherwise, the attack roll has disadvantage."
+                "duration": -1,
+                "effects": {
+                  "attack_advantage": -1
+                },
+                "desc": "A prone creature's only movement option is to crawl, unless it stands up and thereby ends the condition",
+                "buttons": [
+                  {
+                    "automation": [
+                      {
+                        "type": "remove_ieffect",
+                        "removeParent": null
+                      }
+                    ],
+                    "label": "Stand Up",
+                    "verb": "stands up"
+                  }
+                ]
               }
             ],
             "success": []
@@ -3581,7 +3825,8 @@
                 "type": "ieffect",
                 "name": "Frightened",
                 "duration": 10,
-                "effects": ""
+                "effects": "",
+                "desc": "Frightened of {{caster.name}}\n - They can repeat the DC {lastSaveDC} {lastSaveAbility} saving throw at the end of each of its turns, ending the effect on a success"
               }
             ],
             "success": []
@@ -3619,11 +3864,25 @@
                 "damage": "{damage}"
               },
               {
-                "type": "ieffect",
+                "type": "ieffect2",
                 "name": "Prone",
-                "duration": 1,
-                "effects": "dis",
-                "desc": "A prone creature's only movement option is to crawl, unless it stands up and thereby ends the condition.\n - The creature has disadvantage on attack rolls.\n - An attack roll against the creature has advantage if the attacker is within 5 feet of the creature. Otherwise, the attack roll has disadvantage."
+                "duration": -1,
+                "effects": {
+                  "attack_advantage": -1
+                },
+                "desc": "A prone creature's only movement option is to crawl, unless it stands up and thereby ends the condition",
+                "buttons": [
+                  {
+                    "automation": [
+                      {
+                        "type": "remove_ieffect",
+                        "removeParent": null
+                      }
+                    ],
+                    "label": "Stand Up",
+                    "verb": "stands up"
+                  }
+                ]
               }
             ],
             "success": []
@@ -3921,7 +4180,8 @@
                 "type": "ieffect",
                 "name": "Frightened",
                 "duration": 10,
-                "effects": ""
+                "effects": "",
+                "desc": "Frightened of {{caster.name}}\n - They can repeat the DC {lastSaveDC} {lastSaveAbility} saving throw at the end of each of its turns, ending the effect on a success"
               }
             ],
             "success": []
@@ -3959,11 +4219,25 @@
                 "damage": "{damage}"
               },
               {
-                "type": "ieffect",
+                "type": "ieffect2",
                 "name": "Prone",
-                "duration": 1,
-                "effects": "dis",
-                "desc": "A prone creature's only movement option is to crawl, unless it stands up and thereby ends the condition.\n - The creature has disadvantage on attack rolls.\n - An attack roll against the creature has advantage if the attacker is within 5 feet of the creature. Otherwise, the attack roll has disadvantage."
+                "duration": -1,
+                "effects": {
+                  "attack_advantage": -1
+                },
+                "desc": "A prone creature's only movement option is to crawl, unless it stands up and thereby ends the condition",
+                "buttons": [
+                  {
+                    "automation": [
+                      {
+                        "type": "remove_ieffect",
+                        "removeParent": null
+                      }
+                    ],
+                    "label": "Stand Up",
+                    "verb": "stands up"
+                  }
+                ]
               }
             ],
             "success": []
@@ -3993,11 +4267,25 @@
             "dc": "15",
             "fail": [
               {
-                "type": "ieffect",
+                "type": "ieffect2",
                 "name": "Prone",
-                "duration": 1,
-                "effects": "dis",
-                "desc": "A prone creature's only movement option is to crawl, unless it stands up and thereby ends the condition.\n - The creature has disadvantage on attack rolls.\n - An attack roll against the creature has advantage if the attacker is within 5 feet of the creature. Otherwise, the attack roll has disadvantage."
+                "duration": -1,
+                "effects": {
+                  "attack_advantage": -1
+                },
+                "desc": "A prone creature's only movement option is to crawl, unless it stands up and thereby ends the condition",
+                "buttons": [
+                  {
+                    "automation": [
+                      {
+                        "type": "remove_ieffect",
+                        "removeParent": null
+                      }
+                    ],
+                    "label": "Stand Up",
+                    "verb": "stands up"
+                  }
+                ]
               }
             ],
             "success": []
@@ -4209,7 +4497,8 @@
                 "type": "ieffect",
                 "name": "Frightened",
                 "duration": 10,
-                "effects": ""
+                "effects": "",
+                "desc": "Frightened of {{caster.name}}\n - They can repeat the DC {lastSaveDC} {lastSaveAbility} saving throw at the end of each of its turns, ending the effect on a success"
               }
             ],
             "success": []
@@ -4247,11 +4536,25 @@
                 "damage": "{damage}"
               },
               {
-                "type": "ieffect",
+                "type": "ieffect2",
                 "name": "Prone",
-                "duration": 1,
-                "effects": "dis",
-                "desc": "A prone creature's only movement option is to crawl, unless it stands up and thereby ends the condition.\n - The creature has disadvantage on attack rolls.\n - An attack roll against the creature has advantage if the attacker is within 5 feet of the creature. Otherwise, the attack roll has disadvantage."
+                "duration": -1,
+                "effects": {
+                  "attack_advantage": -1
+                },
+                "desc": "A prone creature's only movement option is to crawl, unless it stands up and thereby ends the condition",
+                "buttons": [
+                  {
+                    "automation": [
+                      {
+                        "type": "remove_ieffect",
+                        "removeParent": null
+                      }
+                    ],
+                    "label": "Stand Up",
+                    "verb": "stands up"
+                  }
+                ]
               }
             ],
             "success": []
@@ -4481,7 +4784,8 @@
                 "type": "ieffect",
                 "name": "Frightened",
                 "duration": 10,
-                "effects": ""
+                "effects": "",
+                "desc": "Frightened of {{caster.name}}\n - They can repeat the DC {lastSaveDC} {lastSaveAbility} saving throw at the end of each of its turns, ending the effect on a success"
               }
             ],
             "success": []
@@ -4519,11 +4823,25 @@
                 "damage": "{damage}"
               },
               {
-                "type": "ieffect",
+                "type": "ieffect2",
                 "name": "Prone",
-                "duration": 1,
-                "effects": "dis",
-                "desc": "A prone creature's only movement option is to crawl, unless it stands up and thereby ends the condition.\n - The creature has disadvantage on attack rolls.\n - An attack roll against the creature has advantage if the attacker is within 5 feet of the creature. Otherwise, the attack roll has disadvantage."
+                "duration": -1,
+                "effects": {
+                  "attack_advantage": -1
+                },
+                "desc": "A prone creature's only movement option is to crawl, unless it stands up and thereby ends the condition",
+                "buttons": [
+                  {
+                    "automation": [
+                      {
+                        "type": "remove_ieffect",
+                        "removeParent": null
+                      }
+                    ],
+                    "label": "Stand Up",
+                    "verb": "stands up"
+                  }
+                ]
               }
             ],
             "success": []
@@ -4741,7 +5059,8 @@
                 "type": "ieffect",
                 "name": "Frightened",
                 "duration": 10,
-                "effects": ""
+                "effects": "",
+                "desc": "Frightened of {{caster.name}}\n - They can repeat the DC {lastSaveDC} {lastSaveAbility} saving throw at the end of each of its turns, ending the effect on a success"
               }
             ],
             "success": []
@@ -4779,11 +5098,25 @@
                 "damage": "{damage}"
               },
               {
-                "type": "ieffect",
+                "type": "ieffect2",
                 "name": "Prone",
-                "duration": 1,
-                "effects": "dis",
-                "desc": "A prone creature's only movement option is to crawl, unless it stands up and thereby ends the condition.\n - The creature has disadvantage on attack rolls.\n - An attack roll against the creature has advantage if the attacker is within 5 feet of the creature. Otherwise, the attack roll has disadvantage."
+                "duration": -1,
+                "effects": {
+                  "attack_advantage": -1
+                },
+                "desc": "A prone creature's only movement option is to crawl, unless it stands up and thereby ends the condition",
+                "buttons": [
+                  {
+                    "automation": [
+                      {
+                        "type": "remove_ieffect",
+                        "removeParent": null
+                      }
+                    ],
+                    "label": "Stand Up",
+                    "verb": "stands up"
+                  }
+                ]
               }
             ],
             "success": []
@@ -4970,7 +5303,8 @@
                 "type": "ieffect",
                 "name": "Frightened",
                 "duration": 10,
-                "effects": ""
+                "effects": "",
+                "desc": "Frightened of {{caster.name}}\n - They can repeat the DC {lastSaveDC} {lastSaveAbility} saving throw at the end of each of its turns, ending the effect on a success"
               }
             ],
             "success": []
@@ -5008,11 +5342,25 @@
                 "damage": "{damage}"
               },
               {
-                "type": "ieffect",
+                "type": "ieffect2",
                 "name": "Prone",
-                "duration": 1,
-                "effects": "dis",
-                "desc": "A prone creature's only movement option is to crawl, unless it stands up and thereby ends the condition.\n - The creature has disadvantage on attack rolls.\n - An attack roll against the creature has advantage if the attacker is within 5 feet of the creature. Otherwise, the attack roll has disadvantage."
+                "duration": -1,
+                "effects": {
+                  "attack_advantage": -1
+                },
+                "desc": "A prone creature's only movement option is to crawl, unless it stands up and thereby ends the condition",
+                "buttons": [
+                  {
+                    "automation": [
+                      {
+                        "type": "remove_ieffect",
+                        "removeParent": null
+                      }
+                    ],
+                    "label": "Stand Up",
+                    "verb": "stands up"
+                  }
+                ]
               }
             ],
             "success": []
@@ -5113,7 +5461,8 @@
                 "type": "ieffect",
                 "name": "Charmed",
                 "duration": 2,
-                "effects": ""
+                "effects": "",
+                "desc": "Charmed by {{caster.name}}"
               }
             ],
             "success": []
@@ -5267,7 +5616,8 @@
                 "type": "ieffect",
                 "name": "Frightened",
                 "duration": 10,
-                "effects": ""
+                "effects": "",
+                "desc": "Frightened of {{caster.name}}\n - They can repeat the DC {lastSaveDC} {lastSaveAbility} saving throw at the end of each of its turns, ending the effect on a success"
               }
             ],
             "success": []
@@ -5305,11 +5655,25 @@
                 "damage": "{damage}"
               },
               {
-                "type": "ieffect",
+                "type": "ieffect2",
                 "name": "Prone",
-                "duration": 1,
-                "effects": "dis",
-                "desc": "A prone creature's only movement option is to crawl, unless it stands up and thereby ends the condition.\n - The creature has disadvantage on attack rolls.\n - An attack roll against the creature has advantage if the attacker is within 5 feet of the creature. Otherwise, the attack roll has disadvantage."
+                "duration": -1,
+                "effects": {
+                  "attack_advantage": -1
+                },
+                "desc": "A prone creature's only movement option is to crawl, unless it stands up and thereby ends the condition",
+                "buttons": [
+                  {
+                    "automation": [
+                      {
+                        "type": "remove_ieffect",
+                        "removeParent": null
+                      }
+                    ],
+                    "label": "Stand Up",
+                    "verb": "stands up"
+                  }
+                ]
               }
             ],
             "success": []
@@ -5380,11 +5744,25 @@
             "dc": "15",
             "fail": [
               {
-                "type": "ieffect",
+                "type": "ieffect2",
                 "name": "Prone",
-                "duration": 1,
-                "effects": "dis",
-                "desc": "A prone creature's only movement option is to crawl, unless it stands up and thereby ends the condition.\n - The creature has disadvantage on attack rolls.\n - An attack roll against the creature has advantage if the attacker is within 5 feet of the creature. Otherwise, the attack roll has disadvantage."
+                "duration": -1,
+                "effects": {
+                  "attack_advantage": -1
+                },
+                "desc": "A prone creature's only movement option is to crawl, unless it stands up and thereby ends the condition",
+                "buttons": [
+                  {
+                    "automation": [
+                      {
+                        "type": "remove_ieffect",
+                        "removeParent": null
+                      }
+                    ],
+                    "label": "Stand Up",
+                    "verb": "stands up"
+                  }
+                ]
               }
             ],
             "success": []
@@ -5605,7 +5983,8 @@
                 "type": "ieffect",
                 "name": "Frightened",
                 "duration": 10,
-                "effects": ""
+                "effects": "",
+                "desc": "Frightened of {{caster.name}}\n - They can repeat the DC {lastSaveDC} {lastSaveAbility} saving throw at the end of each of its turns, ending the effect on a success"
               }
             ],
             "success": []
@@ -5643,10 +6022,25 @@
                 "damage": "{damage}"
               },
               {
-                "type": "ieffect",
-                "name": "Frightened",
-                "duration": 10,
-                "effects": ""
+                "type": "ieffect2",
+                "name": "Prone",
+                "duration": -1,
+                "effects": {
+                  "attack_advantage": -1
+                },
+                "desc": "A prone creature's only movement option is to crawl, unless it stands up and thereby ends the condition",
+                "buttons": [
+                  {
+                    "automation": [
+                      {
+                        "type": "remove_ieffect",
+                        "removeParent": null
+                      }
+                    ],
+                    "label": "Stand Up",
+                    "verb": "stands up"
+                  }
+                ]
               }
             ],
             "success": []
@@ -5837,7 +6231,8 @@
                 "type": "ieffect",
                 "name": "Frightened",
                 "duration": 10,
-                "effects": ""
+                "effects": "",
+                "desc": "Frightened of {{caster.name}}\n - They can repeat the DC {lastSaveDC} {lastSaveAbility} saving throw at the end of each of its turns, ending the effect on a success"
               }
             ],
             "success": []
@@ -5875,11 +6270,25 @@
                 "damage": "{damage}"
               },
               {
-                "type": "ieffect",
+                "type": "ieffect2",
                 "name": "Prone",
-                "duration": 1,
-                "effects": "dis",
-                "desc": "A prone creature's only movement option is to crawl, unless it stands up and thereby ends the condition.\n - The creature has disadvantage on attack rolls.\n - An attack roll against the creature has advantage if the attacker is within 5 feet of the creature. Otherwise, the attack roll has disadvantage."
+                "duration": -1,
+                "effects": {
+                  "attack_advantage": -1
+                },
+                "desc": "A prone creature's only movement option is to crawl, unless it stands up and thereby ends the condition",
+                "buttons": [
+                  {
+                    "automation": [
+                      {
+                        "type": "remove_ieffect",
+                        "removeParent": null
+                      }
+                    ],
+                    "label": "Stand Up",
+                    "verb": "stands up"
+                  }
+                ]
               }
             ],
             "success": []
@@ -6045,7 +6454,8 @@
                 "type": "ieffect",
                 "name": "Frightened",
                 "duration": 10,
-                "effects": ""
+                "effects": "",
+                "desc": "Frightened of {{caster.name}}\n - They can repeat the DC {lastSaveDC} {lastSaveAbility} saving throw at the end of each of its turns, ending the effect on a success"
               }
             ],
             "success": []
@@ -6077,7 +6487,8 @@
                 "type": "ieffect",
                 "name": "Deafened, Frightened, Paralyzed",
                 "duration": 10,
-                "effects": ""
+                "effects": "",
+                "desc": "Frightened of {{caster.name}}\n - They can repeat the DC {lastSaveDC} {lastSaveAbility} saving throw at the end of each of its turns, ending the effect on a success"
               }
             ],
             "success": []
@@ -6115,11 +6526,25 @@
                 "damage": "{damage}"
               },
               {
-                "type": "ieffect",
+                "type": "ieffect2",
                 "name": "Prone",
-                "duration": 1,
-                "effects": "dis",
-                "desc": "A prone creature's only movement option is to crawl, unless it stands up and thereby ends the condition.\n - The creature has disadvantage on attack rolls.\n - An attack roll against the creature has advantage if the attacker is within 5 feet of the creature. Otherwise, the attack roll has disadvantage."
+                "duration": -1,
+                "effects": {
+                  "attack_advantage": -1
+                },
+                "desc": "A prone creature's only movement option is to crawl, unless it stands up and thereby ends the condition",
+                "buttons": [
+                  {
+                    "automation": [
+                      {
+                        "type": "remove_ieffect",
+                        "removeParent": null
+                      }
+                    ],
+                    "label": "Stand Up",
+                    "verb": "stands up"
+                  }
+                ]
               }
             ],
             "success": [
@@ -6218,7 +6643,8 @@
                 "type": "ieffect",
                 "name": "Grappled",
                 "duration": -1,
-                "effects": ""
+                "effects": "",
+                "desc": "Grappled by {{caster.name}}\n - Escape DC 13"
               }
             ],
             "miss": [],
@@ -6443,6 +6869,31 @@
       }
     ],
     "_v": 2
+  },
+  {
+    "name": "Assassin - Sneak Attack",
+    "automation": [
+      {
+        "type": "target",
+        "target": "each",
+        "effects": [
+          {
+            "type": "damage",
+            "damage": "4d6 [weapon]",
+            "overheal": false,
+            "cantripScale": false
+          }
+        ],
+        "sortBy": null
+      },
+      {
+        "type": "text",
+        "text": "Once per turn, the assassin deals an extra 14 (4d6) damage when it hits a target with a weapon attack and has advantage on the attack roll, or when the target is within 5 feet of an ally of the assassin that isn't incapacitated and the assassin doesn't have disadvantage on the attack roll."
+      }
+    ],
+    "_v": 2,
+    "verb": null,
+    "proper": false
   },
   {
     "name": "Awakened Shrub - Rake",
@@ -7203,7 +7654,8 @@
                 "type": "ieffect",
                 "name": "Restrained (Grappled)",
                 "duration": -1,
-                "effects": "dis -sdis dex"
+                "effects": "dis -sdis dex",
+                "desc": "Grappled by {{caster.name}}\n - Escape DC 16"
               }
             ],
             "miss": [],
@@ -7655,11 +8107,25 @@
             "dc": "11",
             "fail": [
               {
-                "type": "ieffect",
+                "type": "ieffect2",
                 "name": "Prone",
-                "duration": 1,
-                "effects": "dis",
-                "desc": "A prone creature's only movement option is to crawl, unless it stands up and thereby ends the condition.\n - The creature has disadvantage on attack rolls.\n - An attack roll against the creature has advantage if the attacker is within 5 feet of the creature. Otherwise, the attack roll has disadvantage."
+                "duration": -1,
+                "effects": {
+                  "attack_advantage": -1
+                },
+                "desc": "A prone creature's only movement option is to crawl, unless it stands up and thereby ends the condition",
+                "buttons": [
+                  {
+                    "automation": [
+                      {
+                        "type": "remove_ieffect",
+                        "removeParent": null
+                      }
+                    ],
+                    "label": "Stand Up",
+                    "verb": "stands up"
+                  }
+                ]
               }
             ],
             "success": []
@@ -7951,11 +8417,25 @@
             "dc": "12",
             "fail": [
               {
-                "type": "ieffect",
+                "type": "ieffect2",
                 "name": "Prone",
-                "duration": 1,
-                "effects": "dis",
-                "desc": "A prone creature's only movement option is to crawl, unless it stands up and thereby ends the condition.\n - The creature has disadvantage on attack rolls.\n - An attack roll against the creature has advantage if the attacker is within 5 feet of the creature. Otherwise, the attack roll has disadvantage."
+                "duration": -1,
+                "effects": {
+                  "attack_advantage": -1
+                },
+                "desc": "A prone creature's only movement option is to crawl, unless it stands up and thereby ends the condition",
+                "buttons": [
+                  {
+                    "automation": [
+                      {
+                        "type": "remove_ieffect",
+                        "removeParent": null
+                      }
+                    ],
+                    "label": "Stand Up",
+                    "verb": "stands up"
+                  }
+                ]
               }
             ],
             "success": []
@@ -8156,11 +8636,25 @@
                 "damage": "{damage}"
               },
               {
-                "type": "ieffect",
+                "type": "ieffect2",
                 "name": "Prone",
-                "duration": 1,
-                "effects": "dis",
-                "desc": "A prone creature's only movement option is to crawl, unless it stands up and thereby ends the condition.\n - The creature has disadvantage on attack rolls.\n - An attack roll against the creature has advantage if the attacker is within 5 feet of the creature. Otherwise, the attack roll has disadvantage."
+                "duration": -1,
+                "effects": {
+                  "attack_advantage": -1
+                },
+                "desc": "A prone creature's only movement option is to crawl, unless it stands up and thereby ends the condition",
+                "buttons": [
+                  {
+                    "automation": [
+                      {
+                        "type": "remove_ieffect",
+                        "removeParent": null
+                      }
+                    ],
+                    "label": "Stand Up",
+                    "verb": "stands up"
+                  }
+                ]
               }
             ],
             "success": [
@@ -8203,11 +8697,25 @@
                 "damage": "{damage}"
               },
               {
-                "type": "ieffect",
+                "type": "ieffect2",
                 "name": "Prone",
-                "duration": 1,
-                "effects": "dis",
-                "desc": "A prone creature's only movement option is to crawl, unless it stands up and thereby ends the condition.\n - The creature has disadvantage on attack rolls.\n - An attack roll against the creature has advantage if the attacker is within 5 feet of the creature. Otherwise, the attack roll has disadvantage."
+                "duration": -1,
+                "effects": {
+                  "attack_advantage": -1
+                },
+                "desc": "A prone creature's only movement option is to crawl, unless it stands up and thereby ends the condition",
+                "buttons": [
+                  {
+                    "automation": [
+                      {
+                        "type": "remove_ieffect",
+                        "removeParent": null
+                      }
+                    ],
+                    "label": "Stand Up",
+                    "verb": "stands up"
+                  }
+                ]
               }
             ],
             "success": [
@@ -8404,7 +8912,8 @@
                 "type": "ieffect",
                 "name": "Restrained (Grappled)",
                 "duration": -1,
-                "effects": "dis -sdis dex"
+                "effects": "dis -sdis dex",
+                "desc": "Grappled by {{caster.name}}\n - Escape DC 14"
               }
             ],
             "miss": [],
@@ -8436,7 +8945,8 @@
                 "name": "Frightened",
                 "duration": 1,
                 "effects": "",
-                "end": true
+                "end": true,
+                "desc": "Frightened of {{caster.name}}"
               }
             ],
             "success": []
@@ -8593,7 +9103,8 @@
                 "type": "ieffect",
                 "name": "Grappled",
                 "duration": -1,
-                "effects": ""
+                "effects": "",
+                "desc": "Grappled by {{caster.name}}\n - Escape DC 14"
               }
             ],
             "miss": [],
@@ -8652,7 +9163,7 @@
             "hit": [
               {
                 "type": "damage",
-                "damage": "2d10 + 5 [bludgeoning]"
+                "damage": "2d10 + 5 [magical bludgeoning]"
               },
               {
                 "type": "save",
@@ -8783,7 +9294,8 @@
                 "type": "ieffect",
                 "name": "Frightened",
                 "duration": 2,
-                "effects": ""
+                "effects": "",
+                "desc": "Frightened of {{caster.name}}"
               }
             ],
             "success": []
@@ -8965,7 +9477,8 @@
                 "type": "ieffect",
                 "name": "Restrained (Grappled)",
                 "duration": -1,
-                "effects": "dis -sdis dex"
+                "effects": "dis -sdis dex",
+                "desc": "Grappled by {{caster.name}}\n - Escape DC 14"
               }
             ],
             "miss": [],
@@ -9141,7 +9654,8 @@
                 "type": "ieffect",
                 "name": "Restrained (Grappled)",
                 "duration": -1,
-                "effects": "dis -sdis dex"
+                "effects": "dis -sdis dex",
+                "desc": "Grappled by {{caster.name}}\n - Escape DC 15"
               }
             ],
             "miss": [],
@@ -9203,7 +9717,8 @@
                 "type": "ieffect",
                 "name": "Restrained (Grappled)",
                 "duration": -1,
-                "effects": "dis -sdis dex"
+                "effects": "dis -sdis dex",
+                "desc": "Grappled by {{caster.name}}\n - Escape DC 12"
               }
             ],
             "miss": [],
@@ -9404,7 +9919,7 @@
         "effects": [
           {
             "type": "damage",
-            "damage": "-(4d8 + 2) [healing]"
+            "damage": "-(4d8 + 2) [heal]"
           }
         ]
       },
@@ -9436,11 +9951,25 @@
                 "dc": "13",
                 "fail": [
                   {
-                    "type": "ieffect",
+                    "type": "ieffect2",
                     "name": "Prone",
-                    "duration": 1,
-                    "effects": "dis",
-                    "desc": "A prone creature's only movement option is to crawl, unless it stands up and thereby ends the condition.\n - The creature has disadvantage on attack rolls.\n - An attack roll against the creature has advantage if the attacker is within 5 feet of the creature. Otherwise, the attack roll has disadvantage."
+                    "duration": -1,
+                    "effects": {
+                      "attack_advantage": -1
+                    },
+                    "desc": "A prone creature's only movement option is to crawl, unless it stands up and thereby ends the condition",
+                    "buttons": [
+                      {
+                        "automation": [
+                          {
+                            "type": "remove_ieffect",
+                            "removeParent": null
+                          }
+                        ],
+                        "label": "Stand Up",
+                        "verb": "stands up"
+                      }
+                    ]
                   }
                 ],
                 "success": []
@@ -9685,11 +10214,25 @@
                 "dc": "20",
                 "fail": [
                   {
-                    "type": "ieffect",
+                    "type": "ieffect2",
                     "name": "Prone",
-                    "duration": 1,
-                    "effects": "dis",
-                    "desc": "A prone creature's only movement option is to crawl, unless it stands up and thereby ends the condition.\n - The creature has disadvantage on attack rolls.\n - An attack roll against the creature has advantage if the attacker is within 5 feet of the creature. Otherwise, the attack roll has disadvantage."
+                    "duration": -1,
+                    "effects": {
+                      "attack_advantage": -1
+                    },
+                    "desc": "A prone creature's only movement option is to crawl, unless it stands up and thereby ends the condition",
+                    "buttons": [
+                      {
+                        "automation": [
+                          {
+                            "type": "remove_ieffect",
+                            "removeParent": null
+                          }
+                        ],
+                        "label": "Stand Up",
+                        "verb": "stands up"
+                      }
+                    ]
                   }
                 ],
                 "success": []
@@ -10040,7 +10583,8 @@
                 "type": "ieffect",
                 "name": "Charmed",
                 "duration": 14400,
-                "effects": ""
+                "effects": "",
+                "desc": "Charmed by {{caster.name}}\n - They can repeat the DC {lastSaveDC} {lastSaveAbility} saving throw each time the dryad or its allies does anything harmful to the target, ending the effect on a success"
               }
             ],
             "success": []
@@ -10482,11 +11026,25 @@
             "dc": "12",
             "fail": [
               {
-                "type": "ieffect",
+                "type": "ieffect2",
                 "name": "Prone",
-                "duration": 1,
-                "effects": "dis",
-                "desc": "A prone creature's only movement option is to crawl, unless it stands up and thereby ends the condition.\n - The creature has disadvantage on attack rolls.\n - An attack roll against the creature has advantage if the attacker is within 5 feet of the creature. Otherwise, the attack roll has disadvantage."
+                "duration": -1,
+                "effects": {
+                  "attack_advantage": -1
+                },
+                "desc": "A prone creature's only movement option is to crawl, unless it stands up and thereby ends the condition",
+                "buttons": [
+                  {
+                    "automation": [
+                      {
+                        "type": "remove_ieffect",
+                        "removeParent": null
+                      }
+                    ],
+                    "label": "Stand Up",
+                    "verb": "stands up"
+                  }
+                ]
               }
             ],
             "success": []
@@ -10573,11 +11131,25 @@
             "dc": "13",
             "fail": [
               {
-                "type": "ieffect",
+                "type": "ieffect2",
                 "name": "Prone",
-                "duration": 1,
-                "effects": "dis",
-                "desc": "A prone creature's only movement option is to crawl, unless it stands up and thereby ends the condition.\n - The creature has disadvantage on attack rolls.\n - An attack roll against the creature has advantage if the attacker is within 5 feet of the creature. Otherwise, the attack roll has disadvantage."
+                "duration": -1,
+                "effects": {
+                  "attack_advantage": -1
+                },
+                "desc": "A prone creature's only movement option is to crawl, unless it stands up and thereby ends the condition",
+                "buttons": [
+                  {
+                    "automation": [
+                      {
+                        "type": "remove_ieffect",
+                        "removeParent": null
+                      }
+                    ],
+                    "label": "Stand Up",
+                    "verb": "stands up"
+                  }
+                ]
               }
             ],
             "success": []
@@ -11379,7 +11951,20 @@
                 "type": "ieffect",
                 "name": "Frightened",
                 "duration": 10,
-                "effects": ""
+                "effects": "",
+                "desc": "Frightened of {{caster.name}}\n - They can repeat the DC {lastSaveDC} {lastSaveAbility} saving throw at the end of each of its turns, ending the effect on a success"
+              },
+              {
+                "type": "condition",
+                "condition": "lastSaveRollTotal <= (lastSaveDC-5) and target.name",
+                "onTrue": [
+                  {
+                    "type": "text",
+                    "text": "{{target.name}} ages {{vroll('1d4*10')}} years!"
+                  }
+                ],
+                "onFalse": [],
+                "errorBehaviour": "false"
               }
             ],
             "success": []
@@ -11648,11 +12233,25 @@
             "dc": "13",
             "fail": [
               {
-                "type": "ieffect",
+                "type": "ieffect2",
                 "name": "Prone",
-                "duration": 1,
-                "effects": "dis",
-                "desc": "A prone creature's only movement option is to crawl, unless it stands up and thereby ends the condition.\n - The creature has disadvantage on attack rolls.\n - An attack roll against the creature has advantage if the attacker is within 5 feet of the creature. Otherwise, the attack roll has disadvantage."
+                "duration": -1,
+                "effects": {
+                  "attack_advantage": -1
+                },
+                "desc": "A prone creature's only movement option is to crawl, unless it stands up and thereby ends the condition",
+                "buttons": [
+                  {
+                    "automation": [
+                      {
+                        "type": "remove_ieffect",
+                        "removeParent": null
+                      }
+                    ],
+                    "label": "Stand Up",
+                    "verb": "stands up"
+                  }
+                ]
               }
             ],
             "success": []
@@ -11778,7 +12377,8 @@
                 "type": "ieffect",
                 "name": "Restrained (Grappled)",
                 "duration": -1,
-                "effects": "dis -sdis dex"
+                "effects": "dis -sdis dex",
+                "desc": "Grappled by {{caster.name}}\n - Escape DC 16"
               }
             ],
             "miss": [],
@@ -11813,7 +12413,8 @@
                 "type": "ieffect",
                 "name": "Grappled",
                 "duration": -1,
-                "effects": ""
+                "effects": "",
+                "desc": "Grappled by {{caster.name}}\n - Escape DC 11"
               }
             ],
             "miss": [],
@@ -11846,7 +12447,8 @@
                 "type": "ieffect",
                 "name": "Restrained (Grappled)",
                 "duration": -1,
-                "effects": "dis -sdis dex"
+                "effects": "dis -sdis dex",
+                "desc": "Grappled by {{caster.name}}\n - Escape DC 16"
               }
             ],
             "miss": [],
@@ -11881,11 +12483,25 @@
                 "dc": "16",
                 "fail": [
                   {
-                    "type": "ieffect",
+                    "type": "ieffect2",
                     "name": "Prone",
-                    "duration": 1,
-                    "effects": "dis",
-                    "desc": "A prone creature's only movement option is to crawl, unless it stands up and thereby ends the condition.\n - The creature has disadvantage on attack rolls.\n - An attack roll against the creature has advantage if the attacker is within 5 feet of the creature. Otherwise, the attack roll has disadvantage."
+                    "duration": -1,
+                    "effects": {
+                      "attack_advantage": -1
+                    },
+                    "desc": "A prone creature's only movement option is to crawl, unless it stands up and thereby ends the condition",
+                    "buttons": [
+                      {
+                        "automation": [
+                          {
+                            "type": "remove_ieffect",
+                            "removeParent": null
+                          }
+                        ],
+                        "label": "Stand Up",
+                        "verb": "stands up"
+                      }
+                    ]
                   }
                 ],
                 "success": []
@@ -12030,11 +12646,25 @@
             "dc": "14",
             "fail": [
               {
-                "type": "ieffect",
+                "type": "ieffect2",
                 "name": "Prone",
-                "duration": 1,
-                "effects": "dis",
-                "desc": "A prone creature's only movement option is to crawl, unless it stands up and thereby ends the condition.\n - The creature has disadvantage on attack rolls.\n - An attack roll against the creature has advantage if the attacker is within 5 feet of the creature. Otherwise, the attack roll has disadvantage."
+                "duration": -1,
+                "effects": {
+                  "attack_advantage": -1
+                },
+                "desc": "A prone creature's only movement option is to crawl, unless it stands up and thereby ends the condition",
+                "buttons": [
+                  {
+                    "automation": [
+                      {
+                        "type": "remove_ieffect",
+                        "removeParent": null
+                      }
+                    ],
+                    "label": "Stand Up",
+                    "verb": "stands up"
+                  }
+                ]
               }
             ],
             "success": []
@@ -12094,7 +12724,8 @@
                 "type": "ieffect",
                 "name": "Restrained (Grappled)",
                 "duration": -1,
-                "effects": "dis -sdis dex"
+                "effects": "dis -sdis dex",
+                "desc": "Grappled by {{caster.name}}\n - Escape DC 11"
               }
             ],
             "miss": [],
@@ -12172,11 +12803,25 @@
             "dc": "13",
             "fail": [
               {
-                "type": "ieffect",
+                "type": "ieffect2",
                 "name": "Prone",
-                "duration": 1,
-                "effects": "dis",
-                "desc": "A prone creature's only movement option is to crawl, unless it stands up and thereby ends the condition.\n - The creature has disadvantage on attack rolls.\n - An attack roll against the creature has advantage if the attacker is within 5 feet of the creature. Otherwise, the attack roll has disadvantage."
+                "duration": -1,
+                "effects": {
+                  "attack_advantage": -1
+                },
+                "desc": "A prone creature's only movement option is to crawl, unless it stands up and thereby ends the condition",
+                "buttons": [
+                  {
+                    "automation": [
+                      {
+                        "type": "remove_ieffect",
+                        "removeParent": null
+                      }
+                    ],
+                    "label": "Stand Up",
+                    "verb": "stands up"
+                  }
+                ]
               }
             ],
             "success": []
@@ -12290,7 +12935,8 @@
                 "type": "ieffect",
                 "name": "Restrained (Grappled)",
                 "duration": -1,
-                "effects": "dis -sdis dex"
+                "effects": "dis -sdis dex",
+                "desc": "Grappled by {{caster.name}}\n - Escape DC 16"
               }
             ],
             "miss": [],
@@ -12424,7 +13070,8 @@
                 "type": "ieffect",
                 "name": "Grappled",
                 "duration": -1,
-                "effects": ""
+                "effects": "",
+                "desc": "Grappled by {{caster.name}}\n - Escape DC 12"
               }
             ],
             "miss": [],
@@ -12501,11 +13148,25 @@
             "dc": "11",
             "fail": [
               {
-                "type": "ieffect",
+                "type": "ieffect2",
                 "name": "Prone",
-                "duration": 1,
-                "effects": "dis",
-                "desc": "A prone creature's only movement option is to crawl, unless it stands up and thereby ends the condition.\n - The creature has disadvantage on attack rolls.\n - An attack roll against the creature has advantage if the attacker is within 5 feet of the creature. Otherwise, the attack roll has disadvantage."
+                "duration": -1,
+                "effects": {
+                  "attack_advantage": -1
+                },
+                "desc": "A prone creature's only movement option is to crawl, unless it stands up and thereby ends the condition",
+                "buttons": [
+                  {
+                    "automation": [
+                      {
+                        "type": "remove_ieffect",
+                        "removeParent": null
+                      }
+                    ],
+                    "label": "Stand Up",
+                    "verb": "stands up"
+                  }
+                ]
               }
             ],
             "success": []
@@ -12668,7 +13329,8 @@
                 "type": "ieffect",
                 "name": "Restrained (Grappled)",
                 "duration": -1,
-                "effects": "dis -sdis dex"
+                "effects": "dis -sdis dex",
+                "desc": "Grappled by {{caster.name}}\n - Escape DC 13"
               }
             ],
             "miss": [],
@@ -12921,11 +13583,25 @@
                 "dc": "10",
                 "fail": [
                   {
-                    "type": "ieffect",
+                    "type": "ieffect2",
                     "name": "Prone",
-                    "duration": 1,
-                    "effects": "dis",
-                    "desc": "A prone creature's only movement option is to crawl, unless it stands up and thereby ends the condition.\n - The creature has disadvantage on attack rolls.\n - An attack roll against the creature has advantage if the attacker is within 5 feet of the creature. Otherwise, the attack roll has disadvantage."
+                    "duration": -1,
+                    "effects": {
+                      "attack_advantage": -1
+                    },
+                    "desc": "A prone creature's only movement option is to crawl, unless it stands up and thereby ends the condition",
+                    "buttons": [
+                      {
+                        "automation": [
+                          {
+                            "type": "remove_ieffect",
+                            "removeParent": null
+                          }
+                        ],
+                        "label": "Stand Up",
+                        "verb": "stands up"
+                      }
+                    ]
                   }
                 ],
                 "success": []
@@ -13018,7 +13694,8 @@
                 "type": "ieffect",
                 "name": "Grappled",
                 "duration": -1,
-                "effects": ""
+                "effects": "",
+                "desc": "Grappled by {{caster.name}}\n - Escape DC 15"
               }
             ],
             "miss": [],
@@ -13134,11 +13811,25 @@
                 "dc": "15",
                 "fail": [
                   {
-                    "type": "ieffect",
+                    "type": "ieffect2",
                     "name": "Prone",
-                    "duration": 1,
-                    "effects": "dis",
-                    "desc": "A prone creature's only movement option is to crawl, unless it stands up and thereby ends the condition.\n - The creature has disadvantage on attack rolls.\n - An attack roll against the creature has advantage if the attacker is within 5 feet of the creature. Otherwise, the attack roll has disadvantage."
+                    "duration": -1,
+                    "effects": {
+                      "attack_advantage": -1
+                    },
+                    "desc": "A prone creature's only movement option is to crawl, unless it stands up and thereby ends the condition",
+                    "buttons": [
+                      {
+                        "automation": [
+                          {
+                            "type": "remove_ieffect",
+                            "removeParent": null
+                          }
+                        ],
+                        "label": "Stand Up",
+                        "verb": "stands up"
+                      }
+                    ]
                   }
                 ],
                 "success": []
@@ -13281,11 +13972,25 @@
             "dc": "10",
             "fail": [
               {
-                "type": "ieffect",
+                "type": "ieffect2",
                 "name": "Prone",
-                "duration": 1,
-                "effects": "dis",
-                "desc": "A prone creature's only movement option is to crawl, unless it stands up and thereby ends the condition.\n - The creature has disadvantage on attack rolls.\n - An attack roll against the creature has advantage if the attacker is within 5 feet of the creature. Otherwise, the attack roll has disadvantage."
+                "duration": -1,
+                "effects": {
+                  "attack_advantage": -1
+                },
+                "desc": "A prone creature's only movement option is to crawl, unless it stands up and thereby ends the condition",
+                "buttons": [
+                  {
+                    "automation": [
+                      {
+                        "type": "remove_ieffect",
+                        "removeParent": null
+                      }
+                    ],
+                    "label": "Stand Up",
+                    "verb": "stands up"
+                  }
+                ]
               }
             ],
             "success": []
@@ -13481,11 +14186,25 @@
             "dc": "16",
             "fail": [
               {
-                "type": "ieffect",
+                "type": "ieffect2",
                 "name": "Prone",
-                "duration": 1,
-                "effects": "dis",
-                "desc": "A prone creature's only movement option is to crawl, unless it stands up and thereby ends the condition.\n - The creature has disadvantage on attack rolls.\n - An attack roll against the creature has advantage if the attacker is within 5 feet of the creature. Otherwise, the attack roll has disadvantage."
+                "duration": -1,
+                "effects": {
+                  "attack_advantage": -1
+                },
+                "desc": "A prone creature's only movement option is to crawl, unless it stands up and thereby ends the condition",
+                "buttons": [
+                  {
+                    "automation": [
+                      {
+                        "type": "remove_ieffect",
+                        "removeParent": null
+                      }
+                    ],
+                    "label": "Stand Up",
+                    "verb": "stands up"
+                  }
+                ]
               }
             ],
             "success": []
@@ -14172,7 +14891,8 @@
                 "type": "ieffect",
                 "name": "Incapacitated (Charmed)",
                 "duration": -1,
-                "effects": ""
+                "effects": "",
+                "desc": "Charmed by {{caster.name}}'s song, ignoring the songs of other harpies\n If farther than 5 ft from the harpy, moves on its turn towards them, taking most direct route\n - They can repeat the DC {lastSaveDC} {lastSaveAbility} saving throw at the end of each of its turns, ending the effect on a success"
               }
             ],
             "success": []
@@ -14181,7 +14901,7 @@
       },
       {
         "type": "text",
-        "text": "The harpy sings a magical melody. Every humanoid and giant within 300 feet of the harpy that can hear the song must succeed on a DC 11 Wisdom saving throw or be charmed until the song ends. The harpy must take a bonus action on its subsequent turns to continue singing. It can stop singing at any time. The song ends if the harpy is incapacitated.\nA target that successfully saves is immune to this harpy's song for the next 24 hours."
+        "text": "The harpy sings a magical melody. Every humanoid and giant within 300 feet of the harpy that can hear the song must succeed on a DC 11 Wisdom saving throw or be charmed until the song ends. The harpy must take a bonus action on its subsequent turns to continue singing. It can stop singing at any time. The song ends if the harpy is incapacitated.\nWhile charmed by the harpy, a target is incapacitated and ignores the songs of other harpies. If the charmed target is more than 5 feet away from the harpy, the target must move on its turn toward the harpy by the most direct route, trying to get within 5 feet. It doesn't avoid opportunity attacks, but before moving into damaging terrain, such as lava or a pit, and whenever it takes damage from a source other than the harpy, the target can repeat the saving throw. They can also repeat the saving throw at the end of each of its turns. If they are successful, the effect ends on it.\nA target that successfully saves is immune to this harpy's song for the next 24 hours."
       }
     ],
     "_v": 2,
@@ -14805,7 +15525,7 @@
         "effects": [
           {
             "type": "damage",
-            "damage": "-(10) [regrowth]"
+            "damage": "-(10) [heal]"
           }
         ]
       },
@@ -15595,7 +16315,8 @@
                 "type": "ieffect",
                 "name": "Restrained (Grappled)",
                 "duration": -1,
-                "effects": "dis -sdis dex"
+                "effects": "dis -sdis dex",
+                "desc": "Grappled by {{caster.name}}\n - Escape DC 18"
               }
             ],
             "miss": [],
@@ -15627,11 +16348,25 @@
             "damage": "{damage}"
           },
           {
-            "type": "ieffect",
+            "type": "ieffect2",
             "name": "Prone",
-            "duration": 1,
-            "effects": "dis",
-            "desc": "A prone creature's only movement option is to crawl, unless it stands up and thereby ends the condition.\n - The creature has disadvantage on attack rolls.\n - An attack roll against the creature has advantage if the attacker is within 5 feet of the creature. Otherwise, the attack roll has disadvantage."
+            "duration": -1,
+            "effects": {
+              "attack_advantage": -1
+            },
+            "desc": "A prone creature's only movement option is to crawl, unless it stands up and thereby ends the condition",
+            "buttons": [
+              {
+                "automation": [
+                  {
+                    "type": "remove_ieffect",
+                    "removeParent": null
+                  }
+                ],
+                "label": "Stand Up",
+                "verb": "stands up"
+              }
+            ]
           }
         ],
         "meta": []
@@ -15650,11 +16385,25 @@
                 "damage": "{damage}"
               },
               {
-                "type": "ieffect",
+                "type": "ieffect2",
                 "name": "Prone",
-                "duration": 1,
-                "effects": "dis",
-                "desc": "A prone creature's only movement option is to crawl, unless it stands up and thereby ends the condition.\n - The creature has disadvantage on attack rolls.\n - An attack roll against the creature has advantage if the attacker is within 5 feet of the creature. Otherwise, the attack roll has disadvantage."
+                "duration": -1,
+                "effects": {
+                  "attack_advantage": -1
+                },
+                "desc": "A prone creature's only movement option is to crawl, unless it stands up and thereby ends the condition",
+                "buttons": [
+                  {
+                    "automation": [
+                      {
+                        "type": "remove_ieffect",
+                        "removeParent": null
+                      }
+                    ],
+                    "label": "Stand Up",
+                    "verb": "stands up"
+                  }
+                ]
               }
             ],
             "success": []
@@ -15985,7 +16734,8 @@
                 "type": "ieffect",
                 "name": "Frightened",
                 "duration": 10,
-                "effects": ""
+                "effects": "",
+                "desc": "Frightened of {{caster.name}}\n - They can repeat the DC {lastSaveDC} {lastSaveAbility} saving throw at the end of each of its turns, ending the effect on a success"
               }
             ],
             "success": []
@@ -16174,11 +16924,25 @@
             "dc": "13",
             "fail": [
               {
-                "type": "ieffect",
+                "type": "ieffect2",
                 "name": "Prone",
-                "duration": 1,
-                "effects": "dis",
-                "desc": "A prone creature's only movement option is to crawl, unless it stands up and thereby ends the condition.\n - The creature has disadvantage on attack rolls.\n - An attack roll against the creature has advantage if the attacker is within 5 feet of the creature. Otherwise, the attack roll has disadvantage."
+                "duration": -1,
+                "effects": {
+                  "attack_advantage": -1
+                },
+                "desc": "A prone creature's only movement option is to crawl, unless it stands up and thereby ends the condition",
+                "buttons": [
+                  {
+                    "automation": [
+                      {
+                        "type": "remove_ieffect",
+                        "removeParent": null
+                      }
+                    ],
+                    "label": "Stand Up",
+                    "verb": "stands up"
+                  }
+                ]
               }
             ],
             "success": []
@@ -16605,11 +17369,25 @@
             "dc": "18",
             "fail": [
               {
-                "type": "ieffect",
+                "type": "ieffect2",
                 "name": "Prone",
-                "duration": 1,
-                "effects": "dis",
-                "desc": "A prone creature's only movement option is to crawl, unless it stands up and thereby ends the condition.\n - The creature has disadvantage on attack rolls.\n - An attack roll against the creature has advantage if the attacker is within 5 feet of the creature. Otherwise, the attack roll has disadvantage."
+                "duration": -1,
+                "effects": {
+                  "attack_advantage": -1
+                },
+                "desc": "A prone creature's only movement option is to crawl, unless it stands up and thereby ends the condition",
+                "buttons": [
+                  {
+                    "automation": [
+                      {
+                        "type": "remove_ieffect",
+                        "removeParent": null
+                      }
+                    ],
+                    "label": "Stand Up",
+                    "verb": "stands up"
+                  }
+                ]
               }
             ],
             "success": []
@@ -16750,7 +17528,8 @@
                 "type": "ieffect",
                 "name": "Restrained (Grappled)",
                 "duration": -1,
-                "effects": "dis -sdis dex"
+                "effects": "dis -sdis dex",
+                "desc": "Grappled by {{caster.name}}\n - Escape DC 19"
               }
             ],
             "miss": [],
@@ -16785,11 +17564,25 @@
                 "dc": "11",
                 "fail": [
                   {
-                    "type": "ieffect",
+                    "type": "ieffect2",
                     "name": "Prone",
-                    "duration": 1,
-                    "effects": "dis",
-                    "desc": "A prone creature's only movement option is to crawl, unless it stands up and thereby ends the condition.\n - The creature has disadvantage on attack rolls.\n - An attack roll against the creature has advantage if the attacker is within 5 feet of the creature. Otherwise, the attack roll has disadvantage."
+                    "duration": -1,
+                    "effects": {
+                      "attack_advantage": -1
+                    },
+                    "desc": "A prone creature's only movement option is to crawl, unless it stands up and thereby ends the condition",
+                    "buttons": [
+                      {
+                        "automation": [
+                          {
+                            "type": "remove_ieffect",
+                            "removeParent": null
+                          }
+                        ],
+                        "label": "Stand Up",
+                        "verb": "stands up"
+                      }
+                    ]
                   }
                 ],
                 "success": []
@@ -17090,7 +17883,8 @@
                 "type": "ieffect",
                 "name": "Grappled",
                 "duration": -1,
-                "effects": ""
+                "effects": "",
+                "desc": "Grappled by {{caster.name}}\n - Escape DC 13"
               }
             ],
             "miss": [],
@@ -17176,11 +17970,25 @@
             "dc": "14",
             "fail": [
               {
-                "type": "ieffect",
+                "type": "ieffect2",
                 "name": "Prone",
-                "duration": 1,
-                "effects": "dis",
-                "desc": "A prone creature's only movement option is to crawl, unless it stands up and thereby ends the condition.\n - The creature has disadvantage on attack rolls.\n - An attack roll against the creature has advantage if the attacker is within 5 feet of the creature. Otherwise, the attack roll has disadvantage."
+                "duration": -1,
+                "effects": {
+                  "attack_advantage": -1
+                },
+                "desc": "A prone creature's only movement option is to crawl, unless it stands up and thereby ends the condition",
+                "buttons": [
+                  {
+                    "automation": [
+                      {
+                        "type": "remove_ieffect",
+                        "removeParent": null
+                      }
+                    ],
+                    "label": "Stand Up",
+                    "verb": "stands up"
+                  }
+                ]
               }
             ],
             "success": []
@@ -17266,11 +18074,25 @@
             "dc": "14",
             "fail": [
               {
-                "type": "ieffect",
+                "type": "ieffect2",
                 "name": "Prone",
-                "duration": 1,
-                "effects": "dis",
-                "desc": "A prone creature's only movement option is to crawl, unless it stands up and thereby ends the condition.\n - The creature has disadvantage on attack rolls.\n - An attack roll against the creature has advantage if the attacker is within 5 feet of the creature. Otherwise, the attack roll has disadvantage."
+                "duration": -1,
+                "effects": {
+                  "attack_advantage": -1
+                },
+                "desc": "A prone creature's only movement option is to crawl, unless it stands up and thereby ends the condition",
+                "buttons": [
+                  {
+                    "automation": [
+                      {
+                        "type": "remove_ieffect",
+                        "removeParent": null
+                      }
+                    ],
+                    "label": "Stand Up",
+                    "verb": "stands up"
+                  }
+                ]
               }
             ],
             "success": []
@@ -17444,7 +18266,7 @@
                     "name": "Dreadful Glare (Frightened, Paralyzed)",
                     "duration": 2,
                     "effects": "",
-                    "desc": "",
+                    "desc": "Frightened of {{caster.name}}",
                     "parent": "endOfCaster"
                   }
                 ],
@@ -17454,7 +18276,7 @@
                     "name": "Dreadful Glare (Frightened)",
                     "duration": 2,
                     "effects": "",
-                    "desc": "",
+                    "desc": "Frightened of {{caster.name}}",
                     "parent": "endOfCaster"
                   }
                 ],
@@ -17550,7 +18372,7 @@
                     "name": "Dreadful Glare (Frightened, Paralyzed)",
                     "duration": 2,
                     "effects": "",
-                    "desc": "",
+                    "desc": "Frightened of {{caster.name}}",
                     "parent": "endOfCaster"
                   }
                 ],
@@ -17560,7 +18382,7 @@
                     "name": "Dreadful Glare (Frightened)",
                     "duration": 2,
                     "effects": "",
-                    "desc": "",
+                    "desc": "Frightened of {{caster.name}}",
                     "parent": "endOfCaster"
                   }
                 ],
@@ -17715,7 +18537,8 @@
                 "type": "ieffect",
                 "name": "Frightened",
                 "duration": 10,
-                "effects": ""
+                "effects": "",
+                "desc": "Frightened of {{caster.name}}\n - They can repeat the DC {lastSaveDC} {lastSaveAbility} saving throw at the end of each of its turns, ending the effect on a success"
               }
             ],
             "success": []
@@ -17858,7 +18681,8 @@
                 "type": "ieffect",
                 "name": "Grappled",
                 "duration": -1,
-                "effects": ""
+                "effects": "",
+                "desc": "Grappled by {{caster.name}}\n - Escape DC 10"
               }
             ],
             "miss": [],
@@ -18088,7 +18912,7 @@
         "effects": [
           {
             "type": "damage",
-            "damage": "-10 [regeneration]"
+            "damage": "-10 [heal]"
           }
         ]
       },
@@ -18213,7 +19037,8 @@
                 "type": "ieffect",
                 "name": "Restrained (Grappled)",
                 "duration": -1,
-                "effects": "dis -sdis dex"
+                "effects": "dis -sdis dex",
+                "desc": "Grappled by {{caster.name}}\n - Escape DC 13"
               }
             ],
             "miss": [],
@@ -18424,11 +19249,25 @@
             "dc": "12",
             "fail": [
               {
-                "type": "ieffect",
+                "type": "ieffect2",
                 "name": "Prone",
-                "duration": 1,
-                "effects": "dis",
-                "desc": "A prone creature's only movement option is to crawl, unless it stands up and thereby ends the condition.\n - The creature has disadvantage on attack rolls.\n - An attack roll against the creature has advantage if the attacker is within 5 feet of the creature. Otherwise, the attack roll has disadvantage."
+                "duration": -1,
+                "effects": {
+                  "attack_advantage": -1
+                },
+                "desc": "A prone creature's only movement option is to crawl, unless it stands up and thereby ends the condition",
+                "buttons": [
+                  {
+                    "automation": [
+                      {
+                        "type": "remove_ieffect",
+                        "removeParent": null
+                      }
+                    ],
+                    "label": "Stand Up",
+                    "verb": "stands up"
+                  }
+                ]
               }
             ],
             "success": []
@@ -18655,7 +19494,8 @@
                 "type": "ieffect",
                 "name": "Frightened",
                 "duration": 1,
-                "effects": ""
+                "effects": "",
+                "desc": "Frightened of {{caster.name}}"
               }
             ],
             "success": []
@@ -18706,7 +19546,7 @@
         "effects": [
           {
             "type": "damage",
-            "damage": "-(6d8 + 3) [healing]"
+            "damage": "-(6d8 + 3) [heal]"
           }
         ]
       },
@@ -19167,7 +20007,8 @@
                 "type": "ieffect",
                 "name": "Frightened",
                 "duration": 10,
-                "effects": ""
+                "effects": "",
+                "desc": "Frightened of {{caster.name}}\n - They can repeat the DC {lastSaveDC} {lastSaveAbility} saving throw at the end of each of its turns, with disadvantage if the quasit is within line of sight, ending the effect on a success"
               }
             ],
             "success": []
@@ -19430,7 +20271,8 @@
                 "type": "ieffect",
                 "name": "Restrained (Grappled)",
                 "duration": -1,
-                "effects": "dis -sdis dex"
+                "effects": "dis -sdis dex",
+                "desc": "Grappled by {{caster.name}}\n - Escape DC 17"
               }
             ],
             "miss": [],
@@ -19508,11 +20350,25 @@
             "dc": "15",
             "fail": [
               {
-                "type": "ieffect",
+                "type": "ieffect2",
                 "name": "Prone",
-                "duration": 1,
-                "effects": "dis",
-                "desc": "A prone creature's only movement option is to crawl, unless it stands up and thereby ends the condition.\n - The creature has disadvantage on attack rolls.\n - An attack roll against the creature has advantage if the attacker is within 5 feet of the creature. Otherwise, the attack roll has disadvantage."
+                "duration": -1,
+                "effects": {
+                  "attack_advantage": -1
+                },
+                "desc": "A prone creature's only movement option is to crawl, unless it stands up and thereby ends the condition",
+                "buttons": [
+                  {
+                    "automation": [
+                      {
+                        "type": "remove_ieffect",
+                        "removeParent": null
+                      }
+                    ],
+                    "label": "Stand Up",
+                    "verb": "stands up"
+                  }
+                ]
               }
             ],
             "success": []
@@ -19627,7 +20483,8 @@
                 "type": "ieffect",
                 "name": "Restrained (Grappled)",
                 "duration": -1,
-                "effects": "dis -sdis dex"
+                "effects": "dis -sdis dex",
+                "desc": "Grappled by {{caster.name}}\n - Escape DC 19"
               }
             ],
             "miss": [],
@@ -19685,7 +20542,8 @@
                 "type": "ieffect",
                 "name": "Restrained (Grappled)",
                 "duration": -1,
-                "effects": "dis -sdis dex -sdis str"
+                "effects": "dis -sdis dex -sdis str",
+                "desc": "Grappled by {{caster.name}}\n - Escape DC 15"
               }
             ],
             "miss": []
@@ -19867,11 +20725,25 @@
             "dc": "14",
             "fail": [
               {
-                "type": "ieffect",
+                "type": "ieffect2",
                 "name": "Prone",
-                "duration": 1,
-                "effects": "dis",
-                "desc": "A prone creature's only movement option is to crawl, unless it stands up and thereby ends the condition.\n - The creature has disadvantage on attack rolls.\n - An attack roll against the creature has advantage if the attacker is within 5 feet of the creature. Otherwise, the attack roll has disadvantage."
+                "duration": -1,
+                "effects": {
+                  "attack_advantage": -1
+                },
+                "desc": "A prone creature's only movement option is to crawl, unless it stands up and thereby ends the condition",
+                "buttons": [
+                  {
+                    "automation": [
+                      {
+                        "type": "remove_ieffect",
+                        "removeParent": null
+                      }
+                    ],
+                    "label": "Stand Up",
+                    "verb": "stands up"
+                  }
+                ]
               }
             ],
             "success": []
@@ -20087,7 +20959,8 @@
                 "type": "ieffect",
                 "name": "Restrained (Grappled)",
                 "duration": -1,
-                "effects": "dis -sdis dex"
+                "effects": "dis -sdis dex",
+                "desc": "Grappled by {{caster.name}}\n - Escape DC 14"
               }
             ],
             "miss": [],
@@ -20355,7 +21228,8 @@
                 "type": "ieffect",
                 "name": "Frightened",
                 "duration": 10,
-                "effects": ""
+                "effects": "",
+                "desc": "Frightened of {{caster.name}}\n - They can repeat the DC {lastSaveDC} {lastSaveAbility} saving throw at the end of each of its turns, with disadvantage if the hag is within line of sight, ending the effect on a success"
               }
             ],
             "success": []
@@ -20535,7 +21409,7 @@
         "effects": [
           {
             "type": "damage",
-            "damage": "-10 [regeneration]"
+            "damage": "-10 [heal]"
           }
         ]
       },
@@ -20790,7 +21664,7 @@
         "effects": [
           {
             "type": "damage",
-            "damage": "-(8d8 + 4) [healing]"
+            "damage": "-(8d8 + 4) [heal]"
           }
         ]
       },
@@ -21348,11 +22222,25 @@
                 "dc": "10",
                 "fail": [
                   {
-                    "type": "ieffect",
+                    "type": "ieffect2",
                     "name": "Prone",
-                    "duration": 1,
-                    "effects": "dis",
-                    "desc": "A prone creature's only movement option is to crawl, unless it stands up and thereby ends the condition.\n - The creature has disadvantage on attack rolls.\n - An attack roll against the creature has advantage if the attacker is within 5 feet of the creature. Otherwise, the attack roll has disadvantage."
+                    "duration": -1,
+                    "effects": {
+                      "attack_advantage": -1
+                    },
+                    "desc": "A prone creature's only movement option is to crawl, unless it stands up and thereby ends the condition",
+                    "buttons": [
+                      {
+                        "automation": [
+                          {
+                            "type": "remove_ieffect",
+                            "removeParent": null
+                          }
+                        ],
+                        "label": "Stand Up",
+                        "verb": "stands up"
+                      }
+                    ]
                   }
                 ],
                 "success": []
@@ -21567,7 +22455,8 @@
                 "type": "ieffect",
                 "name": "Charmed",
                 "duration": 14400,
-                "effects": ""
+                "effects": "",
+                "desc": "Charmed by {{caster.name}}\n - They can repeat the DC {lastSaveDC} {lastSaveAbility} saving throw if the target suffers any harm or recievs a suicidal command, ending the effect on a success"
               }
             ],
             "success": []
@@ -21912,7 +22801,8 @@
                 "type": "ieffect",
                 "name": "Restrained (Grappled)",
                 "duration": -1,
-                "effects": "dis -sdis dex"
+                "effects": "dis -sdis dex",
+                "desc": "Grappled by {{caster.name}}\n - Escape DC 20"
               }
             ],
             "miss": [],
@@ -22002,11 +22892,25 @@
                 "dc": "20",
                 "fail": [
                   {
-                    "type": "ieffect",
+                    "type": "ieffect2",
                     "name": "Prone",
-                    "duration": 1,
-                    "effects": "dis",
-                    "desc": "A prone creature's only movement option is to crawl, unless it stands up and thereby ends the condition.\n - The creature has disadvantage on attack rolls.\n - An attack roll against the creature has advantage if the attacker is within 5 feet of the creature. Otherwise, the attack roll has disadvantage."
+                    "duration": -1,
+                    "effects": {
+                      "attack_advantage": -1
+                    },
+                    "desc": "A prone creature's only movement option is to crawl, unless it stands up and thereby ends the condition",
+                    "buttons": [
+                      {
+                        "automation": [
+                          {
+                            "type": "remove_ieffect",
+                            "removeParent": null
+                          }
+                        ],
+                        "label": "Stand Up",
+                        "verb": "stands up"
+                      }
+                    ]
                   }
                 ],
                 "success": []
@@ -22040,7 +22944,8 @@
                 "type": "ieffect",
                 "name": "Frightened",
                 "duration": 10,
-                "effects": ""
+                "effects": "",
+                "desc": "Frightened of {{caster.name}}\n - They can repeat the DC {lastSaveDC} {lastSaveAbility} saving throw at the end of each of its turns, with disadvantage if the tarrasque is within line of sight, ending the effect on a success"
               }
             ],
             "success": []
@@ -22049,7 +22954,7 @@
       },
       {
         "type": "text",
-        "text": "Each creature of the tarrasque's choice within 120 feet of it and aware of it must succeed on a DC 17 Wisdom saving throw or become frightened for 1 minute. A creature can repeat the saving throw at the end of each of its turns, with disadvantage if the tarrasque is within line of sight, ending the effect on itself on a success. If a creature's saving throw is successful or the effect ends for it, the creature is immune to the tarrasque's Frightful Presence for the next 24 hours."
+        "text": "Each creature of the tarrasque's choice within 120 feet of it and aware of it must succeed on a DC 17 Wisdom saving throw or become frightened for 1 minute. A creature can repeat the saving throw at the end of each of its turns, ending the effect on itself on a success. If a creature's saving throw is successful or the effect ends for it, the creature is immune to the tarrasque's Frightful Presence for the next 24 hours."
       }
     ],
     "_v": 2,
@@ -22222,11 +23127,25 @@
             "dc": "13",
             "fail": [
               {
-                "type": "ieffect",
+                "type": "ieffect2",
                 "name": "Prone",
-                "duration": 1,
-                "effects": "dis",
-                "desc": "A prone creature's only movement option is to crawl, unless it stands up and thereby ends the condition.\n - The creature has disadvantage on attack rolls.\n - An attack roll against the creature has advantage if the attacker is within 5 feet of the creature. Otherwise, the attack roll has disadvantage."
+                "duration": -1,
+                "effects": {
+                  "attack_advantage": -1
+                },
+                "desc": "A prone creature's only movement option is to crawl, unless it stands up and thereby ends the condition",
+                "buttons": [
+                  {
+                    "automation": [
+                      {
+                        "type": "remove_ieffect",
+                        "removeParent": null
+                      }
+                    ],
+                    "label": "Stand Up",
+                    "verb": "stands up"
+                  }
+                ]
               }
             ],
             "success": []
@@ -22415,11 +23334,25 @@
             "dc": "13",
             "fail": [
               {
-                "type": "ieffect",
+                "type": "ieffect2",
                 "name": "Prone",
-                "duration": 1,
-                "effects": "dis",
-                "desc": "A prone creature's only movement option is to crawl, unless it stands up and thereby ends the condition.\n - The creature has disadvantage on attack rolls.\n - An attack roll against the creature has advantage if the attacker is within 5 feet of the creature. Otherwise, the attack roll has disadvantage."
+                "duration": -1,
+                "effects": {
+                  "attack_advantage": -1
+                },
+                "desc": "A prone creature's only movement option is to crawl, unless it stands up and thereby ends the condition",
+                "buttons": [
+                  {
+                    "automation": [
+                      {
+                        "type": "remove_ieffect",
+                        "removeParent": null
+                      }
+                    ],
+                    "label": "Stand Up",
+                    "verb": "stands up"
+                  }
+                ]
               }
             ],
             "success": []
@@ -22499,7 +23432,7 @@
         "effects": [
           {
             "type": "damage",
-            "damage": "-10 [regeneration]"
+            "damage": "-10 [heal]"
           }
         ]
       },
@@ -22528,7 +23461,8 @@
                 "type": "ieffect",
                 "name": "Restrained (Grappled)",
                 "duration": -1,
-                "effects": "dis -sdis dex"
+                "effects": "dis -sdis dex",
+                "desc": "Grappled by {{caster.name}}\n - Escape DC 17"
               }
             ],
             "miss": [],
@@ -22587,11 +23521,25 @@
             "dc": "15",
             "fail": [
               {
-                "type": "ieffect",
+                "type": "ieffect2",
                 "name": "Prone",
-                "duration": 1,
-                "effects": "dis",
-                "desc": "A prone creature's only movement option is to crawl, unless it stands up and thereby ends the condition.\n - The creature has disadvantage on attack rolls.\n - An attack roll against the creature has advantage if the attacker is within 5 feet of the creature. Otherwise, the attack roll has disadvantage."
+                "duration": -1,
+                "effects": {
+                  "attack_advantage": -1
+                },
+                "desc": "A prone creature's only movement option is to crawl, unless it stands up and thereby ends the condition",
+                "buttons": [
+                  {
+                    "automation": [
+                      {
+                        "type": "remove_ieffect",
+                        "removeParent": null
+                      }
+                    ],
+                    "label": "Stand Up",
+                    "verb": "stands up"
+                  }
+                ]
               }
             ],
             "success": []
@@ -22670,7 +23618,7 @@
         "effects": [
           {
             "type": "damage",
-            "damage": "-(2d8 + 2) [healing]"
+            "damage": "-(2d8 + 2) [heal]"
           }
         ]
       },
@@ -22716,7 +23664,7 @@
         "effects": [
           {
             "type": "damage",
-            "damage": "-(2d8 + 2) [healing]"
+            "damage": "-(2d8 + 2) [heal]"
           }
         ]
       },
@@ -22770,7 +23718,8 @@
                 "type": "ieffect",
                 "name": "Grappled",
                 "duration": -1,
-                "effects": ""
+                "effects": "",
+                "desc": "Grappled by {{caster.name}}\n - Escape DC 18"
               }
             ],
             "miss": [],
@@ -22862,7 +23811,8 @@
                 "type": "ieffect",
                 "name": "Charmed",
                 "duration": 14400,
-                "effects": ""
+                "effects": "",
+                "desc": "Charmed by {{caster.name}}\n - They can repeat the DC {lastSaveDC} {lastSaveAbility} saving throw each time the vampire or its companions do anything harmful to the target, ending the effect on a success"
               }
             ],
             "success": []
@@ -22887,7 +23837,7 @@
         "effects": [
           {
             "type": "damage",
-            "damage": "-20 [regeneration]"
+            "damage": "-20 [heal]"
           }
         ]
       },
@@ -22940,7 +23890,8 @@
                 "type": "ieffect",
                 "name": "Grappled",
                 "duration": -1,
-                "effects": ""
+                "effects": "",
+                "desc": "Grappled by {{caster.name}}\n - Escape DC 13"
               }
             ],
             "miss": [],
@@ -23026,7 +23977,7 @@
         "effects": [
           {
             "type": "damage",
-            "damage": "-10 [regeneration]"
+            "damage": "-10 [heal]"
           }
         ]
       },
@@ -23382,11 +24333,25 @@
             "dc": "14",
             "fail": [
               {
-                "type": "ieffect",
+                "type": "ieffect2",
                 "name": "Prone",
-                "duration": 1,
-                "effects": "dis",
-                "desc": "A prone creature's only movement option is to crawl, unless it stands up and thereby ends the condition.\n - The creature has disadvantage on attack rolls.\n - An attack roll against the creature has advantage if the attacker is within 5 feet of the creature. Otherwise, the attack roll has disadvantage."
+                "duration": -1,
+                "effects": {
+                  "attack_advantage": -1
+                },
+                "desc": "A prone creature's only movement option is to crawl, unless it stands up and thereby ends the condition",
+                "buttons": [
+                  {
+                    "automation": [
+                      {
+                        "type": "remove_ieffect",
+                        "removeParent": null
+                      }
+                    ],
+                    "label": "Stand Up",
+                    "verb": "stands up"
+                  }
+                ]
               }
             ],
             "success": []
@@ -23481,7 +24446,8 @@
                 "type": "ieffect",
                 "name": "Restrained (Grappled)",
                 "duration": -1,
-                "effects": "dis -sdis dex"
+                "effects": "dis -sdis dex",
+                "desc": "Grappled by {{caster.name}}\n - Escape DC 14"
               }
             ],
             "success": []
@@ -23658,11 +24624,25 @@
             "dc": "13",
             "fail": [
               {
-                "type": "ieffect",
+                "type": "ieffect2",
                 "name": "Prone",
-                "duration": 1,
-                "effects": "dis",
-                "desc": "A prone creature's only movement option is to crawl, unless it stands up and thereby ends the condition.\n - The creature has disadvantage on attack rolls.\n - An attack roll against the creature has advantage if the attacker is within 5 feet of the creature. Otherwise, the attack roll has disadvantage."
+                "duration": -1,
+                "effects": {
+                  "attack_advantage": -1
+                },
+                "desc": "A prone creature's only movement option is to crawl, unless it stands up and thereby ends the condition",
+                "buttons": [
+                  {
+                    "automation": [
+                      {
+                        "type": "remove_ieffect",
+                        "removeParent": null
+                      }
+                    ],
+                    "label": "Stand Up",
+                    "verb": "stands up"
+                  }
+                ]
               }
             ],
             "success": []
@@ -23976,11 +24956,25 @@
             "dc": "14",
             "fail": [
               {
-                "type": "ieffect",
+                "type": "ieffect2",
                 "name": "Prone",
-                "duration": 1,
-                "effects": "dis",
-                "desc": "A prone creature's only movement option is to crawl, unless it stands up and thereby ends the condition.\n - The creature has disadvantage on attack rolls.\n - An attack roll against the creature has advantage if the attacker is within 5 feet of the creature. Otherwise, the attack roll has disadvantage."
+                "duration": -1,
+                "effects": {
+                  "attack_advantage": -1
+                },
+                "desc": "A prone creature's only movement option is to crawl, unless it stands up and thereby ends the condition",
+                "buttons": [
+                  {
+                    "automation": [
+                      {
+                        "type": "remove_ieffect",
+                        "removeParent": null
+                      }
+                    ],
+                    "label": "Stand Up",
+                    "verb": "stands up"
+                  }
+                ]
               }
             ],
             "success": []
@@ -24406,11 +25400,25 @@
                 "dc": "14",
                 "fail": [
                   {
-                    "type": "ieffect",
+                    "type": "ieffect2",
                     "name": "Prone",
-                    "duration": 1,
-                    "effects": "dis",
-                    "desc": "A prone creature's only movement option is to crawl, unless it stands up and thereby ends the condition.\n - The creature has disadvantage on attack rolls.\n - An attack roll against the creature has advantage if the attacker is within 5 feet of the creature. Otherwise, the attack roll has disadvantage."
+                    "duration": -1,
+                    "effects": {
+                      "attack_advantage": -1
+                    },
+                    "desc": "A prone creature's only movement option is to crawl, unless it stands up and thereby ends the condition",
+                    "buttons": [
+                      {
+                        "automation": [
+                          {
+                            "type": "remove_ieffect",
+                            "removeParent": null
+                          }
+                        ],
+                        "label": "Stand Up",
+                        "verb": "stands up"
+                      }
+                    ]
                   }
                 ],
                 "success": []
@@ -24489,11 +25497,25 @@
                 "dc": "11",
                 "fail": [
                   {
-                    "type": "ieffect",
+                    "type": "ieffect2",
                     "name": "Prone",
-                    "duration": 1,
-                    "effects": "dis",
-                    "desc": "A prone creature's only movement option is to crawl, unless it stands up and thereby ends the condition.\n - The creature has disadvantage on attack rolls.\n - An attack roll against the creature has advantage if the attacker is within 5 feet of the creature. Otherwise, the attack roll has disadvantage."
+                    "duration": -1,
+                    "effects": {
+                      "attack_advantage": -1
+                    },
+                    "desc": "A prone creature's only movement option is to crawl, unless it stands up and thereby ends the condition",
+                    "buttons": [
+                      {
+                        "automation": [
+                          {
+                            "type": "remove_ieffect",
+                            "removeParent": null
+                          }
+                        ],
+                        "label": "Stand Up",
+                        "verb": "stands up"
+                      }
+                    ]
                   }
                 ],
                 "success": []
@@ -24531,11 +25553,25 @@
                 "dc": "13",
                 "fail": [
                   {
-                    "type": "ieffect",
+                    "type": "ieffect2",
                     "name": "Prone",
-                    "duration": 1,
-                    "effects": "dis",
-                    "desc": "A prone creature's only movement option is to crawl, unless it stands up and thereby ends the condition.\n - The creature has disadvantage on attack rolls.\n - An attack roll against the creature has advantage if the attacker is within 5 feet of the creature. Otherwise, the attack roll has disadvantage."
+                    "duration": -1,
+                    "effects": {
+                      "attack_advantage": -1
+                    },
+                    "desc": "A prone creature's only movement option is to crawl, unless it stands up and thereby ends the condition",
+                    "buttons": [
+                      {
+                        "automation": [
+                          {
+                            "type": "remove_ieffect",
+                            "removeParent": null
+                          }
+                        ],
+                        "label": "Stand Up",
+                        "verb": "stands up"
+                      }
+                    ]
                   }
                 ],
                 "success": []
@@ -25990,11 +27026,25 @@
             "dc": "13",
             "fail": [
               {
-                "type": "ieffect",
+                "type": "ieffect2",
                 "name": "Prone",
-                "duration": 1,
-                "effects": "dis",
-                "desc": "A prone creature's only movement option is to crawl, unless it stands up and thereby ends the condition.\n - The creature has disadvantage on attack rolls.\n - An attack roll against the creature has advantage if the attacker is within 5 feet of the creature. Otherwise, the attack roll has disadvantage."
+                "duration": -1,
+                "effects": {
+                  "attack_advantage": -1
+                },
+                "desc": "A prone creature's only movement option is to crawl, unless it stands up and thereby ends the condition",
+                "buttons": [
+                  {
+                    "automation": [
+                      {
+                        "type": "remove_ieffect",
+                        "removeParent": null
+                      }
+                    ],
+                    "label": "Stand Up",
+                    "verb": "stands up"
+                  }
+                ]
               }
             ],
             "success": []
@@ -26029,11 +27079,25 @@
                 "dc": "14",
                 "fail": [
                   {
-                    "type": "ieffect",
+                    "type": "ieffect2",
                     "name": "Prone",
-                    "duration": 1,
-                    "effects": "dis",
-                    "desc": "A prone creature's only movement option is to crawl, unless it stands up and thereby ends the condition.\n - The creature has disadvantage on attack rolls.\n - An attack roll against the creature has advantage if the attacker is within 5 feet of the creature. Otherwise, the attack roll has disadvantage."
+                    "duration": -1,
+                    "effects": {
+                      "attack_advantage": -1
+                    },
+                    "desc": "A prone creature's only movement option is to crawl, unless it stands up and thereby ends the condition",
+                    "buttons": [
+                      {
+                        "automation": [
+                          {
+                            "type": "remove_ieffect",
+                            "removeParent": null
+                          }
+                        ],
+                        "label": "Stand Up",
+                        "verb": "stands up"
+                      }
+                    ]
                   }
                 ],
                 "success": []
@@ -26094,7 +27158,8 @@
                 "type": "ieffect",
                 "name": "Frightened",
                 "duration": 10,
-                "effects": ""
+                "effects": "",
+                "desc": "Frightened of {{caster.name}}\n - They can repeat the DC {lastSaveDC} {lastSaveAbility} saving throw at the end of each of its turns, with disadvantage if the banshee is within line of sight, ending the effect on a success"
               }
             ],
             "success": []
@@ -26428,7 +27493,8 @@
                 "type": "ieffect",
                 "name": "Frightened",
                 "duration": 10,
-                "effects": ""
+                "effects": "",
+                "desc": "Frightened of {{caster.name}}\n - They can repeat the DC {lastSaveDC} {lastSaveAbility} saving throw at the end of each of its turns, with disadvantage if the spectator is visible to the target, ending the effect on a success"
               }
             ],
             "success": []
@@ -26887,7 +27953,8 @@
                 "type": "ieffect",
                 "name": "Charmed",
                 "duration": 14400,
-                "effects": ""
+                "effects": "",
+                "desc": "Charmed by {{caster.name}}\n - They can repeat the DC {lastSaveDC} {lastSaveAbility} saving throw if the target suffers any harm or recieves a suicidal command, ending the effect on a success"
               }
             ],
             "success": []
@@ -27152,130 +28219,6 @@
     "_v": 2
   },
   {
-    "name": "Homunculus Servant - Force Strike",
-    "automation": [
-      {
-        "type": "target",
-        "target": "each",
-        "effects": [
-          {
-            "type": "attack",
-            "attackBonus": "4",
-            "hit": [
-              {
-                "type": "damage",
-                "damage": "1d4 + 2 [force]"
-              }
-            ],
-            "miss": []
-          }
-        ]
-      },
-      {
-        "type": "text",
-        "text": "*Ranged Weapon Attack:* +4 to hit, range 30 ft., one target you can see. *Hit:* 1d4 + 2 force damage."
-      }
-    ],
-    "_v": 2
-  },
-  {
-    "name": "Vox Seeker - Pincer",
-    "automation": [
-      {
-        "type": "target",
-        "target": "each",
-        "effects": [
-          {
-            "type": "attack",
-            "attackBonus": "2",
-            "hit": [
-              {
-                "type": "damage",
-                "damage": "1d4 [piercing] + 3 [lightning]"
-              }
-            ],
-            "miss": []
-          }
-        ]
-      },
-      {
-        "type": "text",
-        "text": "*Melee Weapon Attack:* +2 to hit, reach 5 ft., one target. *Hit:* 2 (1d4) piercing damage plus 3 lightning damage."
-      }
-    ],
-    "_v": 2
-  },
-  {
-    "name": "Guardian Wolf - Bite",
-    "automation": [
-      {
-        "type": "target",
-        "target": "each",
-        "effects": [
-          {
-            "type": "attack",
-            "attackBonus": "8",
-            "hit": [
-              {
-                "type": "damage",
-                "damage": "1d10 + 6 [piercing]"
-              },
-              {
-                "type": "save",
-                "stat": "str",
-                "dc": "16",
-                "fail": [
-                  {
-                    "type": "ieffect",
-                    "name": "Prone",
-                    "duration": 1,
-                    "effects": "dis",
-                    "desc": "A prone creature's only movement option is to crawl, unless it stands up and thereby ends the condition.\n - The creature has disadvantage on attack rolls.\n - An attack roll against the creature has advantage if the attacker is within 5 feet of the creature. Otherwise, the attack roll has disadvantage."
-                  }
-                ],
-                "success": []
-              }
-            ],
-            "miss": []
-          }
-        ]
-      },
-      {
-        "type": "text",
-        "text": "*Melee Weapon Attack:* +8 to hit, reach 5 ft., one target. *Hit:* 11 (1d10 + 6) piercing damage. If the target is a creature, it must succeed on a DC 16 Strength saving throw or be knocked prone."
-      }
-    ],
-    "_v": 2
-  },
-  {
-    "name": "Guardian Wolf - Claws",
-    "automation": [
-      {
-        "type": "target",
-        "target": "each",
-        "effects": [
-          {
-            "type": "attack",
-            "attackBonus": "8",
-            "hit": [
-              {
-                "type": "damage",
-                "damage": "2d8 + 6 [piercing]"
-              }
-            ],
-            "miss": []
-          }
-        ]
-      },
-      {
-        "type": "text",
-        "text": "*Melee Weapon Attack:* +8 to hit, reach 5 ft., one target. *Hit:* 15 (2d8 + 6) piercing damage."
-      }
-    ],
-    "_v": 2,
-    "proper": true
-  },
-  {
     "name": "Dust Devil - Slam",
     "automation": [
       {
@@ -27324,11 +28267,25 @@
                 "damage": "{damage}"
               },
               {
-                "type": "ieffect",
+                "type": "ieffect2",
                 "name": "Prone",
-                "duration": 1,
-                "effects": "dis",
-                "desc": "A prone creature's only movement option is to crawl, unless it stands up and thereby ends the condition.\n - The creature has disadvantage on attack rolls.\n - An attack roll against the creature has advantage if the attacker is within 5 feet of the creature. Otherwise, the attack roll has disadvantage."
+                "duration": -1,
+                "effects": {
+                  "attack_advantage": -1
+                },
+                "desc": "A prone creature's only movement option is to crawl, unless it stands up and thereby ends the condition",
+                "buttons": [
+                  {
+                    "automation": [
+                      {
+                        "type": "remove_ieffect",
+                        "removeParent": null
+                      }
+                    ],
+                    "label": "Stand Up",
+                    "verb": "stands up"
+                  }
+                ]
               }
             ],
             "success": [
@@ -27350,7 +28307,7 @@
     "verb": "creates"
   },
   {
-    "name": "Nyxborn lynx - Bite",
+    "name": "Asteroid Spider - Bite",
     "automation": [
       {
         "type": "target",
@@ -27358,26 +28315,30 @@
         "effects": [
           {
             "type": "attack",
-            "attackBonus": "5",
+            "attackBonus": "13",
             "hit": [
               {
                 "type": "damage",
-                "damage": "1d10+3[piercing]"
+                "damage": "3d8 + 8 [piercing] + 3d6 [acid]"
               }
             ],
-            "miss": []
+            "miss": [],
+            "adv": "0"
           }
-        ]
+        ],
+        "sortBy": null
       },
       {
         "type": "text",
-        "text": "*Melee Weapon Attack:* +5 to hit, reach 5 ft., one target. *Hit:* 8 (1d10 + 3) piercing damage."
+        "text": "*Melee Weapon Attack:* +13 to hit, reach 10 ft., one target. *Hit:* 21 (3d8 + 8) piercing damage plus 10 (3d6) acid damage."
       }
     ],
-    "_v": 2
+    "_v": 2,
+    "verb": null,
+    "proper": false
   },
   {
-    "name": "Nyxborn lynx - Claw",
+    "name": "Asteroid Spider - Web Strand",
     "automation": [
       {
         "type": "target",
@@ -27385,26 +28346,67 @@
         "effects": [
           {
             "type": "attack",
-            "attackBonus": "5",
+            "attackBonus": "13",
             "hit": [
               {
-                "type": "damage",
-                "damage": "1d8+3[slashing]"
+                "type": "ieffect",
+                "name": "Grappled (Web Strands)",
+                "duration": -1,
+                "effects": "",
+                "desc": "Grappled by {{caster.name}}\n - Escape DC 18\n - The web strands can be attacked and destroyed",
+                "end": false,
+                "conc": false,
+                "stacking": false,
+                "parent": null
               }
             ],
-            "miss": []
+            "miss": [],
+            "adv": "0"
           }
-        ]
+        ],
+        "sortBy": null
       },
       {
         "type": "text",
-        "text": "*Melee Weapon Attack:* +5 to hit, reach 5 ft., one target. *Hit:* 7 (1d8 + 3) slashing damage."
+        "text": "*Ranged Weapon Attack:* +13 to hit, reach 120 ft., one creature. *Hit:* The target is grappled (escape DC 18). The web strand can be attacked and destroyed (AC 12; 20 hit points; vulnerability to fire damage; immunity to bludgeoning, poison, and psychic damage). The spider can grapple up to six creatures at a time using its web strands."
       }
     ],
-    "_v": 2
+    "_v": 2,
+    "verb": "fires",
+    "proper": false
   },
   {
-    "name": "Nyxborn lynx - Pounce",
+    "name": "Asteroid Spider - Snare Ship",
+    "automation": [
+      {
+        "type": "target",
+        "target": "self",
+        "effects": [
+          {
+            "type": "ieffect",
+            "name": "Snaring Ship",
+            "duration": 10,
+            "effects": "",
+            "desc": "Suppresses the magic of any spell-jamming helm aboard the ship\n - Decks and other surfaces of the ship that aren\u2019t enclosed become difficult terrain until the effect ends\n - The web is impervious to damage but is destroyed by a successful casting of dispel magic (DC 18)",
+            "end": false,
+            "conc": false,
+            "stacking": false,
+            "parent": null
+          }
+        ],
+        "sortBy": null
+      },
+      {
+        "type": "text",
+        "text": "The web lasts for 1 minute and suppresses the magic of any spell-jamming helm aboard the ship. Decks and other surfaces of the ship that aren\u2019t enclosed become difficult terrain until the effect ends. The web is impervious to damage but is destroyed by a successful casting of dispel magic (DC 18)."
+      }
+    ],
+    "_v": 2,
+    "verb": "begins to",
+    "proper": true
+  },
+  {
+    "name": "Yggdrasti - Root",
     "automation": [
       {
         "type": "target",
@@ -27412,37 +28414,933 @@
         "effects": [
           {
             "type": "attack",
-            "attackBonus": "5",
+            "attackBonus": "8",
             "hit": [
               {
                 "type": "damage",
-                "damage": "1d8+3[slashing]"
+                "damage": "2d6 + 5 [bludgeoning]"
+              },
+              {
+                "type": "ieffect",
+                "name": "Grappled",
+                "duration": -1,
+                "effects": "",
+                "desc": "Grappled by {{caster.name}}\n - Escape DC 15",
+                "end": false,
+                "conc": false,
+                "stacking": false,
+                "parent": null
+              }
+            ],
+            "miss": [],
+            "adv": "0"
+          }
+        ],
+        "sortBy": null
+      },
+      {
+        "type": "text",
+        "text": "*Melee Weapon Attack:* +8 to hit, reach 20 ft., one target. *Hit:* 12 (2d6 + 5) bludgeoning damage, and if the target is a creature, it is grappled (escape DC 15). The yggdrasti has four roots, each of which can grapple one target."
+      }
+    ],
+    "_v": 2,
+    "verb": null,
+    "proper": false
+  },
+  {
+    "name": "Yggdrasti - Lightning Discharge",
+    "automation": [
+      {
+        "type": "target",
+        "target": "each",
+        "effects": [
+          {
+            "type": "save",
+            "stat": "dex",
+            "dc": "13",
+            "fail": [
+              {
+                "type": "damage",
+                "damage": "7d8 [lighting]",
+                "overheal": false
+              }
+            ],
+            "success": [
+              {
+                "type": "damage",
+                "damage": "(7d8 [lighting])/2",
+                "overheal": false
+              }
+            ]
+          }
+        ],
+        "sortBy": null
+      },
+      {
+        "type": "text",
+        "text": "The yggdrasti shoots lightning at one creature within 120 feet of itself. The target must make a DC 13 Dexterity saving throw, taking 31 (7d8) lightning damage on a failed save, or half as much damage on a successful one. "
+      }
+    ],
+    "_v": 2,
+    "verb": null,
+    "proper": false
+  },
+  {
+    "name": "Clockwork Horror - Bite",
+    "automation": [
+      {
+        "type": "target",
+        "target": "each",
+        "effects": [
+          {
+            "type": "attack",
+            "attackBonus": "4",
+            "hit": [
+              {
+                "type": "damage",
+                "damage": "1d8 + 2 [piercing]"
+              }
+            ],
+            "miss": [],
+            "adv": "0"
+          }
+        ],
+        "sortBy": null
+      },
+      {
+        "type": "text",
+        "text": "*Melee Weapon Attack:* +4 to hit, reach 5 ft., one target. *Hit:* 6 (1d8 + 2) piercing damage."
+      }
+    ],
+    "_v": 2,
+    "verb": null,
+    "proper": false
+  },
+  {
+    "name": "Clockwork Horror - Rotating Saw",
+    "automation": [
+      {
+        "type": "target",
+        "target": "each",
+        "effects": [
+          {
+            "type": "attack",
+            "attackBonus": "4",
+            "hit": [
+              {
+                "type": "damage",
+                "damage": "1d4 + 2 [slashing]"
+              }
+            ],
+            "miss": [],
+            "adv": "0"
+          }
+        ],
+        "sortBy": null
+      },
+      {
+        "type": "text",
+        "text": "*Melee Weapon Attack:* +4 to hit, reach 5 ft., one target. *Hit:* 4 (1d4 + 2) slashing damage."
+      }
+    ],
+    "_v": 2,
+    "verb": null,
+    "proper": false
+  },
+  {
+    "name": "Clockwork Horror - Lightning Jolt",
+    "automation": [
+      {
+        "type": "target",
+        "target": "each",
+        "effects": [
+          {
+            "type": "attack",
+            "attackBonus": "4",
+            "hit": [
+              {
+                "type": "damage",
+                "damage": "1d10 + 2 [lightning]"
+              }
+            ],
+            "miss": [],
+            "adv": "0"
+          }
+        ],
+        "sortBy": null
+      },
+      {
+        "type": "text",
+        "text": "**Ranged Spell Attack:** +4 to hit, range 120 ft., one target. **Hit:** 7 (1d10 + 2) lightning damage."
+      }
+    ],
+    "_v": 2,
+    "verb": "fires",
+    "proper": false
+  },
+  {
+    "name": "Star Lancer - Horn",
+    "automation": [
+      {
+        "type": "target",
+        "target": "each",
+        "effects": [
+          {
+            "type": "attack",
+            "attackBonus": "6",
+            "hit": [
+              {
+                "type": "damage",
+                "damage": "1d6 + 4 [piercing]"
+              }
+            ],
+            "miss": [],
+            "adv": "0"
+          }
+        ],
+        "sortBy": null
+      },
+      {
+        "type": "text",
+        "text": "*Melee Weapon Attack:* +6 to hit, reach 5 ft., one target. *Hit:* 7 (1d6 + 4) piercing damage. If the star lancer moved at least 20 feet straight toward the target immediately before the hit, the target takes an extra 10 (3d6) piercing damage."
+      }
+    ],
+    "_v": 2,
+    "verb": null,
+    "proper": false
+  },
+  {
+    "name": "Star Lancer - Charge",
+    "automation": [
+      {
+        "type": "target",
+        "target": "each",
+        "effects": [
+          {
+            "type": "damage",
+            "damage": "3d6 [piercing]",
+            "overheal": false,
+            "cantripScale": false
+          }
+        ],
+        "sortBy": null
+      },
+      {
+        "type": "text",
+        "text": "*Melee Weapon Attack:* +6 to hit, reach 5 ft., one target. *Hit:* 7 (1d6 + 4) piercing damage. If the star lancer moved at least 20 feet straight toward the target immediately before the hit, the target takes an extra 10 (3d6) piercing damage."
+      }
+    ],
+    "_v": 2,
+    "verb": "rushes in with",
+    "proper": false
+  },
+  {
+    "name": "Star Lancer - Invisibility Cloak",
+    "automation": [
+      {
+        "type": "target",
+        "target": "self",
+        "effects": [
+          {
+            "type": "ieffect",
+            "name": "Invisibility Cloak",
+            "duration": -1,
+            "effects": "",
+            "desc": "This effect lasts until {{caster.name}} or a creature riding it attacks or casts a spell",
+            "end": false,
+            "conc": true,
+            "stacking": false,
+            "parent": null,
+            "save_as": "cloak"
+          }
+        ],
+        "sortBy": null
+      },
+      {
+        "type": "target",
+        "target": "each",
+        "effects": [
+          {
+            "type": "ieffect",
+            "name": "Invisibility Cloak",
+            "duration": -1,
+            "effects": "",
+            "desc": "This effect lasts until {{caster.name}} or a creature riding it attacks or casts a spell",
+            "end": false,
+            "conc": false,
+            "stacking": false,
+            "parent": "cloak"
+          }
+        ],
+        "sortBy": null
+      },
+      {
+        "type": "text",
+        "text": "The star lancer and one creature riding it (chosen by the star lancer) magically turn invisible. This effect lasts until the star lancer or a creature riding it attacks or casts a spell, or until the star lancer\u2019s concentration ends (as if concentrating on a spell). Any equipment worn or carried by the invisible creatures is also invisible for the duration of the Invisibility Cloak."
+      }
+    ],
+    "_v": 2,
+    "verb": null,
+    "proper": false
+  },
+  {
+    "name": "Puppeteer Parasite - Cling",
+    "automation": [
+      {
+        "type": "target",
+        "target": "each",
+        "effects": [
+          {
+            "type": "attack",
+            "attackBonus": "4",
+            "hit": [
+              {
+                "type": "damage",
+                "damage": "3d6 + 2 [necrotic]"
+              },
+              {
+                "type": "ieffect",
+                "name": "Parasite Attached",
+                "duration": -1,
+                "effects": "",
+                "desc": "",
+                "end": false,
+                "conc": false,
+                "stacking": true,
+                "parent": null,
+                "save_as": "attached"
+              }
+            ],
+            "miss": [],
+            "adv": "0"
+          }
+        ],
+        "sortBy": null
+      },
+      {
+        "type": "condition",
+        "condition": "lastAttackDidHit",
+        "onTrue": [
+          {
+            "type": "target",
+            "target": "self",
+            "effects": [
+              {
+                "type": "ieffect",
+                "name": "Attached",
+                "duration": -1,
+                "effects": "",
+                "desc": "While attached, the parasite can\u2019t make Cling attacks\n - The parasite can detach itself by spending 5 feet of its movement\n - As an action, a creature within reach of the parasite can try to detach it, doing so with a successful DC 14 Strength check",
+                "end": false,
+                "conc": false,
+                "stacking": false,
+                "parent": "attached"
+              }
+            ],
+            "sortBy": null
+          }
+        ],
+        "onFalse": [],
+        "errorBehaviour": "false"
+      },
+      {
+        "type": "text",
+        "text": "*Melee Weapon Attack:* +4 to hit, reach 5 ft., one creature. *Hit:* 12 (3d6 + 2) necrotic damage, and the parasite attaches to the target. While attached, the parasite can\u2019t make Cling attacks. The parasite can detach itself by spending 5 feet of its movement. As an action, a creature within reach of the parasite can try to detach it, doing so with a successful DC 14 Strength check."
+      }
+    ],
+    "_v": 2,
+    "verb": "attempts to",
+    "proper": true
+  },
+  {
+    "name": "Puppeteer Parasite - Consume Life",
+    "automation": [
+      {
+        "type": "target",
+        "target": "each",
+        "effects": [
+          {
+            "type": "damage",
+            "damage": "3d6 + 2 [necrotic]",
+            "overheal": false,
+            "cantripScale": false
+          }
+        ],
+        "sortBy": null
+      },
+      {
+        "type": "text",
+        "text": "The parasite deals 12 (3d6 + 2) necrotic damage to one creature it is physically attached to, provided that creature isn\u2019t a Construct or an Undead. The parasite regains hit points equal to the damage taken."
+      }
+    ],
+    "_v": 2,
+    "verb": "begins to",
+    "proper": true
+  },
+  {
+    "name": "Eldritch Lich - Parasitic Tentacle",
+    "automation": [
+      {
+        "type": "target",
+        "target": "each",
+        "effects": [
+          {
+            "type": "attack",
+            "attackBonus": "9",
+            "hit": [
+              {
+                "type": "damage",
+                "damage": "(6d6 + 4 [piercing]) + (6d6 + 4 [necrotic])"
               },
               {
                 "type": "save",
-                "stat": "str",
-                "dc": "13",
+                "stat": "con",
+                "dc": "17",
                 "fail": [
                   {
                     "type": "ieffect",
-                    "name": "Prone (Pounce)",
+                    "name": "Poisoned",
                     "duration": -1,
-                    "effects": "dis"
+                    "effects": "dis",
+                    "desc": "Disadvantage on attack rolls and ability checks\n - Target can repeat the DC {lastSaveDC} {lastSaveAbility} saving throw at the end of each of its turns, ending the effect on itself on a success\n - The third time the target fails the save, the target dies and dissolves into a gibbering mouther that obeys the lich and uses the target\u2019s initiative",
+                    "end": false,
+                    "conc": false,
+                    "stacking": false,
+                    "parent": null
                   }
                 ],
                 "success": []
               }
             ],
-            "miss": []
+            "miss": [],
+            "adv": "0"
+          }
+        ],
+        "sortBy": null
+      },
+      {
+        "type": "text",
+        "text": "*Melee Weapon Attack:* +9 to hit, reach 10 ft., one creature. *Hit:* 25 (6d6 + 4) piercing damage plus 25 (6d6 + 4) necrotic damage. The target must succeed on a DC 17 Constitution saving throw or be poisoned. The poisoned target can repeat the save at the end of each of its turns, ending the effect on itself on a success. The third time the target fails the save, the target dies and dissolves into a gibbering mouther that obeys the lich and uses the target\u2019s initiative."
+      }
+    ],
+    "_v": 2,
+    "verb": "reaches out with",
+    "proper": false
+  },
+  {
+    "name": "Eldritch Lich - Psychic Whisper",
+    "automation": [
+      {
+        "type": "target",
+        "target": "self",
+        "effects": [
+          {
+            "type": "ieffect",
+            "name": "Psychic Whisper",
+            "duration": 2,
+            "effects": "",
+            "end": true,
+            "save_as": "endOfCaster"
           }
         ]
       },
       {
+        "type": "target",
+        "target": "each",
+        "effects": [
+          {
+            "type": "save",
+            "stat": "wis",
+            "dc": "17",
+            "fail": [
+              {
+                "type": "damage",
+                "damage": "6d6 + 4 [psychic]",
+                "overheal": false,
+                "cantripScale": false
+              },
+              {
+                "type": "ieffect",
+                "name": "Stunned",
+                "duration": -1,
+                "effects": "",
+                "desc": "",
+                "end": false,
+                "conc": false,
+                "stacking": false,
+                "parent": "endOfCaster"
+              }
+            ],
+            "success": []
+          }
+        ],
+        "sortBy": null
+      },
+      {
         "type": "text",
-        "text": "If the Nyxborn lynx moves at least 20 feet straight toward a creature and then hits it with a claw attack on the same turn, that target must succeed on a DC 13 Strength saving throw or be knocked prone. If the target is prone, the Nyxborn lynx can make one bite attack against it as a bonus action."
+        "text": "The lich targets one creature it can see within 120 feet of itself. The target must succeed on a DC 17 Wisdom saving throw or take 25 (6d6 + 4) psychic damage and be stunned until the end of the lich\u2019s next turn as incomprehensible whispers fill the target\u2019s mind. "
       }
     ],
     "_v": 2,
-    "verb": "makes"
+    "verb": "sends out",
+    "proper": false
+  },
+  {
+    "name": "Fractine - Extradimensional Touch",
+    "automation": [
+      {
+        "type": "target",
+        "target": "each",
+        "effects": [
+          {
+            "type": "attack",
+            "attackBonus": "5",
+            "hit": [
+              {
+                "type": "damage",
+                "damage": "8d6 [force]"
+              }
+            ],
+            "miss": [],
+            "adv": "0"
+          }
+        ],
+        "sortBy": null
+      },
+      {
+        "type": "text",
+        "text": "*Melee Spell Attack:* +5 to hit, reach 5 ft., one target. *Hit:* 24 (8d6) force damage."
+      }
+    ],
+    "_v": 2,
+    "verb": "reaches out for an",
+    "proper": true
+  },
+  {
+    "name": "Fractine - Imprison",
+    "automation": [
+      {
+        "type": "target",
+        "target": "each",
+        "effects": [
+          {
+            "type": "save",
+            "stat": "dex",
+            "dc": "16",
+            "fail": [
+              {
+                "type": "ieffect",
+                "name": "Imprisoned",
+                "duration": -1,
+                "effects": "",
+                "desc": "Imprisoned within {{caster.name}}",
+                "end": false,
+                "conc": false,
+                "stacking": false,
+                "parent": null
+              }
+            ],
+            "success": []
+          }
+        ],
+        "sortBy": null
+      },
+      {
+        "type": "text",
+        "text": "The fractine targets one creature of its size or smaller in its space. The target must succeed on a DC 16 Dexterity saving throw or be imprisoned in a demiplane. While the creature is imprisoned, a distorted image of it can be seen on the fractine\u2019s two-dimensional surface.\nThe demiplane moves with the fractine, has indestructible and opaque walls, and is only as big as it needs to be to contain the target, which doesn\u2019t suffer from hunger or thirst while imprisoned. No other creature can enter the demiplane, and the fractine can\u2019t be harmed from within the demiplane.\nThe fractine can imprison only one creature at a time and can release that creature as a bonus action. If the fractine is reduced to 0 hit points, any creature in the fractine\u2019s demiplane is released instantly. A released creature reappears in an unoccupied space as close to the fractine (or where it died) as possible. A creature can leave the demiplane on its own by using magic that enables planar travel, such as the plane shift spell."
+      }
+    ],
+    "_v": 2,
+    "verb": "attempts to",
+    "proper": true
+  },
+  {
+    "name": "Fractine - Mirrored Damage",
+    "automation": [
+      {
+        "type": "roll",
+        "dice": "8d6 [force]",
+        "name": "damage",
+        "hidden": false,
+        "cantripScale": false
+      },
+      {
+        "type": "target",
+        "target": "each",
+        "effects": [
+          {
+            "type": "save",
+            "stat": "con",
+            "dc": "16",
+            "fail": [
+              {
+                "type": "damage",
+                "damage": "{damage}",
+                "overheal": false
+              }
+            ],
+            "success": [
+              {
+                "type": "damage",
+                "damage": "({damage})/2",
+                "overheal": false
+              }
+            ]
+          }
+        ],
+        "sortBy": null
+      },
+      {
+        "type": "text",
+        "text": "In response to being damaged by a creature it can see within 120 feet of itself, the fractine forces that creature to make a DC 16 Constitution saving throw. On a failed save, the creature takes 24 (8d6) force damage. On a successful save, the creature takes half as much damage."
+      }
+    ],
+    "_v": 2,
+    "verb": null,
+    "proper": false
+  },
+  {
+    "name": "Gadabout - Branch",
+    "automation": [
+      {
+        "type": "target",
+        "target": "each",
+        "effects": [
+          {
+            "type": "attack",
+            "attackBonus": "3",
+            "hit": [
+              {
+                "type": "damage",
+                "damage": "1d4 + 4 [slashing]"
+              }
+            ],
+            "miss": [],
+            "adv": "0"
+          }
+        ],
+        "sortBy": null
+      },
+      {
+        "type": "text",
+        "text": "*Melee Weapon Attack:* +3 to hit, reach 5 ft., one target. *Hit:* 3 (1d4 + 1) slashing damage."
+      }
+    ],
+    "_v": 2,
+    "verb": null,
+    "proper": false
+  },
+  {
+    "name": "Gadabout - Wrap",
+    "automation": [
+      {
+        "type": "target",
+        "target": "each",
+        "effects": [
+          {
+            "type": "ieffect",
+            "name": "Grappled",
+            "duration": -1,
+            "effects": "",
+            "desc": "Grappled by {{caster.name}}\n - Escape DC 0",
+            "end": false,
+            "conc": false,
+            "stacking": false,
+            "parent": null
+          }
+        ],
+        "sortBy": null
+      },
+      {
+        "type": "text",
+        "text": "The gadabout enters the space of a willing Medium or Small creature within 5 feet of itself and gently wraps its branches around the target. The target is grappled (escape DC 0). Any attempt by the target to escape the grapple causes the gadabout to use its reaction to move into the nearest unoccupied space. While grappled by the gadabout, the target determines where the gadabout moves on the gadabout\u2019s turns and accompanies the gadabout wherever it goes."
+      }
+    ],
+    "_v": 2,
+    "verb": null,
+    "proper": false
+  },
+  {
+    "name": "Goon Balloon - Claw",
+    "automation": [
+      {
+        "type": "target",
+        "target": "each",
+        "effects": [
+          {
+            "type": "attack",
+            "attackBonus": "2",
+            "hit": [
+              {
+                "type": "damage",
+                "damage": "1d6 [slashing]"
+              }
+            ],
+            "miss": [],
+            "adv": "0"
+          }
+        ],
+        "sortBy": null
+      },
+      {
+        "type": "text",
+        "text": "*Melee Weapon Attack:* +2 to hit, reach 5 ft., one target. *Hit:* 3 (1d6) slashing damage."
+      }
+    ],
+    "_v": 2,
+    "verb": null,
+    "proper": false
+  },
+  {
+    "name": "Goon Balloon - Scintillating Eye",
+    "automation": [
+      {
+        "type": "target",
+        "target": "each",
+        "effects": [
+          {
+            "type": "save",
+            "stat": "wis",
+            "dc": "12",
+            "fail": [
+              {
+                "type": "damage",
+                "damage": "1d12 [psychic]",
+                "overheal": false,
+                "cantripScale": false
+              }
+            ],
+            "success": [
+              {
+                "type": "damage",
+                "damage": "(1d12 [psychic])/2",
+                "overheal": false,
+                "cantripScale": false
+              }
+            ]
+          }
+        ],
+        "sortBy": null
+      },
+      {
+        "type": "text",
+        "text": "Magical, kaleidoscopic light emanates from one of the goon balloon\u2019s eyes as the goon balloon targets one creature it can see within 30 feet of itself. The target must make a DC 12 Wisdom saving throw, taking 6 (1d12) psychic damage on a failed save, or half as much damage on a successful one."
+      }
+    ],
+    "_v": 2,
+    "verb": "stares at you with",
+    "proper": false
+  },
+  {
+    "name": "Goon Balloon - Burst",
+    "automation": [
+      {
+        "type": "target",
+        "target": "each",
+        "effects": [
+          {
+            "type": "save",
+            "stat": "con",
+            "dc": "13",
+            "fail": [
+              {
+                "type": "ieffect",
+                "name": "Poisoned",
+                "duration": 10,
+                "effects": "dis",
+                "desc": "They can repeat the DC {lastSaveDC} {lastSaveAbility} saving throw at the end of each of its turns, ending the effect on a success",
+                "end": false,
+                "conc": false,
+                "stacking": false,
+                "parent": null
+              }
+            ],
+            "success": []
+          }
+        ],
+        "sortBy": null
+      },
+      {
+        "type": "text",
+        "text": "The goon balloon bursts when it drops to 0 hit points, releasing noxious gas in a 10-foot-radius sphere centered on itself. Creatures in that area must succeed on a DC 12 Constitution saving throw or be poisoned for 1 minute. A poisoned creature can repeat the saving throw at the end of each of its turns, ending the effect on itself on a success."
+      }
+    ],
+    "_v": 2,
+    "verb": "explodes in",
+    "proper": false
+  },
+  {
+    "name": "Nightmare Beast - Claw",
+    "automation": [
+      {
+        "type": "target",
+        "target": "each",
+        "effects": [
+          {
+            "type": "attack",
+            "attackBonus": "13",
+            "hit": [
+              {
+                "type": "damage",
+                "damage": "1d12 + 8 [slashing]"
+              },
+              {
+                "type": "save",
+                "stat": "str",
+                "dc": "21",
+                "fail": [
+                  {
+                    "type": "ieffect2",
+                    "name": "Prone",
+                    "duration": -1,
+                    "effects": {
+                      "attack_advantage": -1
+                    },
+                    "desc": "A prone creature's only movement option is to crawl, unless it stands up and thereby ends the condition",
+                    "buttons": [
+                      {
+                        "automation": [
+                          {
+                            "type": "remove_ieffect",
+                            "removeParent": null
+                          }
+                        ],
+                        "label": "Stand Up",
+                        "verb": "stands up"
+                      }
+                    ]
+                  }
+                ],
+                "success": []
+              }
+            ],
+            "miss": [],
+            "adv": "0"
+          }
+        ],
+        "sortBy": null
+      },
+      {
+        "type": "text",
+        "text": "*Melee Weapon Attack:* +13 to hit, reach 15 ft., one target. *Hit:* 14 (1d12 + 8) slashing damage, and if the target is a creature, it must succeed on a DC 21 Strength saving throw or be knocked prone."
+      }
+    ],
+    "_v": 2,
+    "verb": null,
+    "proper": false
+  },
+  {
+    "name": "Nightmare Beast - Tusk",
+    "automation": [
+      {
+        "type": "target",
+        "target": "each",
+        "effects": [
+          {
+            "type": "attack",
+            "attackBonus": "13",
+            "hit": [
+              {
+                "type": "damage",
+                "damage": "2d8 + 8 [slashing]"
+              }
+            ],
+            "miss": [],
+            "adv": "0"
+          }
+        ],
+        "sortBy": null
+      },
+      {
+        "type": "text",
+        "text": "*Melee Weapon Attack:* +13 to hit, reach 15 ft., one target. *Hit:* 17 (2d8 + 8) slashing damage."
+      }
+    ],
+    "_v": 2,
+    "verb": null,
+    "proper": false
+  },
+  {
+    "name": "Nightmare Beast - Disintegration Gaze",
+    "automation": [
+      {
+        "type": "target",
+        "target": "each",
+        "effects": [
+          {
+            "type": "roll",
+            "dice": "10d6 + 40 [force]",
+            "name": "damage",
+            "hidden": false,
+            "cantripScale": false
+          },
+          {
+            "type": "save",
+            "stat": "con",
+            "dc": "18",
+            "fail": [
+              {
+                "type": "damage",
+                "damage": "{damage}",
+                "overheal": false
+              }
+            ],
+            "success": [
+              {
+                "type": "damage",
+                "damage": "({damage})/2",
+                "overheal": false
+              }
+            ]
+          }
+        ],
+        "sortBy": null
+      },
+      {
+        "type": "text",
+        "text": "The beast targets one creature it can see within 60 feet of itself. The target must make a DC 18 Constitution saving throw, taking 70 (10d6 + 40) force damage on a failed save, or half as much damage on a successful one. If this magical effect reduces the target to 0 hit points, the target is disintegrated and leaves nothing behind, except a pile of ashes plus whatever equipment it was wearing or carrying. "
+      }
+    ],
+    "_v": 2,
+    "verb": "focuses its",
+    "proper": false
+  },
+  {
+    "name": "Nightmare Beast - Legendary Action: Frightful Howl",
+    "automation": [
+      {
+        "type": "target",
+        "target": "each",
+        "effects": [
+          {
+            "type": "save",
+            "stat": "wis",
+            "dc": "18",
+            "fail": [
+              {
+                "type": "ieffect",
+                "name": "Frightened",
+                "duration": 10,
+                "effects": "",
+                "desc": "Frightened of {{caster.name}}\n - They can repeat the DC {lastSaveDC} {lastSaveAbility} saving throw at the end of each of its turns, ending the effect on a success",
+                "end": false,
+                "conc": false,
+                "stacking": false,
+                "parent": null
+              }
+            ],
+            "success": []
+          }
+        ],
+        "sortBy": null
+      },
+      {
+        "type": "text",
+        "text": "The beast howls as it exhales a cloud of magical fear gas in a 120-foot cone. Any creature in that area must succeed on a DC 18 Wisdom saving throw or be frightened of the beast for 1 minute. A creature can repeat the saving throw at the end of each of its turns, ending the effect on itself on a success."
+      }
+    ],
+    "_v": 2,
+    "proper": true,
+    "verb": "uses their"
   }
 ]
