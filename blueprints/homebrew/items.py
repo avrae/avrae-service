@@ -93,7 +93,7 @@ def put_pack(user, pack):
         e = parse_validation_error(reqdata, e)
         return error(400, str(e))
 
-    current_app.mdb.packs.update_one({"_id": ObjectId(pack)}, {"$set": the_pack.dict(exclude_unset=True)})
+    current_app.mdb.packs.update_one({"_id": ObjectId(pack)}, {"$set": the_pack.dict(exclude_none=True)})
     return success("Pack updated.")
 
 
