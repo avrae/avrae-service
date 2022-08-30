@@ -350,7 +350,7 @@
                                       "hit": [
                                         {
                                           "type": "damage",
-                                          "damage": "1d6 + {{spell+1}} [magical slashing]"
+                                          "damage": "1d6 + {{spell+1}} [slashing]"
                                         }
                                       ],
                                       "miss": [],
@@ -383,7 +383,7 @@
                                       "hit": [
                                         {
                                           "type": "damage",
-                                          "damage": "1d6 + {{spell+1}} [magical piercing]"
+                                          "damage": "1d6 + {{spell+1}} [piercing]"
                                         }
                                       ],
                                       "miss": [],
@@ -416,7 +416,7 @@
                                       "hit": [
                                         {
                                           "type": "damage",
-                                          "damage": "1d6 + {{spell+1}} [magical bludgeoning]"
+                                          "damage": "1d6 + {{spell+1}} [bludgeoning]"
                                         }
                                       ],
                                       "miss": [],
@@ -1083,7 +1083,7 @@
                                   "effects": [
                                     {
                                       "type": "damage",
-                                      "damage": "{{fist}}d6 + {{spell}} [magical bludgeoning]",
+                                      "damage": "{{fist}}d6 + {{spell}} [bludgeoning]",
                                       "overheal": false,
                                       "cantripScale": false
                                     }
@@ -1741,6 +1741,36 @@
                                     {
                                       "type": "text",
                                       "text": "When a creature enters the affected area for the first time on a turn or starts its turn there, the creature must succeed on a Dexterity saving throw or take 3d6 bludgeoning damage and be restrained by the tentacles until the spell ends. A creature that starts its turn in the area and is already restrained by the tentacles takes 3d6 bludgeoning damage."
+                                    }
+                                  ]
+                                },
+                                {
+                                  "label": "Break Free (Tentacles)",
+                                  "verb": "attempts to break free of the Tentacles",
+                                  "defaultCastingMod": "lastSaveDC",
+                                  "automation": [
+                                    {
+                                      "type": "target",
+                                      "target": "self",
+                                      "effects": [
+                                        {
+                                          "type": "check",
+                                          "ability": [
+                                            "strength",
+                                            "dexterity"
+                                          ],
+                                          "dc": "spell",
+                                          "success": [
+                                            {
+                                              "type": "remove_ieffect",
+                                              "removeParent": "if_no_children"
+                                            }
+                                          ],
+                                          "fail": [],
+                                          "contestTie": "neither"
+                                        }
+                                      ],
+                                      "sortBy": null
                                     }
                                   ]
                                 }
@@ -3457,7 +3487,7 @@
                   {
                     "label": "Resist Contagion",
                     "verb": "attempts to resist Contagion",
-                    "defaultDC": "spell_dc",
+                    "defaultDC": "spell_dc or 10",
                     "style": 4,
                     "automation": [
                       {
@@ -5202,7 +5232,7 @@
                         "sortBy": null
                       }
                     ],
-                    "defaultDC": "spell_dc"
+                    "defaultDC": "spell_dc or 10"
                   }
                 ]
               }
@@ -6931,7 +6961,7 @@
               {
                 "label": "Teleport Out",
                 "verb": "attempts to escape the Forcecage",
-                "defaultDC": "spell_dc",
+                "defaultDC": "spell_dc or 10",
                 "automation": [
                   {
                     "type": "target",
@@ -7737,7 +7767,7 @@
             "effects": [
               {
                 "type": "ieffect2",
-                "name": "Greater Invisibility",
+                "name": "Invisible (Greater)",
                 "duration": 11,
                 "effects": {
                   "attack_advantage": 1
@@ -7754,7 +7784,7 @@
             "effects": [
               {
                 "type": "ieffect2",
-                "name": "Greater Invisibility",
+                "name": "Invisible (Greater)",
                 "duration": 11,
                 "effects": {
                   "attack_advantage": 1
@@ -9058,7 +9088,7 @@
                                 "verb": "reacts with a burst of",
                                 "proper": true
                               },
-                              "defaultDC": "spell_dc"
+                              "defaultDC": "spell_dc or 10"
                             }
                           ],
                           "buttons": [
@@ -9127,7 +9157,7 @@
                   "verb": "reacts with a burst of",
                   "proper": true
                 },
-                "defaultDC": "spell_dc"
+                "defaultDC": "spell_dc or 10"
               }
             ],
             "buttons": null,
@@ -9188,7 +9218,7 @@
                   "verb": "reacts with a burst of",
                   "proper": true
                 },
-                "defaultDC": "spell_dc"
+                "defaultDC": "spell_dc or 10"
               }
             ],
             "parent": "aura",
@@ -10004,7 +10034,7 @@
               {
                 "label": "Resist Dancing",
                 "verb": "attempts to resist Dancing",
-                "defaultDC": "spell_dc",
+                "defaultDC": "spell_dc or 10",
                 "automation": [
                   {
                     "type": "target",
@@ -10536,7 +10566,7 @@
                 "label": "Attempt to Enter Circle",
                 "verb": "attempts to teleport into the Magic Circle",
                 "style": "1",
-                "defaultDC": "spell_dc",
+                "defaultDC": "spell_dc or 10",
                 "defaultAttackBonus": null,
                 "defaultCastingMod": null,
                 "automation": [
@@ -11570,7 +11600,7 @@
                 "label": "Moonbeam (Start of Turn)",
                 "verb": "starts their turn in the Moonbeam",
                 "style": "4",
-                "defaultDC": "spell_dc",
+                "defaultDC": "spell_dc or 10",
                 "defaultAttackBonus": null,
                 "defaultCastingMod": null,
                 "automation": [
@@ -11746,7 +11776,7 @@
                               "label": "Moonbeam (Start of Turn)",
                               "verb": "starts their turn in the Moonbeam",
                               "style": "4",
-                              "defaultDC": "spell_dc",
+                              "defaultDC": "spell_dc or 10",
                               "defaultAttackBonus": null,
                               "defaultCastingMod": null,
                               "automation": [
@@ -12429,7 +12459,7 @@
                   {
                     "label": "Resist Stun",
                     "verb": "attempts to resist Stun",
-                    "defaultDC": "spell_dc",
+                    "defaultDC": "spell_dc or 10",
                     "automation": [
                       {
                         "type": "target",
@@ -13915,7 +13945,7 @@
                   {
                     "label": "Resist Enfeeblement",
                     "verb": "attempts to resist Enfeeblement",
-                    "defaultDC": "spell_dc",
+                    "defaultDC": "spell_dc or 10",
                     "automation": [
                       {
                         "type": "target",
@@ -14454,7 +14484,7 @@
                       "verb": "is protected by",
                       "proper": true
                     },
-                    "defaultDC": "spell_dc",
+                    "defaultDC": "spell_dc or 10",
                     "defaultAttackBonus": null,
                     "defaultCastingMod": null
                   }
@@ -14500,7 +14530,7 @@
                       "verb": "is protected by",
                       "proper": true
                     },
-                    "defaultDC": "spell_dc",
+                    "defaultDC": "spell_dc or 10",
                     "defaultAttackBonus": null,
                     "defaultCastingMod": null
                   }
@@ -15009,7 +15039,7 @@
                           "hit": [
                             {
                               "type": "damage",
-                              "damage": "1d8+{spell} [magical bludgeoning]"
+                              "damage": "1d8+{spell} [bludgeoning]"
                             }
                           ],
                           "miss": []
@@ -15628,7 +15658,7 @@
                       "effects": [
                         {
                           "type": "damage",
-                          "damage": "2d4 [magical piercing]",
+                          "damage": "2d4 [piercing]",
                           "overheal": false,
                           "cantripScale": false
                         }
@@ -15821,7 +15851,7 @@
                               "label": "Spirit Guardians (Start of Turn)",
                               "verb": "starts their turn in the Spirit Guardians",
                               "style": "4",
-                              "defaultDC": "spell_dc",
+                              "defaultDC": "spell_dc or 10",
                               "defaultAttackBonus": null,
                               "defaultCastingMod": null,
                               "automation": [
@@ -15870,7 +15900,7 @@
                               "label": "Leave Spirit Guardians",
                               "verb": "leaves the range of Spirit Guardians",
                               "style": "3",
-                              "defaultDC": "spell_dc",
+                              "defaultDC": "spell_dc or 10",
                               "defaultAttackBonus": null,
                               "defaultCastingMod": null,
                               "automation": [
@@ -15894,7 +15924,7 @@
                   "verb": "begins to",
                   "proper": true
                 },
-                "defaultDC": "spell_dc",
+                "defaultDC": "spell_dc or 10",
                 "defaultAttackBonus": null,
                 "defaultCastingMod": null
               },
@@ -15916,7 +15946,7 @@
                               "label": "Spirit Guardians (Start of Turn)",
                               "verb": "starts their turn in the Spirit Guardians",
                               "style": "4",
-                              "defaultDC": "spell_dc",
+                              "defaultDC": "spell_dc or 10",
                               "defaultAttackBonus": null,
                               "defaultCastingMod": null,
                               "automation": [
@@ -15965,7 +15995,7 @@
                               "label": "Leave Spirit Guardians",
                               "verb": "leaves the range of Spirit Guardians",
                               "style": "3",
-                              "defaultDC": "spell_dc",
+                              "defaultDC": "spell_dc or 10",
                               "defaultAttackBonus": null,
                               "defaultCastingMod": null,
                               "automation": [
@@ -15988,7 +16018,7 @@
                   "verb": "begins to",
                   "proper": true
                 },
-                "defaultDC": "spell_dc",
+                "defaultDC": "spell_dc or 10",
                 "defaultAttackBonus": null,
                 "defaultCastingMod": null
               }
@@ -17923,12 +17953,12 @@
                   "automation": [
                     {
                       "type": "roll",
-                      "dice": "7d8 [magical slashing]",
+                      "dice": "7d8 [slashing]",
                       "name": "damage",
                       "higher": {
-                        "7": "1d8 [magical slashing]",
-                        "8": "2d8 [magical slashing]",
-                        "9": "3d8 [magical slashing]"
+                        "7": "1d8 [slashing]",
+                        "8": "2d8 [slashing]",
+                        "9": "3d8 [slashing]"
                       }
                     },
                     {
@@ -18210,7 +18240,37 @@
                                 ]
                               },
                               "desc": "The target is restrained as long as it remains in the webs or until it breaks free\n - A target restrained by the webs can use its action to make a Strength check against your spell save DC\n - If it succeeds, it is no longer restrained",
-                              "buttons": null,
+                              "buttons": [
+                                {
+                                  "label": "Break Free (Webs)",
+                                  "verb": "attempts to break free of the Webs",
+                                  "defaultCastingMod": "lastSaveDC",
+                                  "automation": [
+                                    {
+                                      "type": "target",
+                                      "target": "self",
+                                      "effects": [
+                                        {
+                                          "type": "check",
+                                          "ability": [
+                                            "strength"
+                                          ],
+                                          "dc": "spell",
+                                          "success": [
+                                            {
+                                              "type": "remove_ieffect",
+                                              "removeParent": "if_no_children"
+                                            }
+                                          ],
+                                          "fail": [],
+                                          "contestTie": "neither"
+                                        }
+                                      ],
+                                      "sortBy": null
+                                    }
+                                  ]
+                                }
+                              ],
                               "parent": "ieffect"
                             }
                           ],
@@ -18228,8 +18288,7 @@
                   "proper": true
                 },
                 "defaultDC": null,
-                "defaultAttackBonus": null,
-                "defaultCastingMod": null
+                "defaultAttackBonus": null
               }
             ],
             "buttons": null,
@@ -18259,7 +18318,37 @@
                   ]
                 },
                 "desc": "The target is restrained as long as it remains in the webs or until it breaks free\n - A target restrained by the webs can use its action to make a Strength check against your spell save DC\n - If it succeeds, it is no longer restrained",
-                "buttons": null,
+                "buttons": [
+                  {
+                    "label": "Break Free (Webs)",
+                    "verb": "attempts to break free of the Webs",
+                    "defaultCastingMod": "lastSaveDC",
+                    "automation": [
+                      {
+                        "type": "target",
+                        "target": "self",
+                        "effects": [
+                          {
+                            "type": "check",
+                            "ability": [
+                              "strength"
+                            ],
+                            "dc": "spell",
+                            "success": [
+                              {
+                                "type": "remove_ieffect",
+                                "removeParent": "if_no_children"
+                              }
+                            ],
+                            "fail": [],
+                            "contestTie": "neither"
+                          }
+                        ],
+                        "sortBy": null
+                      }
+                    ]
+                  }
+                ],
                 "parent": "webbing"
               }
             ],
@@ -19031,19 +19120,32 @@
         }
       },
       {
+        "type": "variable",
+        "name": "lastSaveDidPass",
+        "value": "1"
+      },
+      {
         "type": "target",
         "target": "all",
         "effects": [
           {
-            "type": "save",
-            "stat": "dex",
-            "fail": [
+            "type": "condition",
+            "condition": "lastSaveDidPass",
+            "onTrue": [
               {
-                "type": "damage",
-                "damage": "{damage}"
+                "type": "save",
+                "stat": "dex",
+                "fail": [
+                  {
+                    "type": "damage",
+                    "damage": "{damage}"
+                  }
+                ],
+                "success": []
               }
             ],
-            "success": []
+            "onFalse": [],
+            "errorBehaviour": "false"
           }
         ]
       },
@@ -20530,7 +20632,7 @@
                               "hit": [
                                 {
                                   "type": "damage",
-                                  "damage": "1d6 + {{spell}} [magical bludgeoning]",
+                                  "damage": "1d6 + {{spell}} [bludgeoning]",
                                   "overheal": false,
                                   "cantripScale": false
                                 }
@@ -20551,7 +20653,7 @@
                       "proper": false
                     },
                     "defaultDC": null,
-                    "defaultAttackBonus": "spell_attack_bonus",
+                    "defaultAttackBonus": "spell_attack_bonus or 0",
                     "defaultCastingMod": "caster.spellbook.spell_mod or 0"
                   }
                 ]
@@ -20583,7 +20685,7 @@
                               "hit": [
                                 {
                                   "type": "damage",
-                                  "damage": "1d6 + {{spell}} [magical bludgeoning]",
+                                  "damage": "1d6 + {{spell}} [bludgeoning]",
                                   "overheal": false,
                                   "cantripScale": false
                                 }
@@ -20676,15 +20778,42 @@
                                   "dex"
                                 ]
                               },
-                              "desc": "To break out, the restrained target can use its action to make a Strength check with a DC {lastSaveDC}. On a success, the target escapes and is no longer restrained by the hand"
+                              "desc": "To break out, the restrained target can use its action to make a Strength check with a DC {lastSaveDC}. On a success, the target escapes and is no longer restrained by the hand",
+                              "buttons": [
+                                {
+                                  "label": "Resist Grasp",
+                                  "verb": "attempts to resist the Earthen Grasp",
+                                  "defaultCastingMod": "lastSaveDC",
+                                  "automation": [
+                                    {
+                                      "type": "target",
+                                      "target": "self",
+                                      "effects": [
+                                        {
+                                          "type": "check",
+                                          "ability": [
+                                            "strength"
+                                          ],
+                                          "dc": "spell",
+                                          "success": [
+                                            {
+                                              "type": "remove_ieffect",
+                                              "removeParent": "if_no_children"
+                                            }
+                                          ],
+                                          "fail": [],
+                                          "contestTie": "neither"
+                                        }
+                                      ],
+                                      "sortBy": null
+                                    }
+                                  ]
+                                }
+                              ],
+                              "parent": "ieffect"
                             }
                           ],
-                          "success": [
-                            {
-                              "type": "damage",
-                              "damage": "({damage})/2"
-                            }
-                          ]
+                          "success": []
                         }
                       ]
                     }
@@ -20705,7 +20834,7 @@
                 "label": "Earthen Crush",
                 "verb": "crushes their targets",
                 "style": "3",
-                "defaultDC": null,
+                "defaultDC": "spell_dc or 10",
                 "defaultAttackBonus": null,
                 "defaultCastingMod": null,
                 "automation": [
@@ -20719,7 +20848,7 @@
                         "fail": [
                           {
                             "type": "damage",
-                            "damage": "2d6 [magical bludgeoning]",
+                            "damage": "2d6 [bludgeoning]",
                             "overheal": false,
                             "cantripScale": false
                           }
@@ -20727,7 +20856,7 @@
                         "success": [
                           {
                             "type": "damage",
-                            "damage": "(2d6 [magical bludgeoning])/",
+                            "damage": "(2d6 [bludgeoning])/2",
                             "overheal": false,
                             "cantripScale": false
                           }
@@ -20735,6 +20864,10 @@
                       }
                     ],
                     "sortBy": null
+                  },
+                  {
+                    "type": "text",
+                    "text": "As an action, you can cause the hand to crush the restrained target, who must make a Strength saving throw. It takes 2d6 bludgeoning damage on a failed save, or half as much damage on a successful one."
                   }
                 ]
               }
@@ -20770,15 +20903,41 @@
                   ]
                 },
                 "desc": "To break out, the restrained target can use its action to make a Strength check with a DC {lastSaveDC}. On a success, the target escapes and is no longer restrained by the hand",
-                "parent": "grasp"
+                "parent": "grasp",
+                "buttons": [
+                  {
+                    "label": "Resist Grasp",
+                    "verb": "attempts to resist the Earthen Grasp",
+                    "defaultCastingMod": "lastSaveDC",
+                    "automation": [
+                      {
+                        "type": "target",
+                        "target": "self",
+                        "effects": [
+                          {
+                            "type": "check",
+                            "ability": [
+                              "strength"
+                            ],
+                            "dc": "spell",
+                            "success": [
+                              {
+                                "type": "remove_ieffect",
+                                "removeParent": "if_no_children"
+                              }
+                            ],
+                            "fail": [],
+                            "contestTie": "neither"
+                          }
+                        ],
+                        "sortBy": null
+                      }
+                    ]
+                  }
+                ]
               }
             ],
-            "success": [
-              {
-                "type": "damage",
-                "damage": "({damage})/2"
-              }
-            ]
+            "success": []
           }
         ]
       },

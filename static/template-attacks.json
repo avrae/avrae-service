@@ -138,7 +138,7 @@
     "verb": "releases"
   },
   {
-    "name": "Aboleth - Legendary Action: Psychic Drain",
+    "name": "Aboleth - Psychic Drain",
     "automation": [
       {
         "type": "variable",
@@ -177,11 +177,12 @@
       }
     ],
     "_v": 2,
-    "verb": "uses their",
-    "proper": true
+    "verb": "uses",
+    "proper": true,
+    "activation_type": 9
   },
   {
-    "name": "Aboleth - Lair Action: Grasping Tide",
+    "name": "Aboleth - Grasping Tide",
     "automation": [
       {
         "type": "target",
@@ -224,11 +225,12 @@
       }
     ],
     "_v": 2,
-    "verb": "uses their",
-    "proper": true
+    "verb": "uses",
+    "proper": true,
+    "activation_type": 11
   },
   {
-    "name": "Aboleth - Lair Action: Psychic Rage",
+    "name": "Aboleth - Psychic Rage",
     "automation": [
       {
         "type": "roll",
@@ -260,8 +262,9 @@
       }
     ],
     "_v": 2,
-    "verb": "uses their",
-    "proper": true
+    "verb": "uses",
+    "proper": true,
+    "activation_type": 11
   },
   {
     "name": "Acolyte - Club",
@@ -446,7 +449,7 @@
     "proper": true
   },
   {
-    "name": "Adult Black Dragon - Legendary Action: Wing Attack",
+    "name": "Adult Black Dragon - Wing Attack",
     "automation": [
       {
         "type": "roll",
@@ -499,11 +502,12 @@
       }
     ],
     "_v": 2,
-    "verb": "uses their",
-    "proper": true
+    "verb": "uses",
+    "proper": true,
+    "activation_type": 9
   },
   {
-    "name": "Adult Black Dragon - Lair Action: Grasping Tide",
+    "name": "Adult Black Dragon - Grasping Tide",
     "automation": [
       {
         "type": "target",
@@ -546,11 +550,12 @@
       }
     ],
     "_v": 2,
-    "verb": "uses their",
-    "proper": true
+    "verb": "uses",
+    "proper": true,
+    "activation_type": 11
   },
   {
-    "name": "Adult Black Dragon - Lair Action: Insect Swarm",
+    "name": "Adult Black Dragon - Insect Swarm",
     "automation": [
       {
         "type": "roll",
@@ -587,8 +592,9 @@
       }
     ],
     "_v": 2,
-    "verb": "uses their",
-    "proper": true
+    "verb": "uses",
+    "proper": true,
+    "activation_type": 11
   },
   {
     "name": "Adult Blue Dragon - Bite",
@@ -746,7 +752,7 @@
     "proper": true
   },
   {
-    "name": "Adult Blue Dragon - Legendary Action: Wing Attack",
+    "name": "Adult Blue Dragon - Wing Attack",
     "automation": [
       {
         "type": "roll",
@@ -799,11 +805,12 @@
       }
     ],
     "_v": 2,
-    "verb": "uses their",
-    "proper": true
+    "verb": "uses",
+    "proper": true,
+    "activation_type": 9
   },
   {
-    "name": "Adult Blue Dragon - Lair Action: Ceiling Collapse",
+    "name": "Adult Blue Dragon - Ceiling Collapse",
     "automation": [
       {
         "type": "roll",
@@ -841,11 +848,12 @@
       }
     ],
     "_v": 2,
-    "verb": "uses their",
-    "proper": true
+    "verb": "uses",
+    "proper": true,
+    "activation_type": 11
   },
   {
-    "name": "Adult Blue Dragon - Lair Action: Swirling Sands",
+    "name": "Adult Blue Dragon - Swirling Sands",
     "automation": [
       {
         "type": "target",
@@ -874,11 +882,12 @@
       }
     ],
     "_v": 2,
-    "verb": "uses their",
-    "proper": true
+    "verb": "uses",
+    "proper": true,
+    "activation_type": 11
   },
   {
-    "name": "Adult Blue Dragon - Lair Action: Lightning Arcs",
+    "name": "Adult Blue Dragon - Lightning Arcs",
     "automation": [
       {
         "type": "roll",
@@ -910,8 +919,9 @@
       }
     ],
     "_v": 2,
-    "verb": "uses their",
-    "proper": true
+    "verb": "uses",
+    "proper": true,
+    "activation_type": 11
   },
   {
     "name": "Adult Brass Dragon - Bite",
@@ -1101,7 +1111,7 @@
     "proper": true
   },
   {
-    "name": "Adult Brass Dragon - Legendary Action: Wing Attack",
+    "name": "Adult Brass Dragon - Wing Attack",
     "automation": [
       {
         "type": "roll",
@@ -1154,11 +1164,12 @@
       }
     ],
     "_v": 2,
-    "verb": "uses their",
-    "proper": true
+    "verb": "uses",
+    "proper": true,
+    "activation_type": 9
   },
   {
-    "name": "Adult Brass Dragon - Lair Action: Strong Winds",
+    "name": "Adult Brass Dragon - Strong Winds",
     "automation": [
       {
         "type": "target",
@@ -1201,11 +1212,12 @@
       }
     ],
     "_v": 2,
-    "verb": "uses their",
-    "proper": true
+    "verb": "uses",
+    "proper": true,
+    "activation_type": 11
   },
   {
-    "name": "Adult Brass Dragon - Lair Action: Swirling Sands",
+    "name": "Adult Brass Dragon - Swirling Sands",
     "automation": [
       {
         "type": "target",
@@ -1234,8 +1246,9 @@
       }
     ],
     "_v": 2,
-    "verb": "uses their",
-    "proper": true
+    "verb": "uses",
+    "proper": true,
+    "activation_type": 11
   },
   {
     "name": "Adult Bronze Dragon - Bite",
@@ -1418,7 +1431,7 @@
     "proper": true
   },
   {
-    "name": "Adult Bronze Dragon - Legendary Action: Wing Attack",
+    "name": "Adult Bronze Dragon - Wing Attack",
     "automation": [
       {
         "type": "roll",
@@ -1471,11 +1484,12 @@
       }
     ],
     "_v": 2,
-    "verb": "uses their",
-    "proper": true
+    "verb": "uses",
+    "proper": true,
+    "activation_type": 9
   },
   {
-    "name": "Adult Bronze Dragon - Lair Action: Thunderclap",
+    "name": "Adult Bronze Dragon - Thunderclap",
     "automation": [
       {
         "type": "roll",
@@ -1514,8 +1528,9 @@
       }
     ],
     "_v": 2,
-    "verb": "uses their",
-    "proper": true
+    "verb": "uses",
+    "proper": true,
+    "activation_type": 11
   },
   {
     "name": "Adult Copper Dragon - Bite",
@@ -1705,7 +1720,7 @@
     "proper": true
   },
   {
-    "name": "Adult Copper Dragon - Legendary Action: Wing Attack",
+    "name": "Adult Copper Dragon - Wing Attack",
     "automation": [
       {
         "type": "roll",
@@ -1758,11 +1773,12 @@
       }
     ],
     "_v": 2,
-    "verb": "uses their",
-    "proper": true
+    "verb": "uses",
+    "proper": true,
+    "activation_type": 9
   },
   {
-    "name": "Adult Copper Dragon - Lair Action: Mud",
+    "name": "Adult Copper Dragon - Mud",
     "automation": [
       {
         "type": "target",
@@ -1790,8 +1806,9 @@
       }
     ],
     "_v": 2,
-    "verb": "uses their",
-    "proper": true
+    "verb": "uses",
+    "proper": true,
+    "activation_type": 11
   },
   {
     "name": "Adult Gold Dragon - Bite",
@@ -1982,7 +1999,7 @@
     "proper": true
   },
   {
-    "name": "Adult Gold Dragon - Legendary Action: Wing Attack",
+    "name": "Adult Gold Dragon - Wing Attack",
     "automation": [
       {
         "type": "roll",
@@ -2035,11 +2052,12 @@
       }
     ],
     "_v": 2,
-    "verb": "uses their",
-    "proper": true
+    "verb": "uses",
+    "proper": true,
+    "activation_type": 9
   },
   {
-    "name": "Adult Gold Dragon - Lair Action: Banish",
+    "name": "Adult Gold Dragon - Banish",
     "automation": [
       {
         "type": "target",
@@ -2067,8 +2085,9 @@
       }
     ],
     "_v": 2,
-    "verb": "uses their",
-    "proper": true
+    "verb": "uses",
+    "proper": true,
+    "activation_type": 11
   },
   {
     "name": "Adult Green Dragon - Bite",
@@ -2226,7 +2245,7 @@
     "proper": true
   },
   {
-    "name": "Adult Green Dragon - Legendary Action: Wing Attack",
+    "name": "Adult Green Dragon - Wing Attack",
     "automation": [
       {
         "type": "roll",
@@ -2279,11 +2298,12 @@
       }
     ],
     "_v": 2,
-    "verb": "uses their",
-    "proper": true
+    "verb": "uses",
+    "proper": true,
+    "activation_type": 9
   },
   {
-    "name": "Adult Green Dragon - Lair Action: Thorn Wall",
+    "name": "Adult Green Dragon - Thorn Wall",
     "automation": [
       {
         "type": "roll",
@@ -2315,11 +2335,12 @@
       }
     ],
     "_v": 2,
-    "verb": "uses their",
-    "proper": true
+    "verb": "uses",
+    "proper": true,
+    "activation_type": 11
   },
   {
-    "name": "Adult Green Dragon - Lair Action: Grasping Vines",
+    "name": "Adult Green Dragon - Grasping Vines",
     "automation": [
       {
         "type": "target",
@@ -2347,11 +2368,12 @@
       }
     ],
     "_v": 2,
-    "verb": "uses their",
-    "proper": true
+    "verb": "uses",
+    "proper": true,
+    "activation_type": 11
   },
   {
-    "name": "Adult Green Dragon - Lair Action: Fog",
+    "name": "Adult Green Dragon - Fog",
     "automation": [
       {
         "type": "target",
@@ -2380,8 +2402,9 @@
       }
     ],
     "_v": 2,
-    "verb": "uses their",
-    "proper": true
+    "verb": "uses",
+    "proper": true,
+    "activation_type": 11
   },
   {
     "name": "Adult Red Dragon - Bite",
@@ -2539,7 +2562,7 @@
     "proper": true
   },
   {
-    "name": "Adult Red Dragon - Legendary Action: Wing Attack",
+    "name": "Adult Red Dragon - Wing Attack",
     "automation": [
       {
         "type": "roll",
@@ -2592,11 +2615,12 @@
       }
     ],
     "_v": 2,
-    "verb": "uses their",
-    "proper": true
+    "verb": "uses",
+    "proper": true,
+    "activation_type": 9
   },
   {
-    "name": "Adult Red Dragon - Lair Action: Magma Geyser",
+    "name": "Adult Red Dragon - Magma Geyser",
     "automation": [
       {
         "type": "roll",
@@ -2633,11 +2657,12 @@
       }
     ],
     "_v": 2,
-    "verb": "uses their",
-    "proper": true
+    "verb": "uses",
+    "proper": true,
+    "activation_type": 11
   },
   {
-    "name": "Adult Red Dragon - Lair Action: Tremor",
+    "name": "Adult Red Dragon - Tremor",
     "automation": [
       {
         "type": "target",
@@ -2680,11 +2705,12 @@
       }
     ],
     "_v": 2,
-    "verb": "uses their",
-    "proper": true
+    "verb": "uses",
+    "proper": true,
+    "activation_type": 11
   },
   {
-    "name": "Adult Red Dragon - Lair Action: Volcanic Gases",
+    "name": "Adult Red Dragon - Volcanic Gases",
     "automation": [
       {
         "type": "target",
@@ -2714,8 +2740,9 @@
       }
     ],
     "_v": 2,
-    "verb": "uses their",
-    "proper": true
+    "verb": "uses",
+    "proper": true,
+    "activation_type": 11
   },
   {
     "name": "Adult Silver Dragon - Bite",
@@ -2906,7 +2933,7 @@
     "proper": true
   },
   {
-    "name": "Adult Silver Dragon - Legendary Action: Wing Attack",
+    "name": "Adult Silver Dragon - Wing Attack",
     "automation": [
       {
         "type": "roll",
@@ -2959,11 +2986,12 @@
       }
     ],
     "_v": 2,
-    "verb": "uses their",
-    "proper": true
+    "verb": "uses",
+    "proper": true,
+    "activation_type": 9
   },
   {
-    "name": "Adult Silver Dragon - Lair Action: Chilling Winds",
+    "name": "Adult Silver Dragon - Chilling Winds",
     "automation": [
       {
         "type": "roll",
@@ -2995,8 +3023,9 @@
       }
     ],
     "_v": 2,
-    "verb": "uses their",
-    "proper": true
+    "verb": "uses",
+    "proper": true,
+    "activation_type": 11
   },
   {
     "name": "Adult White Dragon - Bite",
@@ -3154,7 +3183,7 @@
     "proper": true
   },
   {
-    "name": "Adult White Dragon - Legendary Action: Wing Attack",
+    "name": "Adult White Dragon - Wing Attack",
     "automation": [
       {
         "type": "roll",
@@ -3207,11 +3236,12 @@
       }
     ],
     "_v": 2,
-    "verb": "uses their",
-    "proper": true
+    "verb": "uses",
+    "proper": true,
+    "activation_type": 9
   },
   {
-    "name": "Adult White Dragon - Lair Action: Freezing Fog",
+    "name": "Adult White Dragon - Freezing Fog",
     "automation": [
       {
         "type": "roll",
@@ -3248,11 +3278,12 @@
       }
     ],
     "_v": 2,
-    "verb": "uses their",
-    "proper": true
+    "verb": "uses",
+    "proper": true,
+    "activation_type": 11
   },
   {
-    "name": "Adult White Dragon - Lair Action: Ice Shards",
+    "name": "Adult White Dragon - Ice Shards",
     "automation": [
       {
         "type": "target",
@@ -3277,8 +3308,9 @@
       }
     ],
     "_v": 2,
-    "verb": "uses their",
-    "proper": true
+    "verb": "uses",
+    "proper": true,
+    "activation_type": 11
   },
   {
     "name": "Air Elemental - Slam",
@@ -3310,6 +3342,55 @@
   {
     "name": "Air Elemental - Whirlwind (Creature)",
     "automation": [
+      {
+        "type": "target",
+        "target": "self",
+        "effects": [
+          {
+            "type": "ieffect2",
+            "name": "Whirlwind Used",
+            "stacking": true,
+            "buttons": [
+              {
+                "automation": [
+                  {
+                    "type": "roll",
+                    "dice": "1d6",
+                    "name": "recharge",
+                    "hidden": false,
+                    "cantripScale": false
+                  },
+                  {
+                    "type": "condition",
+                    "condition": "int(recharge) >= 4",
+                    "onTrue": [
+                      {
+                        "type": "remove_ieffect",
+                        "removeParent": null
+                      },
+                      {
+                        "type": "text",
+                        "text": "{{caster.name}} recharges their Whirlwind!"
+                      }
+                    ],
+                    "onFalse": [
+                      {
+                        "type": "text",
+                        "text": "{{caster.name}} doesn't recharge their Whirlwind!"
+                      }
+                    ],
+                    "errorBehaviour": "false"
+                  }
+                ],
+                "label": "Recharge Whirlwind",
+                "verb": "attempts to recharge their Whirlwind",
+                "style": "3"
+              }
+            ]
+          }
+        ],
+        "sortBy": null
+      },
       {
         "type": "roll",
         "dice": "3d8 + 2 [bludgeoning]",
@@ -3370,6 +3451,55 @@
   {
     "name": "Air Elemental - Whirlwind (Object)",
     "automation": [
+      {
+        "type": "target",
+        "target": "self",
+        "effects": [
+          {
+            "type": "ieffect2",
+            "name": "Whirlwind Used",
+            "stacking": true,
+            "buttons": [
+              {
+                "automation": [
+                  {
+                    "type": "roll",
+                    "dice": "1d6",
+                    "name": "recharge",
+                    "hidden": false,
+                    "cantripScale": false
+                  },
+                  {
+                    "type": "condition",
+                    "condition": "int(recharge) >= 4",
+                    "onTrue": [
+                      {
+                        "type": "remove_ieffect",
+                        "removeParent": null
+                      },
+                      {
+                        "type": "text",
+                        "text": "{{caster.name}} recharges their Whirlwind!"
+                      }
+                    ],
+                    "onFalse": [
+                      {
+                        "type": "text",
+                        "text": "{{caster.name}} doesn't recharge their Whirlwind!"
+                      }
+                    ],
+                    "errorBehaviour": "false"
+                  }
+                ],
+                "label": "Recharge Whirlwind",
+                "verb": "attempts to recharge their Whirlwind",
+                "style": "3"
+              }
+            ]
+          }
+        ],
+        "sortBy": null
+      },
       {
         "type": "target",
         "target": "each",
@@ -3543,7 +3673,7 @@
     "proper": true
   },
   {
-    "name": "Ancient Black Dragon - Legendary Action: Wing Attack",
+    "name": "Ancient Black Dragon - Wing Attack",
     "automation": [
       {
         "type": "roll",
@@ -3596,11 +3726,12 @@
       }
     ],
     "_v": 2,
-    "verb": "uses their",
-    "proper": true
+    "verb": "uses",
+    "proper": true,
+    "activation_type": 9
   },
   {
-    "name": "Ancient Black Dragon - Lair Action: Grasping Tide",
+    "name": "Ancient Black Dragon - Grasping Tide",
     "automation": [
       {
         "type": "target",
@@ -3643,11 +3774,12 @@
       }
     ],
     "_v": 2,
-    "verb": "uses their",
-    "proper": true
+    "verb": "uses",
+    "proper": true,
+    "activation_type": 11
   },
   {
-    "name": "Ancient Black Dragon - Lair Action: Insect Swarm",
+    "name": "Ancient Black Dragon - Insect Swarm",
     "automation": [
       {
         "type": "roll",
@@ -3684,8 +3816,9 @@
       }
     ],
     "_v": 2,
-    "verb": "uses their",
-    "proper": true
+    "verb": "uses",
+    "proper": true,
+    "activation_type": 11
   },
   {
     "name": "Ancient Blue Dragon - Bite",
@@ -3843,7 +3976,7 @@
     "proper": true
   },
   {
-    "name": "Ancient Blue Dragon - Legendary Action: Wing Attack",
+    "name": "Ancient Blue Dragon - Wing Attack",
     "automation": [
       {
         "type": "roll",
@@ -3896,11 +4029,12 @@
       }
     ],
     "_v": 2,
-    "verb": "uses their",
-    "proper": true
+    "verb": "uses",
+    "proper": true,
+    "activation_type": 9
   },
   {
-    "name": "Ancient Blue Dragon - Lair Action: Ceiling Collapse",
+    "name": "Ancient Blue Dragon - Ceiling Collapse",
     "automation": [
       {
         "type": "roll",
@@ -3938,11 +4072,12 @@
       }
     ],
     "_v": 2,
-    "verb": "uses their",
-    "proper": true
+    "verb": "uses",
+    "proper": true,
+    "activation_type": 11
   },
   {
-    "name": "Ancient Blue Dragon - Lair Action: Swirling Sands",
+    "name": "Ancient Blue Dragon - Swirling Sands",
     "automation": [
       {
         "type": "target",
@@ -3971,11 +4106,12 @@
       }
     ],
     "_v": 2,
-    "verb": "uses their",
-    "proper": true
+    "verb": "uses",
+    "proper": true,
+    "activation_type": 11
   },
   {
-    "name": "Ancient Blue Dragon - Lair Action: Lightning Arcs",
+    "name": "Ancient Blue Dragon - Lightning Arcs",
     "automation": [
       {
         "type": "roll",
@@ -4007,8 +4143,9 @@
       }
     ],
     "_v": 2,
-    "verb": "uses their",
-    "proper": true
+    "verb": "uses",
+    "proper": true,
+    "activation_type": 11
   },
   {
     "name": "Ancient Brass Dragon - Bite",
@@ -4198,7 +4335,7 @@
     "proper": true
   },
   {
-    "name": "Ancient Brass Dragon - Legendary Action: Wing Attack",
+    "name": "Ancient Brass Dragon - Wing Attack",
     "automation": [
       {
         "type": "roll",
@@ -4251,11 +4388,12 @@
       }
     ],
     "_v": 2,
-    "verb": "uses their",
-    "proper": true
+    "verb": "uses",
+    "proper": true,
+    "activation_type": 9
   },
   {
-    "name": "Ancient Brass Dragon - Lair Action: Strong Winds",
+    "name": "Ancient Brass Dragon - Strong Winds",
     "automation": [
       {
         "type": "target",
@@ -4298,11 +4436,12 @@
       }
     ],
     "_v": 2,
-    "verb": "uses their",
-    "proper": true
+    "verb": "uses",
+    "proper": true,
+    "activation_type": 11
   },
   {
-    "name": "Ancient Brass Dragon - Lair Action: Swirling Sands",
+    "name": "Ancient Brass Dragon - Swirling Sands",
     "automation": [
       {
         "type": "target",
@@ -4331,8 +4470,9 @@
       }
     ],
     "_v": 2,
-    "verb": "uses their",
-    "proper": true
+    "verb": "uses",
+    "proper": true,
+    "activation_type": 11
   },
   {
     "name": "Ancient Bronze Dragon - Bite",
@@ -4515,7 +4655,7 @@
     "proper": true
   },
   {
-    "name": "Ancient Bronze Dragon - Legendary Action: Wing Attack",
+    "name": "Ancient Bronze Dragon - Wing Attack",
     "automation": [
       {
         "type": "roll",
@@ -4568,11 +4708,12 @@
       }
     ],
     "_v": 2,
-    "verb": "uses their",
-    "proper": true
+    "verb": "uses",
+    "proper": true,
+    "activation_type": 9
   },
   {
-    "name": "Ancient Bronze Dragon - Lair Action: Thunderclap",
+    "name": "Ancient Bronze Dragon - Thunderclap",
     "automation": [
       {
         "type": "roll",
@@ -4611,8 +4752,9 @@
       }
     ],
     "_v": 2,
-    "verb": "uses their",
-    "proper": true
+    "verb": "uses",
+    "proper": true,
+    "activation_type": 11
   },
   {
     "name": "Ancient Copper Dragon - Bite",
@@ -4802,7 +4944,7 @@
     "proper": true
   },
   {
-    "name": "Ancient Copper Dragon - Legendary Action: Wing Attack",
+    "name": "Ancient Copper Dragon - Wing Attack",
     "automation": [
       {
         "type": "roll",
@@ -4855,11 +4997,12 @@
       }
     ],
     "_v": 2,
-    "verb": "uses their",
-    "proper": true
+    "verb": "uses",
+    "proper": true,
+    "activation_type": 9
   },
   {
-    "name": "Ancient Copper Dragon - Lair Action: Mud",
+    "name": "Ancient Copper Dragon - Mud",
     "automation": [
       {
         "type": "target",
@@ -4887,8 +5030,9 @@
       }
     ],
     "_v": 2,
-    "verb": "uses their",
-    "proper": true
+    "verb": "uses",
+    "proper": true,
+    "activation_type": 11
   },
   {
     "name": "Ancient Gold Dragon - Bite",
@@ -5077,7 +5221,7 @@
     "proper": true
   },
   {
-    "name": "Ancient Gold Dragon - Legendary Action: Wing Attack",
+    "name": "Ancient Gold Dragon - Wing Attack",
     "automation": [
       {
         "type": "roll",
@@ -5130,11 +5274,12 @@
       }
     ],
     "_v": 2,
-    "verb": "uses their",
-    "proper": true
+    "verb": "uses",
+    "proper": true,
+    "activation_type": 9
   },
   {
-    "name": "Ancient Gold Dragon - Lair Action: Banish",
+    "name": "Ancient Gold Dragon - Banish",
     "automation": [
       {
         "type": "target",
@@ -5162,8 +5307,9 @@
       }
     ],
     "_v": 2,
-    "verb": "uses their",
-    "proper": true
+    "verb": "uses",
+    "proper": true,
+    "activation_type": 11
   },
   {
     "name": "Ancient Green Dragon - Bite",
@@ -5321,7 +5467,7 @@
     "proper": true
   },
   {
-    "name": "Ancient Green Dragon - Legendary Action: Wing Attack",
+    "name": "Ancient Green Dragon - Wing Attack",
     "automation": [
       {
         "type": "roll",
@@ -5374,11 +5520,12 @@
       }
     ],
     "_v": 2,
-    "verb": "uses their",
-    "proper": true
+    "verb": "uses",
+    "proper": true,
+    "activation_type": 9
   },
   {
-    "name": "Ancient Green Dragon - Lair Action: Thorn Wall",
+    "name": "Ancient Green Dragon - Thorn Wall",
     "automation": [
       {
         "type": "roll",
@@ -5410,11 +5557,12 @@
       }
     ],
     "_v": 2,
-    "verb": "uses their",
-    "proper": true
+    "verb": "uses",
+    "proper": true,
+    "activation_type": 11
   },
   {
-    "name": "Ancient Green Dragon - Lair Action: Grasping Vines",
+    "name": "Ancient Green Dragon - Grasping Vines",
     "automation": [
       {
         "type": "target",
@@ -5442,11 +5590,12 @@
       }
     ],
     "_v": 2,
-    "verb": "uses their",
-    "proper": true
+    "verb": "uses",
+    "proper": true,
+    "activation_type": 11
   },
   {
-    "name": "Ancient Green Dragon - Lair Action: Fog",
+    "name": "Ancient Green Dragon - Fog",
     "automation": [
       {
         "type": "target",
@@ -5475,8 +5624,9 @@
       }
     ],
     "_v": 2,
-    "verb": "uses their",
-    "proper": true
+    "verb": "uses",
+    "proper": true,
+    "activation_type": 11
   },
   {
     "name": "Ancient Red Dragon - Bite",
@@ -5634,7 +5784,7 @@
     "proper": true
   },
   {
-    "name": "Ancient Red Dragon - Legendary Action: Wing Attack",
+    "name": "Ancient Red Dragon - Wing Attack",
     "automation": [
       {
         "type": "roll",
@@ -5687,11 +5837,12 @@
       }
     ],
     "_v": 2,
-    "verb": "uses their",
-    "proper": true
+    "verb": "uses",
+    "proper": true,
+    "activation_type": 9
   },
   {
-    "name": "Ancient Red Dragon - Lair Action: Magma Geyser",
+    "name": "Ancient Red Dragon - Magma Geyser",
     "automation": [
       {
         "type": "roll",
@@ -5728,11 +5879,12 @@
       }
     ],
     "_v": 2,
-    "verb": "uses their",
-    "proper": true
+    "verb": "uses",
+    "proper": true,
+    "activation_type": 11
   },
   {
-    "name": "Ancient Red Dragon - Lair Action: Tremor",
+    "name": "Ancient Red Dragon - Tremor",
     "automation": [
       {
         "type": "target",
@@ -5775,11 +5927,12 @@
       }
     ],
     "_v": 2,
-    "verb": "uses their",
-    "proper": true
+    "verb": "uses",
+    "proper": true,
+    "activation_type": 11
   },
   {
-    "name": "Ancient Red Dragon - Lair Action: Volcanic Gases",
+    "name": "Ancient Red Dragon - Volcanic Gases",
     "automation": [
       {
         "type": "target",
@@ -5809,8 +5962,9 @@
       }
     ],
     "_v": 2,
-    "verb": "uses their",
-    "proper": true
+    "verb": "uses",
+    "proper": true,
+    "activation_type": 11
   },
   {
     "name": "Ancient Silver Dragon - Bite",
@@ -6001,7 +6155,7 @@
     "proper": true
   },
   {
-    "name": "Ancient Silver Dragon - Legendary Action: Wing Attack",
+    "name": "Ancient Silver Dragon - Wing Attack",
     "automation": [
       {
         "type": "roll",
@@ -6054,11 +6208,12 @@
       }
     ],
     "_v": 2,
-    "verb": "uses their",
-    "proper": true
+    "verb": "uses",
+    "proper": true,
+    "activation_type": 9
   },
   {
-    "name": "Ancient Silver Dragon - Lair Action: Chilling Winds",
+    "name": "Ancient Silver Dragon - Chilling Winds",
     "automation": [
       {
         "type": "roll",
@@ -6090,8 +6245,9 @@
       }
     ],
     "_v": 2,
-    "verb": "uses their",
-    "proper": true
+    "verb": "uses",
+    "proper": true,
+    "activation_type": 11
   },
   {
     "name": "Ancient White Dragon - Bite",
@@ -6249,7 +6405,7 @@
     "proper": true
   },
   {
-    "name": "Ancient White Dragon - Legendary Action: Wing Attack",
+    "name": "Ancient White Dragon - Wing Attack",
     "automation": [
       {
         "type": "roll",
@@ -6302,11 +6458,12 @@
       }
     ],
     "_v": 2,
-    "verb": "uses their",
-    "proper": true
+    "verb": "uses",
+    "proper": true,
+    "activation_type": 9
   },
   {
-    "name": "Ancient White Dragon - Lair Action: Chilling Winds",
+    "name": "Ancient White Dragon - Chilling Winds",
     "automation": [
       {
         "type": "roll",
@@ -6338,11 +6495,12 @@
       }
     ],
     "_v": 2,
-    "verb": "uses their",
-    "proper": true
+    "verb": "uses",
+    "proper": true,
+    "activation_type": 11
   },
   {
-    "name": "Ancient White Dragon - Lair Action: Freezing Fog",
+    "name": "Ancient White Dragon - Freezing Fog",
     "automation": [
       {
         "type": "roll",
@@ -6379,11 +6537,12 @@
       }
     ],
     "_v": 2,
-    "verb": "uses their",
-    "proper": true
+    "verb": "uses",
+    "proper": true,
+    "activation_type": 11
   },
   {
-    "name": "Ancient White Dragon - Lair Action: Ice Shards",
+    "name": "Ancient White Dragon - Ice Shards",
     "automation": [
       {
         "type": "target",
@@ -6408,8 +6567,9 @@
       }
     ],
     "_v": 2,
-    "verb": "uses their",
-    "proper": true
+    "verb": "uses",
+    "proper": true,
+    "activation_type": 11
   },
   {
     "name": "Androsphinx - Claw",
@@ -6567,7 +6727,7 @@
     "proper": true
   },
   {
-    "name": "Androsphinx - Lair Action: Alter Time",
+    "name": "Androsphinx - Alter Time",
     "automation": [
       {
         "type": "target",
@@ -6595,8 +6755,9 @@
       }
     ],
     "_v": 2,
-    "verb": "uses their",
-    "proper": true
+    "verb": "uses",
+    "proper": true,
+    "activation_type": 11
   },
   {
     "name": "Animated Armor - Slam",
@@ -11948,11 +12109,38 @@
             "dc": "13",
             "fail": [
               {
-                "type": "ieffect",
+                "type": "ieffect2",
                 "name": "Frightened",
                 "duration": 10,
-                "effects": "",
-                "desc": "Frightened of {{caster.name}}\n - They can repeat the DC {lastSaveDC} {lastSaveAbility} saving throw at the end of each of its turns, ending the effect on a success"
+                "desc": "Frightened of {{caster.name}}\n - They can repeat the DC {lastSaveDC} {lastSaveAbility} saving throw at the end of each of its turns, ending the effect on a success",
+                "buttons": [
+                  {
+                    "label": "Resist Fear",
+                    "verb": "attempts to resist Fear",
+                    "defaultDC": "lastSaveDC",
+                    "automation": [
+                      {
+                        "type": "target",
+                        "target": "self",
+                        "effects": [
+                          {
+                            "type": "save",
+                            "stat": "wis",
+                            "dc": null,
+                            "success": [
+                              {
+                                "type": "remove_ieffect",
+                                "removeParent": "if_no_children"
+                              }
+                            ],
+                            "fail": []
+                          }
+                        ],
+                        "sortBy": null
+                      }
+                    ]
+                  }
+                ]
               },
               {
                 "type": "condition",
@@ -11984,6 +12172,56 @@
     "automation": [
       {
         "type": "target",
+        "target": "self",
+        "effects": [
+          {
+            "type": "ieffect2",
+            "name": "Possession Used",
+            "duration": -1,
+            "desc": "",
+            "buttons": [
+              {
+                "automation": [
+                  {
+                    "type": "roll",
+                    "dice": "1d6",
+                    "name": "recharge",
+                    "hidden": false,
+                    "cantripScale": false
+                  },
+                  {
+                    "type": "condition",
+                    "condition": "int(recharge) >= 6",
+                    "onTrue": [
+                      {
+                        "type": "remove_ieffect",
+                        "removeParent": null
+                      },
+                      {
+                        "type": "text",
+                        "text": "{{caster.name}} recharges their Possession!"
+                      }
+                    ],
+                    "onFalse": [
+                      {
+                        "type": "text",
+                        "text": "{{caster.name}} doesn't recharge their Possession!"
+                      }
+                    ],
+                    "errorBehaviour": "false"
+                  }
+                ],
+                "label": "Recharge Possession",
+                "verb": "attempts to recharge their Possession",
+                "style": "3"
+              }
+            ]
+          }
+        ],
+        "sortBy": null
+      },
+      {
+        "type": "target",
         "target": "each",
         "effects": [
           {
@@ -11992,15 +12230,57 @@
             "dc": "13",
             "fail": [
               {
-                "type": "ieffect",
-                "name": "Possessed",
-                "duration": -1,
-                "effects": ""
+                "type": "ieffect2",
+                "name": "Possessed (Incapacitated)",
+                "desc": "Controlled by {{caster.name}}",
+                "save_as": "possessed"
               }
             ],
             "success": []
           }
         ]
+      },
+      {
+        "type": "condition",
+        "condition": "not lastSaveDidPass and any(targets)",
+        "onTrue": [
+          {
+            "type": "target",
+            "target": "self",
+            "effects": [
+              {
+                "type": "ieffect2",
+                "name": "Possessing",
+                "duration": null,
+                "desc": "Controlling {{targets[0].name if str(targets[0])!=targets[0] else targets[0]}}",
+                "effects": null,
+                "attacks": null,
+                "buttons": [
+                  {
+                    "label": "Break Possession",
+                    "verb": "is no longer possessing the target",
+                    "style": "1",
+                    "defaultDC": null,
+                    "defaultAttackBonus": null,
+                    "defaultCastingMod": null,
+                    "automation": [
+                      {
+                        "type": "remove_ieffect",
+                        "removeParent": "always"
+                      }
+                    ]
+                  }
+                ],
+                "end": false,
+                "conc": false,
+                "stacking": false,
+                "parent": "possessed"
+              }
+            ]
+          }
+        ],
+        "onFalse": [],
+        "errorBehaviour": "false"
       },
       {
         "type": "text",
@@ -14649,7 +14929,7 @@
     "_v": 2
   },
   {
-    "name": "Gynosphinx - Lair Action: Alter Time",
+    "name": "Gynosphinx - Alter Time",
     "automation": [
       {
         "type": "target",
@@ -14669,7 +14949,9 @@
         "text": "The effects of time are altered such that every creature in the lair must succeed on a DC 15 Constitution saving throw or become 1d20 years older or younger (the sphinx's choice), but never any younger than 1 year old. A greater restoration spell can restore a creature's age to normal."
       }
     ],
-    "_v": 2
+    "_v": 2,
+    "activation_type": 11,
+    "verb": "uses"
   },
   {
     "name": "Half-Red Dragon Veteran - Longsword (1H)",
@@ -16222,80 +16504,138 @@
         "effects": [
           {
             "type": "attack",
+            "attackBonus": "17",
             "hit": [
               {
                 "type": "damage",
-                "damage": "3d8 + 10 [piercing]"
-              }
-            ],
-            "miss": [],
-            "attackBonus": "17"
-          }
-        ]
-      },
-      {
-        "type": "text",
-        "text": "*Melee Weapon Attack:* +17 to hit, reach 5 ft., one target. *Hit:* 23 (3d8 + 10) piercing damage. If the target is a Large or smaller creature grappled by the kraken, that creature is swallowed, and the grapple ends. While swallowed, the creature is blinded and restrained, it has total cover against attacks and other effects outside the kraken, and it takes 42 (12d6) acid damage at the start of each of the kraken's turns."
-      }
-    ],
-    "_v": 2
-  },
-  {
-    "name": "Kraken - Swallow",
-    "automation": [
-      {
-        "type": "target",
-        "target": "each",
-        "effects": [
-          {
-            "type": "attack",
-            "hit": [
-              {
-                "type": "damage",
-                "damage": "3d8 + 10 [piercing]"
+                "damage": "3d8 + 10 [piercing]",
+                "overheal": false,
+                "cantripScale": false
               },
               {
-                "type": "ieffect",
-                "name": "Blinded, Restrained (Swallowed)",
-                "duration": -1,
-                "effects": "dis -sdis dex"
+                "type": "save",
+                "stat": "dex",
+                "dc": "16",
+                "fail": [
+                  {
+                    "type": "ieffect2",
+                    "name": "Swallowed (Blinded, Restrained)",
+                    "duration": null,
+                    "desc": "Swallowed by {{caster.name}}\n - Target takes 12d6 acid at the start of each of the kraken's turns",
+                    "effects": null,
+                    "attacks": null,
+                    "buttons": null,
+                    "end": false,
+                    "conc": false,
+                    "stacking": false,
+                    "save_as": "swalloed"
+                  }
+                ],
+                "success": []
               }
             ],
             "miss": [],
-            "attackBonus": "17"
+            "adv": "0"
           }
-        ]
+        ],
+        "sortBy": null
       },
       {
-        "type": "text",
-        "text": "*Melee Weapon Attack:* +17 to hit, reach 5 ft., one target. *Hit:* 23 (3d8 + 10) piercing damage. If the target is a Large or smaller creature grappled by the kraken, that creature is swallowed, and the grapple ends. While swallowed, the creature is blinded and restrained, it has total cover against attacks and other effects outside the kraken, and it takes 42 (12d6) acid damage at the start of each of the kraken's turns."
-      }
-    ],
-    "_v": 2,
-    "verb": "attempts to",
-    "proper": true
-  },
-  {
-    "name": "Kraken - Digest",
-    "automation": [
-      {
-        "type": "target",
-        "target": "each",
-        "effects": [
+        "type": "condition",
+        "condition": "not lastSaveDidPass and any(targets)",
+        "onTrue": [
           {
-            "type": "damage",
-            "damage": "12d6 [acid]"
+            "type": "target",
+            "target": "self",
+            "effects": [
+              {
+                "type": "ieffect2",
+                "name": "Stomach",
+                "duration": null,
+                "desc": "Has {{targets[0].name if str(targets[0])!=targets[0] else targets[0]}} in its gullet\n - Deals 12d6 acid to the swallowed creature at the start of its turn\n - If they take 50+ damage on a single turn, they must make a DC 25 Constitution saving throw or regurgitate the target",
+                "effects": null,
+                "attacks": null,
+                "buttons": [
+                  {
+                    "label": "Acidic Stomach",
+                    "verb": "has an acidic stomach",
+                    "style": "4",
+                    "defaultDC": null,
+                    "defaultAttackBonus": null,
+                    "defaultCastingMod": null,
+                    "automation": [
+                      {
+                        "type": "target",
+                        "target": "parent",
+                        "effects": [
+                          {
+                            "type": "damage",
+                            "damage": "12d6 [acid]",
+                            "overheal": false,
+                            "cantripScale": false
+                          }
+                        ],
+                        "sortBy": null
+                      },
+                      {
+                        "type": "text",
+                        "text": "While swallowed, the creature is blinded and restrained, it has total cover against attacks and other effects outside the kraken, and it takes 42 (12d6) acid damage at the start of each of the kraken's turns."
+                      }
+                    ]
+                  },
+                  {
+                    "label": "Regurgitate",
+                    "verb": "begins to regurgitate",
+                    "style": "3",
+                    "defaultDC": null,
+                    "defaultAttackBonus": null,
+                    "defaultCastingMod": null,
+                    "automation": [
+                      {
+                        "type": "target",
+                        "target": "self",
+                        "effects": [
+                          {
+                            "type": "save",
+                            "stat": "con",
+                            "dc": "25",
+                            "fail": [
+                              {
+                                "type": "remove_ieffect",
+                                "removeParent": "always"
+                              }
+                            ],
+                            "success": []
+                          }
+                        ]
+                      },
+                      {
+                        "type": "text",
+                        "text": "If the kraken takes 50 damage or more on a single turn from a creature inside it, the kraken must succeed on a DC 25 Constitution saving throw at the end of that turn or regurgitate all swallowed creatures, which fall prone in a space within 10 feet of the kraken. If the kraken dies, a swallowed creature is no longer restrained by it and can escape from the corpse using 15 feet of movement, exiting prone."
+                      }
+                    ]
+                  }
+                ],
+                "end": false,
+                "conc": false,
+                "stacking": true,
+                "parent": "swallowed"
+              }
+            ]
           }
-        ]
+        ],
+        "onFalse": [],
+        "errorBehaviour": "false"
       },
       {
         "type": "text",
-        "text": "While swallowed, the creature is blinded and restrained, it has total cover against attacks and other effects outside the kraken, and it takes 42 (12d6) acid damage at the start of each of the kraken's turns."
+        "text": "*Melee Weapon Attack:* +17 to hit, reach 5 ft., one target. *Hit:* 23 (3d8 + 10) piercing damage. If the target is a Large or smaller creature grappled by the kraken, that creature is swallowed, and the grapple ends. While swallowed, the creature is blinded and restrained, it has total cover against attacks and other effects outside the kraken, and it takes 42 (12d6) acid damage at the start of each of the kraken's turns.\n\nIf the kraken takes 50 damage or more on a single turn from a creature inside it, the kraken must succeed on a DC 25 Constitution saving throw at the end of that turn or regurgitate all swallowed creatures, which fall prone in a space within 10 feet of the kraken. If the kraken dies, a swallowed creature is no longer restrained by it and can escape from the corpse using 15 feet of movement, exiting prone."
       }
     ],
     "_v": 2,
-    "verb": "begins to",
-    "proper": true
+    "verb": null,
+    "proper": false,
+    "activation_type": null
   },
   {
     "name": "Kraken - Tentacle",
@@ -16312,11 +16652,54 @@
                 "damage": "3d6 + 10 [bludgeoning]"
               },
               {
-                "type": "ieffect",
+                "type": "ieffect2",
                 "name": "Restrained (Grappled)",
-                "duration": -1,
-                "effects": "dis -sdis dex",
-                "desc": "Grappled by {{caster.name}}\n - Escape DC 18"
+                "duration": null,
+                "desc": "Grappled by {{caster.name}}\n - Escape DC 18",
+                "effects": {
+                  "attack_advantage": -1,
+                  "save_dis": [
+                    "dex"
+                  ]
+                },
+                "attacks": null,
+                "buttons": [
+                  {
+                    "label": "Escape Grapple",
+                    "verb": "tries to escape",
+                    "automation": [
+                      {
+                        "type": "target",
+                        "target": "self",
+                        "effects": [
+                          {
+                            "type": "check",
+                            "ability": [
+                              "acrobatics",
+                              "athletics"
+                            ],
+                            "dc": "18",
+                            "success": [
+                              {
+                                "type": "remove_ieffect",
+                                "removeParent": "if_no_children"
+                              }
+                            ],
+                            "fail": []
+                          }
+                        ]
+                      },
+                      {
+                        "type": "text",
+                        "text": "A creature grappled by the monster can use its action to try to escape. To do so, it must succeed on a Strength (Athletics) or Dexterity (Acrobatics) check against the escape DC in the monster\u2019s stat block."
+                      }
+                    ]
+                  }
+                ],
+                "end": false,
+                "conc": false,
+                "stacking": false,
+                "save_as": "grapple"
               }
             ],
             "miss": [],
@@ -16458,36 +16841,187 @@
     "verb": "summons"
   },
   {
-    "name": "Kraken - Legendary Action: Ink Cloud",
+    "name": "Kraken - Ink Cloud",
     "automation": [
       {
-        "type": "roll",
-        "dice": "3d10 [poison]",
-        "name": "damage"
+        "type": "target",
+        "target": "self",
+        "effects": [
+          {
+            "type": "ieffect2",
+            "name": "Ink Cloud",
+            "duration": 1,
+            "end": true,
+            "desc": "Area is heavily obscured to everyone other than the Kraken",
+            "save_as": "aura",
+            "attacks": [
+              {
+                "attack": {
+                  "name": "Spread Ink Cloud",
+                  "automation": [
+                    {
+                      "type": "target",
+                      "target": "each",
+                      "effects": [
+                        {
+                          "type": "ieffect2",
+                          "name": "In the Ink Cloud",
+                          "effects": null,
+                          "desc": "Target makes a DC 23 Constitution save at the end of its turn if still inside the ink cloud",
+                          "parent": "ieffect",
+                          "buttons": [
+                            {
+                              "label": "Ink Cloud Damage",
+                              "verb": "is damaged by the Ink Cloud",
+                              "style": "4",
+                              "defaultDC": null,
+                              "defaultAttackBonus": null,
+                              "defaultCastingMod": null,
+                              "automation": [
+                                {
+                                  "type": "target",
+                                  "target": "self",
+                                  "effects": [
+                                    {
+                                      "type": "roll",
+                                      "dice": "3d10 [poison]",
+                                      "name": "damage"
+                                    },
+                                    {
+                                      "type": "save",
+                                      "stat": "con",
+                                      "dc": "23",
+                                      "fail": [
+                                        {
+                                          "type": "damage",
+                                          "damage": "{damage}"
+                                        }
+                                      ],
+                                      "success": [
+                                        {
+                                          "type": "damage",
+                                          "damage": "({damage}) / 2"
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                },
+                                {
+                                  "type": "text",
+                                  "text": "Each creature other than the kraken that ends its turn there must succeed on a DC 23 Constitution saving throw, taking 16 (3d10) poison damage on a failed save, or half as much damage on a successful one."
+                                }
+                              ]
+                            },
+                            {
+                              "label": "Leave Ink Cloud",
+                              "verb": "leaves the range of the Ink Cloud",
+                              "style": "4",
+                              "defaultDC": null,
+                              "defaultAttackBonus": null,
+                              "defaultCastingMod": null,
+                              "automation": [
+                                {
+                                  "type": "remove_ieffect",
+                                  "removeParent": null
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "text",
+                      "text": "Life-preserving energy radiates from you in an aura with a 30-foot radius.  Until the spell ends, the aura moves with you, centered on you. Each nonhostile creature in the aura (including you) has resistance to necrotic damage, and its hit point maximum can't be reduced. In addition, a nonhostile, living creature regains 1 hit point when it starts its turn in the aura with 0 hit points."
+                    }
+                  ],
+                  "_v": 2,
+                  "verb": "begins to",
+                  "proper": true
+                },
+                "defaultDC": null,
+                "defaultAttackBonus": null,
+                "defaultCastingMod": null
+              }
+            ]
+          }
+        ]
       },
       {
         "type": "target",
         "target": "each",
         "effects": [
           {
-            "type": "save",
-            "stat": "con",
-            "dc": "23",
-            "fail": [
+            "type": "ieffect2",
+            "name": "In the Ink Cloud",
+            "effects": null,
+            "desc": "Target makes a DC 23 Constitution save at the end of its turn if still inside the ink cloud",
+            "parent": "aura",
+            "buttons": [
               {
-                "type": "damage",
-                "damage": "{damage}"
-              }
-            ],
-            "success": [
+                "label": "Ink Cloud Damage",
+                "verb": "is damaged by the Ink Cloud",
+                "style": "4",
+                "defaultDC": null,
+                "defaultAttackBonus": null,
+                "defaultCastingMod": null,
+                "automation": [
+                  {
+                    "type": "target",
+                    "target": "self",
+                    "effects": [
+                      {
+                        "type": "roll",
+                        "dice": "3d10 [poison]",
+                        "name": "damage"
+                      },
+                      {
+                        "type": "save",
+                        "stat": "con",
+                        "dc": "23",
+                        "fail": [
+                          {
+                            "type": "damage",
+                            "damage": "{damage}"
+                          }
+                        ],
+                        "success": [
+                          {
+                            "type": "damage",
+                            "damage": "({damage}) / 2"
+                          }
+                        ]
+                      },
+                      {
+                        "type": "text",
+                        "text": "While underwater, the kraken expels an ink cloud in a 60-foot radius. The cloud spreads around corners, and that area is heavily obscured to creatures other than the kraken. Each creature other than the kraken that ends its turn there must succeed on a DC 23 Constitution saving throw, taking 16 (3d10) poison damage on a failed save, or half as much damage on a successful one. A strong current disperses the cloud, which otherwise disappears at the end of the kraken's next turn."
+                      }
+                    ]
+                  },
+                  {
+                    "type": "text",
+                    "text": "Each creature other than the kraken that ends its turn there must succeed on a DC 23 Constitution saving throw, taking 16 (3d10) poison damage on a failed save, or half as much damage on a successful one."
+                  }
+                ]
+              },
               {
-                "type": "damage",
-                "damage": "({damage}) / 2"
+                "label": "Leave Ink Cloud",
+                "verb": "leaves the range of the Ink Cloud",
+                "style": "4",
+                "defaultDC": null,
+                "defaultAttackBonus": null,
+                "defaultCastingMod": null,
+                "automation": [
+                  {
+                    "type": "remove_ieffect",
+                    "removeParent": null
+                  }
+                ]
               }
             ]
           }
         ],
-        "meta": []
+        "sortBy": null
       },
       {
         "type": "text",
@@ -16495,11 +17029,12 @@
       }
     ],
     "_v": 2,
-    "verb": "uses their",
-    "proper": true
+    "verb": "releases",
+    "proper": false,
+    "activation_type": 9
   },
   {
-    "name": "Kraken - Lair Action: Strong Current",
+    "name": "Kraken - Strong Current",
     "automation": [
       {
         "type": "target",
@@ -16520,11 +17055,49 @@
       }
     ],
     "_v": 2,
-    "verb": "uses their",
-    "proper": true
+    "verb": "uses",
+    "proper": true,
+    "activation_type": 11
   },
   {
-    "name": "Kraken - Lair Action: Electric Charge",
+    "name": "Kraken - Conductive Waters",
+    "automation": [
+      {
+        "type": "target",
+        "target": "each",
+        "effects": [
+          {
+            "type": "ieffect2",
+            "name": "Conductive",
+            "duration": 2,
+            "desc": "Until the next initiative count 20",
+            "effects": {
+              "vulnerabilities": [
+                "lightning"
+              ]
+            },
+            "attacks": null,
+            "buttons": null,
+            "end": false,
+            "conc": false,
+            "stacking": false,
+            "parent": null
+          }
+        ],
+        "sortBy": null
+      },
+      {
+        "type": "text",
+        "text": "Creatures in the water within 60 feet of the kraken have vulnerability to lightning damage until initiative count 20 on the next round."
+      }
+    ],
+    "_v": 2,
+    "proper": false,
+    "verb": "is surrounded by",
+    "activation_type": 11
+  },
+  {
+    "name": "Kraken - Electric Charge",
     "automation": [
       {
         "type": "roll",
@@ -16561,8 +17134,9 @@
       }
     ],
     "_v": 2,
-    "verb": "uses their",
-    "proper": true
+    "verb": "uses",
+    "proper": true,
+    "activation_type": 11
   },
   {
     "name": "Lamia - Claws",
@@ -16719,7 +17293,7 @@
     "verb": "reaches out with"
   },
   {
-    "name": "Lich - Legendary Action: Frightening Gaze",
+    "name": "Lich - Frightening Gaze",
     "automation": [
       {
         "type": "target",
@@ -16748,11 +17322,12 @@
       }
     ],
     "_v": 2,
-    "verb": "uses their",
-    "proper": true
+    "verb": "uses",
+    "proper": true,
+    "activation_type": 9
   },
   {
-    "name": "Lich - Legendary Action: Disrupt Life",
+    "name": "Lich - Disrupt Life",
     "automation": [
       {
         "type": "roll",
@@ -16789,11 +17364,12 @@
       }
     ],
     "_v": 2,
-    "verb": "uses their",
-    "proper": true
+    "verb": "uses",
+    "proper": true,
+    "activation_type": 9
   },
   {
-    "name": "Lich - Lair Action: Negative Energy",
+    "name": "Lich - Negative Energy",
     "automation": [
       {
         "type": "target",
@@ -16813,11 +17389,12 @@
       }
     ],
     "_v": 2,
-    "verb": "uses their",
-    "proper": true
+    "verb": "uses",
+    "proper": true,
+    "activation_type": 11
   },
   {
-    "name": "Lich - Lair Action: Spirit Drain",
+    "name": "Lich - Spirit Drain",
     "automation": [
       {
         "type": "roll",
@@ -16854,8 +17431,9 @@
       }
     ],
     "_v": 2,
-    "verb": "uses their",
-    "proper": true
+    "verb": "uses",
+    "proper": true,
+    "activation_type": 11
   },
   {
     "name": "Lion - Bite",
@@ -18402,7 +18980,7 @@
     "verb": "gives you"
   },
   {
-    "name": "Mummy Lord - Legendary Action: Blinding Dust",
+    "name": "Mummy Lord - Blinding Dust",
     "automation": [
       {
         "type": "target",
@@ -18431,11 +19009,12 @@
       }
     ],
     "_v": 2,
-    "verb": "uses their",
-    "proper": true
+    "verb": "uses",
+    "proper": true,
+    "activation_type": 9
   },
   {
-    "name": "Mummy Lord - Legendary Action: Blasphemous Word",
+    "name": "Mummy Lord - Blasphemous Word",
     "automation": [
       {
         "type": "target",
@@ -18464,8 +19043,9 @@
       }
     ],
     "_v": 2,
-    "verb": "uses their",
-    "proper": true
+    "verb": "uses",
+    "proper": true,
+    "activation_type": 9
   },
   {
     "name": "Nalfeshnee - Bite",
@@ -21677,7 +22257,7 @@
     "verb": "reaches out with"
   },
   {
-    "name": "Solar - Legendary Action: Searing Burst",
+    "name": "Solar - Searing Burst",
     "automation": [
       {
         "type": "roll",
@@ -21714,11 +22294,12 @@
       }
     ],
     "_v": 2,
-    "verb": "uses their",
-    "proper": true
+    "verb": "uses",
+    "proper": true,
+    "activation_type": 9
   },
   {
-    "name": "Solar - Legendary Action: Blinding Gaze",
+    "name": "Solar - Blinding Gaze",
     "automation": [
       {
         "type": "target",
@@ -21746,8 +22327,9 @@
       }
     ],
     "_v": 2,
-    "verb": "uses their",
-    "proper": true
+    "verb": "uses",
+    "proper": true,
+    "activation_type": 9
   },
   {
     "name": "Specter - Life Drain",
@@ -23631,7 +24213,7 @@
     "verb": "reaches out with"
   },
   {
-    "name": "Unicorn - Legendary Action: Shimmering Shield",
+    "name": "Unicorn - Shimmering Shield",
     "automation": [
       {
         "type": "target",
@@ -23652,11 +24234,12 @@
       }
     ],
     "_v": 2,
-    "verb": "uses their",
-    "proper": true
+    "verb": "uses",
+    "proper": true,
+    "activation_type": 9
   },
   {
-    "name": "Unicorn - Legendary Action: Heal Self",
+    "name": "Unicorn - Heal Self",
     "automation": [
       {
         "type": "target",
@@ -23674,8 +24257,9 @@
       }
     ],
     "_v": 2,
-    "verb": "uses their",
-    "proper": true
+    "verb": "uses",
+    "proper": true,
+    "activation_type": 9
   },
   {
     "name": "Vampire - Unarmed Strike",
@@ -28760,13 +29344,46 @@
         "target": "each",
         "effects": [
           {
-            "type": "damage",
-            "damage": "3d6 + 2 [necrotic]",
-            "overheal": false,
-            "cantripScale": false
+            "type": "condition",
+            "condition": "target.creature_type and ('construct' in target.creature_type.lower())",
+            "onTrue": [
+              {
+                "type": "damage",
+                "damage": "3d6 + 2 [necrotic]",
+                "overheal": false,
+                "cantripScale": false
+              }
+            ],
+            "onFalse": [
+              {
+                "type": "text",
+                "text": "{{target.name}} is unaffected."
+              }
+            ],
+            "errorBehaviour": "true"
           }
         ],
         "sortBy": null
+      },
+      {
+        "type": "condition",
+        "condition": "lastDamage",
+        "onTrue": [
+          {
+            "type": "target",
+            "target": "self",
+            "effects": [
+              {
+                "type": "damage",
+                "damage": "-{lastDamage} [heal]",
+                "overheal": false,
+                "cantripScale": false
+              }
+            ]
+          }
+        ],
+        "onFalse": [],
+        "errorBehaviour": "false"
       },
       {
         "type": "text",
@@ -29306,7 +29923,7 @@
     "proper": false
   },
   {
-    "name": "Nightmare Beast - Legendary Action: Frightful Howl",
+    "name": "Nightmare Beast - Frightful Howl",
     "automation": [
       {
         "type": "target",
@@ -29341,6 +29958,7 @@
     ],
     "_v": 2,
     "proper": true,
-    "verb": "uses their"
+    "verb": "uses",
+    "activation_type": 9
   }
 ]
