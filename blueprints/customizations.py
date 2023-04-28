@@ -4,6 +4,7 @@ from flask import Blueprint, current_app, request
 
 from lib.auth import requires_auth
 from lib.utils import jsonify
+from workshop.constants import SNIPPET_SIZE_LIMIT, ALIAS_SIZE_LIMIT, UVAR_SIZE_LIMIT, GVAR_SIZE_LIMIT
 
 customizations = Blueprint("customizations", __name__)
 
