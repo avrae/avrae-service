@@ -40,7 +40,7 @@ def search_user(_):
         return error(400, "username param is required")
     un = request.args["username"]
     if "#" not in un:
-        return error(400, "username must be username#discrim")
+        un += "#0"
     username, discriminator = un.rsplit("#", 1)
     user = search_by_username(username, discriminator)
     if user is not None:
