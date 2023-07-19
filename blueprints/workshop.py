@@ -269,7 +269,6 @@ def edit_alias(user, body, alias_id):
     alias.update_info(body["name"], body["docs"])
     return success(alias.to_dict(js=True), 200)
 
-
 @workshop.route("alias/<alias_id>", methods=["GET"])
 def get_alias(alias_id):
     alias = WorkshopAlias.from_id(alias_id)
@@ -299,6 +298,9 @@ def create_alias_code_version(user, body, alias_id):
 
     if len(body["content"]) > ALIAS_SIZE_LIMIT:
         return error(400, f"max alias size is {ALIAS_SIZE_LIMIT}")
+
+    if body["content"][0:6] == "!alias":
+        return error(400, f"Your alias command cannot start with alias")
 
     cv = alias.create_code_version(body["content"])
     return success(cv.to_dict(), 201)
@@ -420,6 +422,9 @@ def create_snippet_code_version(user, body, snippet_id):
 
     if len(body["content"]) > SNIPPET_SIZE_LIMIT:
         return error(400, f"max snippet size is {SNIPPET_SIZE_LIMIT}")
+
+    if body["content"][0:5] == "!snip":
+        return error(400, f"Your snippet command cannot start with !snippet")
 
     cv = snippet.create_code_version(body["content"])
     return success(cv.to_dict(), 201)
