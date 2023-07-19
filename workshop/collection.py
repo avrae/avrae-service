@@ -833,7 +833,7 @@ class WorkshopAlias(WorkshopCollectableObject):
             # clear all bindings
             self.collection.sub_coll(current_app.mdb).update_many(
                 {"type": {"$in": ["subscribe", "server_active"]}, "object_id": self.collection.id},
-                {"$pull": {"alias_bindings": {"id": self.id}}}
+                {"$pull": {"alias_bindings": {"id": self.id}}},
                 # pull from the alias_bindings array all docs with this id
             )
 
@@ -889,7 +889,7 @@ class WorkshopSnippet(WorkshopCollectableObject):
         # clear all bindings
         self.collection.sub_coll(current_app.mdb).update_many(
             {"type": {"$in": ["subscribe", "server_active"]}, "object_id": self.collection.id},
-            {"$pull": {"snippet_bindings": {"id": self.id}}}
+            {"$pull": {"snippet_bindings": {"id": self.id}}},
             # pull from the snippet_bindings array all docs with this id
         )
 

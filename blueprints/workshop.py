@@ -269,6 +269,7 @@ def edit_alias(user, body, alias_id):
     alias.update_info(body["name"], body["docs"])
     return success(alias.to_dict(js=True), 200)
 
+
 @workshop.route("alias/<alias_id>", methods=["GET"])
 def get_alias(alias_id):
     alias = WorkshopAlias.from_id(alias_id)
