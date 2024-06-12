@@ -30,7 +30,7 @@ if config.SENTRY_DSN is not None:
 # app init
 app = Flask(__name__)
 app.rdb = rdb = RedisIO(config.REDIS_URL)
-app.mdb = mdb = PyMongo(app, config.MONGO_URL).db
+app.mdb = mdb = PyMongo(app, config.MONGO_URL + "?retryWrites=false").db
 
 CORS(app)
 
