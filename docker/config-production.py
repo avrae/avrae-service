@@ -3,7 +3,7 @@ import os
 TESTING = True if os.environ.get("TESTING") else False
 ENVIRONMENT = "Production"
 
-MONGO_URL = os.environ["MONGO_URL"]
+MONGO_URL = os.environ["MONGO_URL"] + "&retryWrites=false"
 REDIS_URL = os.environ["REDIS_URL"]
 SENTRY_DSN = os.getenv("SENTRY_DSN")
 
