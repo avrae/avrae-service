@@ -17,8 +17,7 @@ itsdangerous==2.0.1
 jinja2<3.1.0
 
 # build/other deps
-dnspython==2.1.0  # pymongo srv
-pymongo<4.0.0  # Flask-PyMongo does not specify version and 4.0 has breaking changes
+pymongo==4.7.3
 wheel==0.36.2  # dep install
 
 # pre-commit & formatting deps
