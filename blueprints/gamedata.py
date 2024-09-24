@@ -39,7 +39,9 @@ def get_limited_use():
 @gamedata.route("spells", methods=["GET"])
 def get_spells():
     """Returns a list of valid entities for use in building a Cast Spell node in the automation builder."""
-    return success({f"{t['name']} ({t['source']})": t["id"] for t in compendium.raw_spells})
+    return success(
+        {f"{t['name']} ({t['source']})": t["id"] for t in compendium.raw_spells}
+    )
     
 
 @gamedata.route("describable", methods=["GET"])
