@@ -1,6 +1,7 @@
 """
 Pydantic automation validation.
 """
+
 from __future__ import annotations
 
 from collections import defaultdict
@@ -43,21 +44,26 @@ def parse_validation_error(data: Union[Dict, List], the_error: ValidationError) 
         error_location = (" -> ".join(map(str, error["loc"][i + 1 :]))).replace("__root__", "root")
 
         # add the error to the list of errors on this key
-        error_dict[cur_key].append(f"""
+        error_dict[cur_key].append(
+            f"""
             <li>
                 <em>{error_location}</em> — {error['msg'].capitalize()}
             </li>
-            """)
+            """
+        )
 
     title = f"{len(errors)} validation errors in {len(error_dict)} object"
 
-    error_list = [f"""
+    error_list = [
+        f"""
         <p class='validation-error-item'>
             <strong>{name[:50]}</strong>
         </p>
         <ul class='validation-error-list'>
             {''.join(loc)}
         </ul>
-        """ for name, loc in error_dict.items()]
+        """
+        for name, loc in error_dict.items()
+    ]
 
     return f"<h3 class='validation-error-header'>{title}</h3>\n" + "\n".join(error_list)
