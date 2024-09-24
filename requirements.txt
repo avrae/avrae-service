@@ -4,7 +4,7 @@ Flask==1.1.2
 Flask-Cors==3.0.10
 Flask-PyMongo==2.3.0
 gunicorn==20.1.0
-pydantic==1.9.0
+pydantic==1.10.13
 PyJWT==2.4.0
 redis==3.5.3
 requests==2.25.1
