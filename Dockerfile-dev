@@ -16,4 +16,7 @@ COPY --chown=avraeservice:avraeservice docker/config-${ENVIRONMENT}.py config.py
 # Download AWS pubkey to connect to documentDB
 RUN wget https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem
 
-ENTRYPOINT .local/bin/gunicorn --workers 2 --bind 0:8000 app:app
+COPY --chown=avraeservice:avraeservice docker-entrypoint.sh .
+RUN chmod +x docker-entrypoint.sh
+
+ENTRYPOINT ["./docker-entrypoint.sh"]
