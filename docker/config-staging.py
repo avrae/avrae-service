@@ -5,7 +5,6 @@ ENVIRONMENT = "Staging"
 
 MONGO_URL = os.environ["MONGO_URL"] + "&retryWrites=false"
 REDIS_URL = os.environ["REDIS_URL"]
-SENTRY_DSN = os.getenv("SENTRY_DSN")
 
 # discord oauth
 DISCORD_CLIENT_ID = os.getenv("DISCORD_CLIENT_ID")
