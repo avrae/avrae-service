@@ -2,11 +2,9 @@ import logging
 import sys
 
 import d20
-import sentry_sdk
 from flask import Flask, request
 from flask_cors import CORS
 from flask_pymongo import PyMongo
-from sentry_sdk.integrations.flask import FlaskIntegration
 
 import config
 from blueprints.bot import bot
@@ -23,9 +21,6 @@ from lib.auth import requires_auth
 from lib.discord import discord_token_for, get_user_info
 from lib.redisIO import RedisIO
 from lib.utils import jsonify
-
-if config.SENTRY_DSN is not None:
-    sentry_sdk.init(dsn=config.SENTRY_DSN, environment=config.ENVIRONMENT, integrations=[FlaskIntegration()])
 
 # app init
 app = Flask(__name__)
