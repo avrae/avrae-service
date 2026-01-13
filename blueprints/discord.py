@@ -71,9 +71,15 @@ def handle_auth(data):
         access_token_resp = exchange_code(data["code"])
         _, user = handle_token_response(access_token_resp)
     except HTTPError as e:
+        error_detail = str(e)
+        if e.response is not None:
+            try:
+                error_detail = e.response.text or error_detail
+            except Exception:
+                pass
         if 400 <= e.response.status_code < 500:
-            return error(e.response.status_code, str(e))
-        return error(500, str(e))
+            return error(e.response.status_code, error_detail)
+        return error(500, error_detail)
 
     token = jwt.encode(
         {
