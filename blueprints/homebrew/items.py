@@ -1,7 +1,7 @@
 import json
 from typing import List, Optional, Union
 
-from automation_common.validation.models import str1024, str255, str4096
+from automation_common.validation.models import str1024, str10240, str255, str4096
 from bson import ObjectId
 from flask import Blueprint, current_app, request
 from pydantic import BaseModel, HttpUrl, ValidationError, constr
@@ -143,7 +143,7 @@ def srd_items():
 class Item(BaseModel):
     name: str255
     meta: str1024
-    desc: str4096
+    desc: str10240
     image: Optional[Union[HttpUrl, constr(max_length=0)]]
 
 

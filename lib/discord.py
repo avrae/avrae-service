@@ -1,9 +1,12 @@
 import datetime
+import logging
 
 import requests
 from flask import abort, current_app
 
 import config
+
+logger = logging.getLogger(__name__)
 
 DISCORD_API = "https://discord.com/api/v6"
 DISCORD_CDN = "https://cdn.discordapp.com"
@@ -23,7 +26,10 @@ def exchange_code(code):
     }
     headers = {"Content-Type": "application/x-www-form-urlencoded"}
     r = requests.post(f"{DISCORD_API}/oauth2/token", data=data, headers=headers)
-    r.raise_for_status()
+    if not r.ok:
+        error_msg = f"Discord token exchange failed: {r.status_code} - {r.text}"
+        logger.error(error_msg)
+        r.raise_for_status()
     return r.json()
 
 
