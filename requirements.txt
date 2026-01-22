@@ -17,7 +17,7 @@ jinja2<3.1.0
 
 # build/other deps
 pymongo==4.7.3
-wheel==0.36.2  # dep install
+wheel==0.46.2  # dep install
 
 # pre-commit & formatting deps
 pre-commit==2.17.0
