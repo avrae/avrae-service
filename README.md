@@ -7,7 +7,7 @@ You can join the Avrae Development Discord [here](https://discord.gg/pQbd4s6)!
 
 ## Requirements
 
-- Python 3.10+
+- Python 3.14+
 - MongoDB server
 - Redis server
 
