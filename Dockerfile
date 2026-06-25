@@ -1,22 +1,30 @@
-FROM python:3.14.4
+FROM dhi.io/python:3.14.6-alpine3.24-dev AS build
 
 ARG ENVIRONMENT=production
 
-RUN useradd --create-home avraeservice
-USER avraeservice
-WORKDIR /home/avraeservice
+RUN apk add --no-cache git
 
-COPY --chown=avraeservice:avraeservice requirements.txt .
-RUN pip install --user --no-warn-script-location -r requirements.txt
+WORKDIR /app
 
-COPY --chown=avraeservice:avraeservice . .
+COPY requirements.txt .
 
-COPY --chown=avraeservice:avraeservice docker/config-${ENVIRONMENT}.py config.py
+RUN python -m venv /app/venv \
+    && /app/venv/bin/pip install --no-cache-dir -r requirements.txt
 
-# Download AWS pubkey to connect to documentDB
-RUN wget https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem
+COPY . .
 
-COPY --chown=avraeservice:avraeservice docker-entrypoint.sh .
-RUN chmod +x docker-entrypoint.sh
+COPY docker/config-${ENVIRONMENT}.py config.py
 
-ENTRYPOINT ["./docker-entrypoint.sh"]
+RUN wget -O global-bundle.pem https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem
+
+FROM dhi.io/python:3.14.6-alpine3.24
+
+WORKDIR /app
+
+USER nonroot
+
+COPY --from=build --chown=nonroot:nonroot /app /app
+
+ENV PATH="/app/venv/bin:$PATH"
+
+CMD ["ddtrace-run", "gunicorn", "--workers", "2", "--bind", "0:8000", "app:app"]
