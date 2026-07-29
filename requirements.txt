@@ -8,7 +8,7 @@ pydantic==1.10.26
 PyJWT==2.4.0
 redis==5.2.1
 requests==2.25.1
-git+https://github.com/avrae/automation-common@v4.3.0
+git+https://github.com/avrae/automation-common@v4.4.0
 
 # transitive deps
 Werkzeug==3.0.6
