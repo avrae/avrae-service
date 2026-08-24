@@ -5,7 +5,7 @@ Flask-Cors==6.0.2
 Flask-PyMongo==2.3.0
 gunicorn==26.0.0
 pydantic==1.10.26
-PyJWT==2.4.0
+PyJWT==2.13.0
 redis==5.2.1
 requests==2.25.1
 git+https://github.com/avrae/automation-common@v4.4.0
